@@ -6,26 +6,32 @@ import com.retroleveleditor.util.TileImage;
 public class SetLevelEditorTileImageCommand implements ICommand
 {
     private TilePanel tile;
-    private TileImage newImage;
-    private TileImage previousImage;
+    private TileImage newDefaultImage;
+    private TileImage newCharImage;
+    private TileImage previousDefaultImage;
+    private TileImage previousCharImage;
 
-    public SetLevelEditorTileImageCommand(TilePanel tile, TileImage tileImage)
+    public SetLevelEditorTileImageCommand(TilePanel tile, TileImage newDefaultImage, TileImage newCharImage)
     {
         this.tile = tile;
-        this.newImage = tileImage;
-        this.previousImage = tile.getTileImage();
+        this.newDefaultImage = newDefaultImage;
+        this.newCharImage = newCharImage;
+        this.previousDefaultImage = tile.getDefaultTileImage();
+        this.previousCharImage = tile.getCharTileImage();
     }
 
     @Override
     public void execute()
     {
-        this.tile.setTileImage(newImage);
+        this.tile.setDefaultTileImage(this.newDefaultImage);
+        this.tile.setCharTileImage(this.newCharImage);
     }
 
     @Override
     public void undo()
     {
-        this.tile.setTileImage(previousImage);
+        this.tile.setDefaultTileImage(this.previousDefaultImage);
+        this.tile.setCharTileImage(this.previousCharImage);
     }
 
     @Override
@@ -35,7 +41,10 @@ public class SetLevelEditorTileImageCommand implements ICommand
         {
             SetLevelEditorTileImageCommand otherCommand = (SetLevelEditorTileImageCommand)other;
 
-            return this.tile == otherCommand.tile && this.newImage == otherCommand.newImage;
+            return
+                this.tile == otherCommand.tile &&
+                this.newDefaultImage == otherCommand.newDefaultImage &&
+                this.newCharImage == otherCommand.newCharImage;
         }
 
         return false;

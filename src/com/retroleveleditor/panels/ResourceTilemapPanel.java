@@ -32,13 +32,17 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
         }
     }
 
+    private String atlasPath;
+
     public ResourceTilemapPanel(final String atlasPath, final int resourcePanelCols, final int tileSize)
     {
         super(resourcePanelCols, ((ATLAS_COLS * ATLAS_ROWS) / resourcePanelCols) + 1, tileSize);
+        this.atlasPath = atlasPath;
+
         markTilesAsResourceTiles();
-        extractAtlasImages(atlasPath);
+        extractAtlasImages();
         getTileAtCoords(0, 0).setIsSelected(true);
-        TilePanel.selectedResourceImage = getTileAtCoords(0, 0).getTileImage();
+        TilePanel.selectedResourceTile = getTileAtCoords(0, 0);
     }
 
     @Override
@@ -63,6 +67,11 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
         }
     }
 
+    public String getAtlasPath()
+    {
+        return this.atlasPath;
+    }
+
     private void markTilesAsResourceTiles()
     {
         Component[] components = getComponents();
@@ -75,11 +84,11 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
         }
     }
 
-    private void extractAtlasImages(final String atlasPath)
+    private void extractAtlasImages()
     {
         try
         {
-            boolean isCharacterAtlas = atlasPath.equals(MainPanel.CHARACTERS_ATLAS_PATH);
+            boolean isCharacterAtlas = this.atlasPath.equals(MainPanel.CHARACTERS_ATLAS_PATH);
             List<CharacterAtlasEntryDescriptor> characterEntries = null;
 
             if (isCharacterAtlas)
@@ -87,7 +96,7 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
                 characterEntries = extractCharacterEntriesInAtlas();
             }
 
-            BufferedImage atlasImage = ImageIO.read(new File(atlasPath));
+            BufferedImage atlasImage = ImageIO.read(new File(this.atlasPath));
             int colIndex = 0;
             int rowIndex = 0;
             for (int y = 0; y < ATLAS_ROWS; ++y)
@@ -123,7 +132,7 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
                                     ATLAS_TILE_SIZE
                             );
 
-                    tile.setTileImage(new TileImage(tileImage, x, y));
+                    tile.setDefaultTileImage(new TileImage(tileImage, x, y));
 
                     if (++colIndex >= this.tileCols)
                     {

@@ -48,9 +48,14 @@ public class BaseTilemapPanel extends JPanel implements MouseWheelListener
                 g2.drawLine(tile.getX(), tile.getY() + tileSize - 1, tile.getX() + tileSize - 1, tile.getY() + tileSize - 1);
                 g2.drawLine(tile.getX() + tileSize - 1, tile.getY(), tile.getX() + tileSize - 1, tile.getY() + tileSize - 1);
 
-                if (tile.getTileImage() != null)
+                if (tile.getDefaultTileImage() != null)
                 {
-                    g2.drawImage(tile.getTileImage().image, tile.getX() - 1, tile.getY() - 1, tileSize, tileSize, null);
+                    g2.drawImage(tile.getDefaultTileImage().image, tile.getX() - 1, tile.getY() - 1, tileSize, tileSize, null);
+                }
+
+                if (tile.getCharTileImage() != null)
+                {
+                    g2.drawImage(tile.getCharTileImage().image, tile.getX() - 1, tile.getY() - 1, tileSize, tileSize, null);
                 }
             }
         }

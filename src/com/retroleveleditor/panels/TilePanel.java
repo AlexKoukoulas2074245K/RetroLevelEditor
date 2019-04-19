@@ -1,6 +1,6 @@
 package com.retroleveleditor.panels;
 
-import com.retroleveleditor.commands.ClearLevelEditorTileImageCommand;
+import com.retroleveleditor.commands.ClearLevelEditorTileImagesCommand;
 import com.retroleveleditor.commands.CommandManager;
 import com.retroleveleditor.commands.SetLevelEditorTileImageCommand;
 import com.retroleveleditor.util.TileImage;
@@ -9,11 +9,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 
 public class TilePanel extends JPanel implements MouseListener
 {
-    public static TileImage selectedResourceImage = null;
+    public static TilePanel selectedResourceTile = null;
     private static boolean mouseLeftDown = false;
     private static boolean mouseRightDown = false;
 
@@ -23,7 +22,8 @@ public class TilePanel extends JPanel implements MouseListener
     private boolean isSelected;
     private boolean isResourceTile;
 
-    private TileImage tileImage;
+    private TileImage defaultTileImage;
+    private TileImage charTileImage;
 
     public TilePanel(final int tileCol, final int tileRow, final int tileSize)
     {
@@ -34,7 +34,8 @@ public class TilePanel extends JPanel implements MouseListener
         this.isResourceTile = false;
         this.isMouseHoveringOverTile = false;
         this.isSelected = false;
-        this.tileImage = null;
+        this.defaultTileImage = null;
+        this.charTileImage = null;
 
         addMouseListener(this);
         setPreferredSize(new Dimension(tileSize, tileSize));
@@ -136,14 +137,24 @@ public class TilePanel extends JPanel implements MouseListener
         return this.tileCol + "," + (numberOfRows - this.tileRow);
     }
 
-    public TileImage getTileImage()
+    public TileImage getDefaultTileImage()
     {
-        return this.tileImage;
+        return this.defaultTileImage;
     }
 
-    public void setTileImage(final TileImage image)
+    public TileImage getCharTileImage()
     {
-        this.tileImage = image;
+        return this.charTileImage;
+    }
+
+    public void setDefaultTileImage(final TileImage image)
+    {
+        this.defaultTileImage = image;
+    }
+
+    public void setCharTileImage(final TileImage image)
+    {
+        this.charTileImage = image;
     }
 
     public void setIsSelected(final boolean isSelected)
@@ -164,11 +175,22 @@ public class TilePanel extends JPanel implements MouseListener
         {
 
             isSelected = true;
-            TilePanel.selectedResourceImage = this.tileImage;
+            TilePanel.selectedResourceTile = this;
         }
         else if (isResourceTile == false)
         {
-            CommandManager.executeCommand(new SetLevelEditorTileImageCommand(this, TilePanel.selectedResourceImage));
+            ResourceTilemapPanel currentResourcePanel = (ResourceTilemapPanel)TilePanel.selectedResourceTile.getParent();
+
+            // If the current resource tab is the characters one
+            if (currentResourcePanel.getAtlasPath() == MainPanel.CHARACTERS_ATLAS_PATH)
+            {
+                CommandManager.executeCommand(new SetLevelEditorTileImageCommand(this, this.defaultTileImage, TilePanel.selectedResourceTile.getDefaultTileImage()));
+            }
+            else
+            {
+                CommandManager.executeCommand(new SetLevelEditorTileImageCommand(this, TilePanel.selectedResourceTile.getDefaultTileImage(), this.charTileImage));
+            }
+
         }
     }
 
@@ -178,7 +200,7 @@ public class TilePanel extends JPanel implements MouseListener
 
         if (isResourceTile == false)
         {
-            CommandManager.executeCommand(new ClearLevelEditorTileImageCommand(this));
+            CommandManager.executeCommand(new ClearLevelEditorTileImagesCommand(this));
         }
     }
 
