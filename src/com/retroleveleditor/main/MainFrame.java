@@ -1,8 +1,12 @@
 package com.retroleveleditor.main;
 
+import com.retroleveleditor.action_listeners.RedoActionListener;
+import com.retroleveleditor.action_listeners.UndoActionListener;
 import com.retroleveleditor.panels.MainPanel;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
 public class MainFrame extends JFrame
@@ -29,7 +33,7 @@ public class MainFrame extends JFrame
 
     public void resetContentPane()
     {
-        setContentPane(new MainPanel(32, 32, 32));
+        setContentPane(new MainPanel(32, 32, 48));
     }
 
     private void createMenus()
@@ -37,7 +41,6 @@ public class MainFrame extends JFrame
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(createFileMenu());
         menuBar.add(createEditMenu());
-        menuBar.add(createBackgroundMenu());
         menuBar.add(createComponentsMenu());
         menuBar.add(createGameMenu());
         menuBar.add(createOptionsMenu());
@@ -82,12 +85,16 @@ public class MainFrame extends JFrame
         JMenu editMenu = new JMenu("Edit");
 
         JMenuItem undoMenuItem = new JMenuItem("Undo");
+        JMenuItem redoMenuItem = new JMenuItem("Redo");
         JMenuItem cutMenuItem = new JMenuItem("Cut");
         JMenuItem copyMenuItem = new JMenuItem("Copy");
         JMenuItem pasteMenuItem = new JMenuItem("Paste");
 
         undoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, MENU_MODIFIER_KEY));
-        //undoMenuItem.addActionListener(new UndoMenuItemActionHandler(this));
+        undoMenuItem.addActionListener(new UndoActionListener(this));
+
+        redoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, MENU_MODIFIER_KEY | InputEvent.SHIFT_MASK));
+        redoMenuItem.addActionListener(new RedoActionListener(this));
 
         cutMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, MENU_MODIFIER_KEY));
         //cutMenuItem.addActionListener(new CutMenuItemActionHandler(this));
@@ -99,24 +106,12 @@ public class MainFrame extends JFrame
         //pasteMenuItem.addActionListener(new PasteMenuItemActionHandler(this));
 
         editMenu.add(undoMenuItem);
+        editMenu.add(redoMenuItem);
         editMenu.add(cutMenuItem);
         editMenu.add(copyMenuItem);
         editMenu.add(pasteMenuItem);
 
         return editMenu;
-    }
-
-    private JMenu createBackgroundMenu()
-    {
-        JMenu backgroundMenu = new JMenu("Background");
-        JMenuItem setBackgroundMenuItem = new JMenuItem("Set Selected Resource as Background");
-
-        setBackgroundMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, MENU_MODIFIER_KEY));
-        //setBackgroundMenuItem.addActionListener(new SetBackgroundMenuItemActionHandler(this));
-
-        backgroundMenu.add(setBackgroundMenuItem);
-
-        return backgroundMenu;
     }
 
     private JMenu createComponentsMenu()

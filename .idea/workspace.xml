@@ -2,8 +2,23 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="054c8972-b79e-422d-826a-90deec405665" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/res/selection.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/retroleveleditor/action_listeners/RedoActionListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/retroleveleditor/action_listeners/UndoActionListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/retroleveleditor/commands/ClearLevelEditorTileImageCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/retroleveleditor/commands/SetLevelEditorTileImageCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/retroleveleditor/util/CharacterAtlasEntryDescriptor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/retroleveleditor/util/TileImage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RetroLevelEditor.iml" beforeDir="false" afterPath="$PROJECT_DIR$/RetroLevelEditor.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/retroleveleditor/commands/CommandManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/retroleveleditor/commands/CommandManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/retroleveleditor/commands/ICommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/retroleveleditor/commands/ICommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/retroleveleditor/main/MainFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/retroleveleditor/main/MainFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/retroleveleditor/panels/BaseTilemapPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/retroleveleditor/panels/BaseTilemapPanel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/retroleveleditor/panels/LevelEditorTilemapPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/retroleveleditor/panels/LevelEditorTilemapPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/retroleveleditor/panels/MainPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/retroleveleditor/panels/MainPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/retroleveleditor/panels/ResourceTilemapPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/retroleveleditor/panels/ResourceTilemapPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/retroleveleditor/panels/TilePanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/retroleveleditor/panels/TilePanel.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -12,48 +27,13 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FUSProjectUsageTrigger">
-    <session id="-1534829958">
-      <usages-collector id="statistics.lifecycle.project">
-        <counts>
-          <entry key="project.closed" value="3" />
-          <entry key="project.open.time.3" value="2" />
-          <entry key="project.open.time.5" value="2" />
-          <entry key="project.open.time.6" value="1" />
-          <entry key="project.opened" value="5" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.open">
-        <counts>
-          <entry key="java" value="12" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.open">
-        <counts>
-          <entry key="JAVA" value="12" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.edit">
-        <counts>
-          <entry key="dummy" value="7" />
-          <entry key="java" value="3949" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.edit">
-        <counts>
-          <entry key="JAVA" value="3949" />
-          <entry key="PLAIN_TEXT" value="7" />
-        </counts>
-      </usages-collector>
-    </session>
-  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/main/MainFrame.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="31" column="47" selection-start-line="9" selection-start-column="32" selection-end-line="31" selection-end-column="47" />
+            <state relative-caret-position="78">
+              <caret line="114" column="5" selection-start-line="114" selection-start-column="5" selection-end-line="114" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -64,10 +44,26 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/panels/BaseTilemapPanel.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1076">
-              <caret line="78" column="68" selection-start-line="78" selection-start-column="68" selection-end-line="78" selection-end-column="68" />
+            <state relative-caret-position="133">
+              <caret line="110" column="55" lean-forward="true" selection-start-line="110" selection-start-column="55" selection-end-line="110" selection-end-column="55" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#2350#2351#0" expanded="true" />
+                <element signature="e#2386#2387#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/action_listeners/UndoActionListener.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="210">
+              <caret line="14" column="30" selection-start-line="14" selection-start-column="30" selection-end-line="14" selection-end-column="30" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#342#343#0" expanded="true" />
+                <element signature="e#373#374#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -76,20 +72,11 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/panels/MainPanel.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="748">
-              <caret line="45" column="116" selection-start-line="45" selection-start-column="116" selection-end-line="45" selection-end-column="116" />
+            <state relative-caret-position="48">
+              <caret line="8" column="1" selection-start-line="8" selection-start-column="1" selection-end-line="8" selection-end-column="1" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/panels/ModelsPanel.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="9" column="5" selection-start-line="9" selection-start-column="5" selection-end-line="9" selection-end-column="5" />
             </state>
           </provider>
         </entry>
@@ -97,17 +84,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/panels/ResourceTilemapPanel.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="10" column="31" selection-start-line="10" selection-start-column="31" selection-end-line="10" selection-end-column="31" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/commands/CommandManager.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="9" selection-start-line="9" selection-end-line="9" />
+            <state relative-caret-position="1489">
+              <caret line="147" column="31" selection-start-line="147" selection-start-column="31" selection-end-line="147" selection-end-column="31" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -116,19 +94,22 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/commands/ICommand.java">
+        <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/util/CharacterAtlasEntryDescriptor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="5" column="16" selection-start-line="5" selection-start-column="16" selection-end-line="5" selection-end-column="16" />
+            <state relative-caret-position="30">
+              <caret line="2" column="32" selection-start-line="2" selection-start-column="32" selection-end-line="2" selection-end-column="32" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/panels/LevelEditorTilemapPanel.java">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/commands/CommandManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="476">
-              <caret line="28" column="69" selection-start-line="28" selection-start-column="69" selection-end-line="28" selection-end-column="69" />
+            <state>
+              <caret column="32" selection-start-column="32" selection-end-column="32" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -136,11 +117,51 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/panels/TilePanel.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="76" selection-start-line="76" selection-end-line="76" />
+            <state relative-caret-position="524">
+              <caret line="180" column="58" selection-start-line="180" selection-start-column="58" selection-end-line="180" selection-end-column="58" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1737#1738#0" expanded="true" />
+                <element signature="e#2872#2873#0" expanded="true" />
+                <element signature="e#2998#2999#0" expanded="true" />
+                <element signature="e#3064#3065#0" expanded="true" />
+                <element signature="e#3149#3150#0" expanded="true" />
+                <element signature="e#3287#3288#0" expanded="true" />
+                <element signature="e#3367#3368#0" expanded="true" />
+                <element signature="e#3464#3465#0" expanded="true" />
+                <element signature="e#3571#3572#0" expanded="true" />
+                <element signature="e#3694#3695#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/commands/ClearLevelEditorTileImageCommand.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="375">
+              <caret line="25" column="44" selection-start-line="25" selection-start-column="44" selection-end-line="25" selection-end-column="44" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#464#465#0" expanded="true" />
+                <element signature="e#508#509#0" expanded="true" />
+                <element signature="e#552#553#0" expanded="true" />
+                <element signature="e#571#572#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/commands/SetLevelEditorTileImageCommand.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="179">
+              <caret line="33" column="8" selection-start-line="33" selection-start-column="8" selection-end-line="40" selection-end-column="21" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#542#543#0" expanded="true" />
+                <element signature="e#590#591#0" expanded="true" />
+                <element signature="e#634#635#0" expanded="true" />
+                <element signature="e#687#688#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -160,6 +181,7 @@
       <find>cell</find>
       <find>gridCells</find>
       <find>level</find>
+      <find>createTile</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -172,34 +194,36 @@
         <option value="$PROJECT_DIR$/src/com/hardcoreleveleditor/main/MainFrame.java" />
         <option value="$PROJECT_DIR$/src/com/hardcoreleveleditor/main/MainPanel.java" />
         <option value="$PROJECT_DIR$/src/com/retroleveleditor/main/MainPanel.java" />
-        <option value="$PROJECT_DIR$/src/com/retroleveleditor/main/MainFrame.java" />
         <option value="$PROJECT_DIR$/src/com/retroleveleditor/panels/TileMapPanel.java" />
         <option value="$PROJECT_DIR$/src/com/retroleveleditor/panels/LevelEditorPanel.java" />
         <option value="$PROJECT_DIR$/src/com/retroleveleditor/CommandManager.java" />
-        <option value="$PROJECT_DIR$/src/com/retroleveleditor/commands/ICommand.java" />
-        <option value="$PROJECT_DIR$/src/com/retroleveleditor/commands/CommandManager.java" />
         <option value="$PROJECT_DIR$/src/com/retroleveleditor/panels/ResourcePanel.java" />
         <option value="$PROJECT_DIR$/src/com/retroleveleditor/panels/ModelsPanek.java" />
         <option value="$PROJECT_DIR$/src/com/retroleveleditor/panels/ModelsPanel.java" />
-        <option value="$PROJECT_DIR$/src/com/retroleveleditor/panels/ResourceTilemapPanel.java" />
-        <option value="$PROJECT_DIR$/src/com/retroleveleditor/panels/MainPanel.java" />
-        <option value="$PROJECT_DIR$/src/com/retroleveleditor/panels/TilePanel.java" />
-        <option value="$PROJECT_DIR$/src/com/retroleveleditor/panels/BaseTilemapPanel.java" />
+        <option value="$PROJECT_DIR$/src/com/retroleveleditor/commands/ICommand.java" />
+        <option value="$PROJECT_DIR$/src/com/retroleveleditor/commands/CommandManager.java" />
         <option value="$PROJECT_DIR$/src/com/retroleveleditor/panels/LevelEditorTilemapPanel.java" />
+        <option value="$PROJECT_DIR$/src/com/retroleveleditor/util/TileImage.java" />
+        <option value="$PROJECT_DIR$/src/com/retroleveleditor/commands/SetLevelEditorTileImage.java" />
+        <option value="$PROJECT_DIR$/src/com/retroleveleditor/commands/SetLevelEditorTileImageCommand.java" />
+        <option value="$PROJECT_DIR$/src/com/retroleveleditor/UndoActionListener.java" />
+        <option value="$PROJECT_DIR$/src/com/retroleveleditor/action_listeners/RedoActionListener.java" />
+        <option value="$PROJECT_DIR$/src/com/retroleveleditor/action_listeners/UndoActionListener.java" />
+        <option value="$PROJECT_DIR$/src/com/retroleveleditor/commands/ClearLevelEditorTileImageCommand.java" />
+        <option value="$PROJECT_DIR$/src/com/retroleveleditor/panels/TilePanel.java" />
+        <option value="$PROJECT_DIR$/src/com/retroleveleditor/panels/MainPanel.java" />
+        <option value="$PROJECT_DIR$/src/com/retroleveleditor/util/CharacterAtlasDescriptor.java" />
+        <option value="$PROJECT_DIR$/src/com/retroleveleditor/util/CharacterAtlasEntryDescriptor.java" />
+        <option value="$PROJECT_DIR$/src/com/retroleveleditor/panels/ResourceTilemapPanel.java" />
+        <option value="$PROJECT_DIR$/src/com/retroleveleditor/panels/BaseTilemapPanel.java" />
+        <option value="$PROJECT_DIR$/src/com/retroleveleditor/main/MainFrame.java" />
       </list>
     </option>
   </component>
-  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
-  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
-  <component name="JsGulpfileManager">
-    <detection-done>true</detection-done>
-    <sorting>DEFINITION_ORDER</sorting>
-  </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="1913" />
-    <option name="y" value="-120" />
-    <option name="width" value="1932" />
-    <option name="height" value="1165" />
+    <option name="y" value="23" />
+    <option name="width" value="1440" />
+    <option name="height" value="806" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -207,12 +231,19 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
               <item name="RetroLevelEditor" type="b2602c69:ProjectViewProjectNode" />
               <item name="RetroLevelEditor" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="RetroLevelEditor" type="b2602c69:ProjectViewProjectNode" />
+              <item name="RetroLevelEditor" type="462c0819:PsiDirectoryNode" />
+              <item name="res" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="RetroLevelEditor" type="b2602c69:ProjectViewProjectNode" />
@@ -224,6 +255,13 @@
               <item name="RetroLevelEditor" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="retroleveleditor" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="RetroLevelEditor" type="b2602c69:ProjectViewProjectNode" />
+              <item name="RetroLevelEditor" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="retroleveleditor" type="462c0819:PsiDirectoryNode" />
+              <item name="action_listeners" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="RetroLevelEditor" type="b2602c69:ProjectViewProjectNode" />
@@ -246,18 +284,27 @@
               <item name="retroleveleditor" type="462c0819:PsiDirectoryNode" />
               <item name="panels" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="RetroLevelEditor" type="b2602c69:ProjectViewProjectNode" />
+              <item name="RetroLevelEditor" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="retroleveleditor" type="462c0819:PsiDirectoryNode" />
+              <item name="util" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1555604793590" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1555697484794" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -302,27 +349,29 @@
       <workItem from="1555587175698" duration="5000" />
       <workItem from="1555587227289" duration="9265000" />
       <workItem from="1555602049751" duration="2228000" />
+      <workItem from="1555624024949" duration="14027000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="11570000" />
+    <option name="totallyTimeSpent" value="25597000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1912" y="-130" width="1936" height="1176" extended-state="6" />
+    <frame x="0" y="23" width="1440" height="795" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.26066098" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2639485" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
       <window_info id="UI Designer" order="4" />
       <window_info id="Capture Tool" order="5" />
       <window_info id="Favorites" order="6" side_tool="true" />
+      <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32917467" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39923224" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.33428165" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.39829302" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -330,7 +379,8 @@
       <window_info anchor="bottom" id="Database Changes" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Terminal" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" id="Messages" order="11" weight="0.32917467" />
+      <window_info anchor="bottom" id="Messages" order="11" weight="0.32859176" />
+      <window_info anchor="right" id="Maven" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -345,9 +395,6 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
-  <component name="VcsContentAnnotationSettings">
-    <option name="myLimit" value="2678400000" />
-  </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/main/Main.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -356,10 +403,138 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/main/MainFrame.java">
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_191/src.zip!/java/awt/Container.java" />
+    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_191.jdk/Contents/Home/src.zip!/javax/imageio/ImageIO.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="31" column="47" selection-start-line="9" selection-start-column="32" selection-end-line="31" selection-end-column="47" />
+        <state relative-caret-position="146">
+          <caret line="1295" column="32" selection-start-line="1295" selection-start-column="32" selection-end-line="1295" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/commands/ICommand.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" column="1" lean-forward="true" selection-start-line="7" selection-start-column="1" selection-end-line="7" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/panels/ModelsPanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" selection-start-line="8" selection-end-line="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/util/TileImage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="27" lean-forward="true" selection-start-line="12" selection-start-column="27" selection-end-line="12" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_191.jdk/Contents/Home/src.zip!/javax/swing/KeyStroke.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-355">
+          <caret line="246" column="43" lean-forward="true" selection-start-line="246" selection-start-column="43" selection-end-line="246" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_191.jdk/Contents/Home/src.zip!/javax/swing/JComponent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="5342" column="21" selection-start-line="5342" selection-start-column="21" selection-end-line="5342" selection-end-column="21" />
+          <folding>
+            <element signature="e#202051#202052#0" expanded="true" />
+            <element signature="e#202106#202107#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/panels/LevelEditorTilemapPanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="23" selection-start-line="6" selection-start-column="23" selection-end-line="6" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/action_listeners/RedoActionListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="22" column="8" selection-start-line="22" selection-start-column="8" selection-end-line="23" selection-end-column="33" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#352#353#0" expanded="true" />
+            <element signature="e#371#372#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/action_listeners/UndoActionListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="14" column="30" selection-start-line="14" selection-start-column="30" selection-end-line="14" selection-end-column="30" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#342#343#0" expanded="true" />
+            <element signature="e#373#374#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/commands/SetLevelEditorTileImageCommand.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="179">
+          <caret line="33" column="8" selection-start-line="33" selection-start-column="8" selection-end-line="40" selection-end-column="21" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#542#543#0" expanded="true" />
+            <element signature="e#590#591#0" expanded="true" />
+            <element signature="e#634#635#0" expanded="true" />
+            <element signature="e#687#688#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/commands/ClearLevelEditorTileImageCommand.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="25" column="44" selection-start-line="25" selection-start-column="44" selection-end-line="25" selection-end-column="44" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#464#465#0" expanded="true" />
+            <element signature="e#508#509#0" expanded="true" />
+            <element signature="e#552#553#0" expanded="true" />
+            <element signature="e#571#572#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/panels/TilePanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="524">
+          <caret line="180" column="58" selection-start-line="180" selection-start-column="58" selection-end-line="180" selection-end-column="58" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#2872#2873#0" expanded="true" />
+            <element signature="e#2998#2999#0" expanded="true" />
+            <element signature="e#3064#3065#0" expanded="true" />
+            <element signature="e#3149#3150#0" expanded="true" />
+            <element signature="e#3287#3288#0" expanded="true" />
+            <element signature="e#3367#3368#0" expanded="true" />
+            <element signature="e#3464#3465#0" expanded="true" />
+            <element signature="e#3571#3572#0" expanded="true" />
+            <element signature="e#3694#3695#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/commands/CommandManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="32" selection-start-column="32" selection-end-column="32" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -368,79 +543,126 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/panels/MainPanel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="748">
-          <caret line="45" column="116" selection-start-line="45" selection-start-column="116" selection-end-line="45" selection-end-column="116" />
+        <state relative-caret-position="48">
+          <caret line="8" column="1" selection-start-line="8" selection-start-column="1" selection-end-line="8" selection-end-column="1" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/util/CharacterAtlasEntryDescriptor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="32" selection-start-line="2" selection-start-column="32" selection-end-line="2" selection-end-column="32" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/panels/ResourceTilemapPanel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="31" selection-start-line="10" selection-start-column="31" selection-end-line="10" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/commands/CommandManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="9" selection-start-line="9" selection-end-line="9" />
+        <state relative-caret-position="1489">
+          <caret line="147" column="31" selection-start-line="147" selection-start-column="31" selection-end-line="147" selection-end-column="31" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_191/src.zip!/java/awt/Container.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="428">
-          <caret line="347" column="23" selection-start-line="347" selection-start-column="23" selection-end-line="347" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/commands/ICommand.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="16" selection-start-line="5" selection-start-column="16" selection-end-line="5" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/panels/ModelsPanel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="5" selection-start-line="9" selection-start-column="5" selection-end-line="9" selection-end-column="5" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/panels/BaseTilemapPanel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1076">
-          <caret line="78" column="68" selection-start-line="78" selection-start-column="68" selection-end-line="78" selection-end-column="68" />
+        <state relative-caret-position="133">
+          <caret line="110" column="55" lean-forward="true" selection-start-line="110" selection-start-column="55" selection-end-line="110" selection-end-column="55" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#2350#2351#0" expanded="true" />
+            <element signature="e#2386#2387#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/main/MainFrame.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="78">
+          <caret line="114" column="5" selection-start-line="114" selection-start-column="5" selection-end-line="114" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/panels/TilePanel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="76" selection-start-line="76" selection-end-line="76" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1737#1738#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/retroleveleditor/panels/LevelEditorTilemapPanel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="28" column="69" selection-start-line="28" selection-start-column="69" selection-end-line="28" selection-end-column="69" />
-        </state>
-      </provider>
-    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>No facets are configured</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>RetroLevelEditor</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
   </component>
 </project>

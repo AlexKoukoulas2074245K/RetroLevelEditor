@@ -16,17 +16,18 @@ public class LevelEditorTilemapPanel extends BaseTilemapPanel
 
         Graphics2D g2 = (Graphics2D) g.create();
 
-
         Component[] components = getComponents();
         for(Component component: components)
         {
-            TilePanel tile = (TilePanel)component;
-
-            // Draw coords string if not resource cell
-            if (tile.isMouseHoveringOverTile())
+            if (component instanceof TilePanel)
             {
-                g2.setColor(Color.BLACK);
-                g2.drawString(tile.getCoordsString(), tile.getX() + 1, tile.getY() + 10);
+                TilePanel tile = (TilePanel)component;
+
+                if (tile.isMouseHoveringOverTile())
+                {
+                    g2.setColor(Color.BLACK);
+                    g2.drawString(tile.getCoordsString(this.tileRows), tile.getX() + 1, tile.getY() + 10);
+                }
             }
         }
     }

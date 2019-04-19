@@ -10,6 +10,16 @@ public class CommandManager
 
     public static void executeCommand(final ICommand command)
     {
+        // Do NOT log or execute multiple identical commands in a row
+        if (executedCommands.size() > 0)
+        {
+            ICommand lastExecutedCommand = executedCommands.get(executedCommands.size() - 1);
+            if (command.isIdenticalTo(lastExecutedCommand))
+            {
+                return;
+            }
+        }
+
         command.execute();
         executedCommands.add(command);
     }
