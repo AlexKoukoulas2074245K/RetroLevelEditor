@@ -56,12 +56,11 @@ public class BaseTilemapPanel extends JPanel implements MouseWheelListener
                     if (tile.getDefaultTileImage() != null)
                     {
                         g2.drawImage(tile.getDefaultTileImage().image, tile.getX() + tile.getWidth() - tile.getHeight(), tile.getY(), tile.getHeight(), tile.getHeight(), null);
-                        g2.drawString(tile.getDefaultTileImage().modelName, tile.getX() + 1, tile.getY() + tile.getHeight()/2);
-                    }
 
-                    if (tile.getCharTileImage() != null)
-                    {
-                        g2.drawImage(tile.getCharTileImage().image, tile.getX() - 1, tile.getY() - 1, tile.getWidth(), tile.getHeight(), null);
+                        Font defaultFont = g2.getFont();
+                        adjustFontForStringToFitInSpace(g2, tile.getDefaultTileImage().modelName, tile.getWidth() - tile.getHeight());
+                        g2.drawString(tile.getDefaultTileImage().modelName, tile.getX() + 1, tile.getY() + tile.getHeight()/2);
+                        g2.setFont(defaultFont);
                     }
                 }
                 // Draw characters and environments resource tab
@@ -89,7 +88,7 @@ public class BaseTilemapPanel extends JPanel implements MouseWheelListener
     {
         getRootPane().revalidate();
         getRootPane().repaint();
-        
+
         if (e.isControlDown())
         {
             this.tileSize -= (int)e.getPreciseWheelRotation();
@@ -167,4 +166,19 @@ public class BaseTilemapPanel extends JPanel implements MouseWheelListener
             }
         }
     }
+
+    private void adjustFontForStringToFitInSpace(final Graphics2D gfx, final String string, final int spaceToFitIn)
+    {
+        final Font previousFont = gfx.getFont();
+        int targetFontSize = previousFont.getSize();
+        int renderedStringWidth = gfx.getFontMetrics().stringWidth(string);
+
+        while (renderedStringWidth >= spaceToFitIn * 9/10)
+        {
+            targetFontSize--;
+            gfx.setFont(previousFont.deriveFont(Font.PLAIN, targetFontSize));
+            renderedStringWidth = gfx.getFontMetrics(gfx.getFont()).stringWidth(string);
+        }
+    }
+
 }
