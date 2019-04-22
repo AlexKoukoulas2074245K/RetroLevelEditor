@@ -59,7 +59,7 @@ public class BaseTilemapPanel extends JPanel implements MouseWheelListener
 
                         Font defaultFont = g2.getFont();
                         adjustFontForStringToFitInSpace(g2, tile.getDefaultTileImage().modelName, tile.getWidth() - tile.getHeight());
-                        g2.drawString(tile.getDefaultTileImage().modelName, tile.getX() + 1, tile.getY() + tile.getHeight()/2);
+                        g2.drawString(tile.getDefaultTileImage().modelName, tile.getX() + 5, tile.getY() + tile.getHeight()/2);
                         g2.setFont(defaultFont);
                     }
                 }

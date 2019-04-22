@@ -55,7 +55,7 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
 
     public ResourceTilemapPanel(final String modelsDirectory, final Map<File, File> modelToTextureFiles, final int tileSize)
     {
-        super(1, (modelToTextureFiles.size() / 1) + 1, tileSize);
+        super(1, modelToTextureFiles.size(), tileSize);
 
         markTilesAsResourceTiles();
         extractModelImagesAndNames(modelToTextureFiles);
