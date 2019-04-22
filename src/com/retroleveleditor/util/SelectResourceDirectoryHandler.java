@@ -12,6 +12,8 @@ import java.lang.reflect.InvocationTargetException;
 
 public class SelectResourceDirectoryHandler implements ActionListener
 {
+    public static String resourceDirectoryChooserOriginPath = ".";
+
     private final MainPanel mainPanel;
     public SelectResourceDirectoryHandler(final MainPanel mainPanel)
     {
@@ -46,7 +48,7 @@ public class SelectResourceDirectoryHandler implements ActionListener
     {
         while (true)
         {
-            JFileChooser fc = new JFileChooser(".");
+            JFileChooser fc = new JFileChooser(resourceDirectoryChooserOriginPath);
             fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
             String selectedResourceRootAbsolutePath = "";
@@ -54,6 +56,7 @@ public class SelectResourceDirectoryHandler implements ActionListener
             if (choice == JFileChooser.APPROVE_OPTION)
             {
                 selectedResourceRootAbsolutePath = fc.getSelectedFile().getAbsolutePath().replace('\\', '/');
+                resourceDirectoryChooserOriginPath = selectedResourceRootAbsolutePath;
                 if (MainPanel.isValidResourceRootPath(selectedResourceRootAbsolutePath))
                 {
                     mainPanel.setResourceRootDirectory(selectedResourceRootAbsolutePath);

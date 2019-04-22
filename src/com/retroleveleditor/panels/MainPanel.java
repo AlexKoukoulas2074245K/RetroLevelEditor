@@ -94,6 +94,7 @@ public class MainPanel extends JPanel
             try(BufferedReader br = new BufferedReader(new FileReader(configFile)))
             {
                 String selectedResourceRootAbsolutePath = br.readLine();
+                SelectResourceDirectoryHandler.resourceDirectoryChooserOriginPath = selectedResourceRootAbsolutePath;
                 if (MainPanel.isValidResourceRootPath(selectedResourceRootAbsolutePath))
                 {
                     resourceRootDirectory = selectedResourceRootAbsolutePath;
