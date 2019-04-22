@@ -23,7 +23,7 @@ public class SelectResourceDirectoryHandler implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        selectResourceDirectory();
+        showDirectorySelectionDialog(false);
     }
 
     public void selectResourceDirectory()
@@ -34,7 +34,7 @@ public class SelectResourceDirectoryHandler implements ActionListener
                 @Override
                 public void run()
                 {
-                    showDirectorySelectionDialog();
+                    showDirectorySelectionDialog(true);
                 }
             });
         }
@@ -44,7 +44,7 @@ public class SelectResourceDirectoryHandler implements ActionListener
         }
     }
 
-    private void showDirectorySelectionDialog()
+    private void showDirectorySelectionDialog(final boolean fromAppInitialization)
     {
         while (true)
         {
@@ -69,7 +69,14 @@ public class SelectResourceDirectoryHandler implements ActionListener
             }
             else if (choice == JFileChooser.CANCEL_OPTION)
             {
-                System.exit(0);
+                if (fromAppInitialization)
+                {
+                    System.exit(0);
+                }
+                else
+                {
+                    break;
+                }
             }
         }
     }

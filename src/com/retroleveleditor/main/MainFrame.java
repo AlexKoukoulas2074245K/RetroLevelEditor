@@ -3,6 +3,7 @@ package com.retroleveleditor.main;
 import com.retroleveleditor.action_listeners.RedoActionListener;
 import com.retroleveleditor.action_listeners.UndoActionListener;
 import com.retroleveleditor.panels.MainPanel;
+import com.retroleveleditor.util.SelectResourceDirectoryHandler;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -13,6 +14,8 @@ public class MainFrame extends JFrame
 {
     public static final int MENU_MODIFIER_KEY = System.getProperty("os.name").indexOf("Win") >= 0 ? ActionEvent.CTRL_MASK : ActionEvent.META_MASK;
 
+    private MainPanel mainPanel;
+
     public MainFrame()
     {
         super("Retro Level Editor");
@@ -22,7 +25,6 @@ public class MainFrame extends JFrame
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         resetContentPane();
-        createMenus();
         pack();
         setMinimumSize(getSize());
         setLocationRelativeTo(null);
@@ -33,7 +35,9 @@ public class MainFrame extends JFrame
 
     public void resetContentPane()
     {
-        setContentPane(new MainPanel(32, 32, 48));
+        mainPanel = new MainPanel(32, 32, 48);
+        setContentPane(mainPanel);
+        createMenus();
     }
 
     private void createMenus()
@@ -66,7 +70,7 @@ public class MainFrame extends JFrame
         //saveMenuItem.addActionListener(new SaveAsMenuItemActionHandler(this));
 
         changeResourceDirectoryMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, MENU_MODIFIER_KEY));
-        //changeResourceDirectoryMenuItem.addActionListener(new SelectResourceDirectoryHandler(this));
+        changeResourceDirectoryMenuItem.addActionListener(new SelectResourceDirectoryHandler(mainPanel));
 
         exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, MENU_MODIFIER_KEY));
         //exitMenuItem.addActionListener(new ExitMenuItemActionHandler(this));
