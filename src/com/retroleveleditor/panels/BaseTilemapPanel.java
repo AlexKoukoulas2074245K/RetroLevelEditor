@@ -108,10 +108,16 @@ public class BaseTilemapPanel extends JPanel implements MouseWheelListener
         }
     }
 
+    public int getTileCols() { return this.tileCols; }
+
+    public int getTileRows() { return this.tileRows; }
+
     public int getTileSize()
     {
         return this.tileSize;
     }
+
+    public boolean isModelsPanel() { return this.isModelsPanel; }
 
     public TilePanel getTileAtCoords(final int col, final int row)
     {

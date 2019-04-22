@@ -3,6 +3,8 @@ package com.retroleveleditor.panels;
 import com.retroleveleditor.util.SelectResourceDirectoryHandler;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
@@ -60,6 +62,30 @@ public class MainPanel extends JPanel
         resourcesTabbedPane.addTab("Environments", environmentsScrollPane);
         resourcesTabbedPane.addTab("Characters", charactersScrollPane);
         resourcesTabbedPane.addTab("Models", modelsScrollPane);
+
+        // Handle selected tiles when resource tabs are changed
+        resourcesTabbedPane.addChangeListener(new ChangeListener()
+        {
+            public void stateChanged(ChangeEvent e)
+            {
+                TilePanel currentlySelectedTile = TilePanel.selectedResourceTile;
+                JViewport scrollPaneViewport = ((JScrollPane)resourcesTabbedPane.getSelectedComponent()).getViewport();
+                ResourceTilemapPanel resourceTilemapPanel = (ResourceTilemapPanel)scrollPaneViewport.getView();
+
+                if (resourceTilemapPanel.isModelsPanel)
+                {
+                    TilePanel.selectedResourceTile = resourceTilemapPanel.getTileAtCoords(0, 0);
+
+                }
+                else
+                {
+                    TilePanel.selectedResourceTile = resourceTilemapPanel.getTileAtCoords(currentlySelectedTile.getCol(), currentlySelectedTile.getRow());
+                }
+
+                TilePanel.selectedResourceTile.setIsSelected(true);
+
+            }
+        });
 
         JPanel resourceAndComponentPanel = new JPanel(new BorderLayout(10, 10));
         resourceAndComponentPanel.add(resourcesTabbedPane, BorderLayout.NORTH);
