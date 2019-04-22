@@ -88,7 +88,7 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
     {
         try
         {
-            boolean isCharacterAtlas = this.atlasPath.equals(MainPanel.CHARACTERS_ATLAS_PATH);
+            boolean isCharacterAtlas = this.atlasPath.endsWith(MainPanel.CHARACTERS_ATLAS_RELATIVE_PATH);
             List<CharacterAtlasEntryDescriptor> characterEntries = null;
 
             if (isCharacterAtlas)

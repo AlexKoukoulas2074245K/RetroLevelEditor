@@ -3,9 +3,9 @@ package com.retroleveleditor.main;
 import com.retroleveleditor.action_listeners.RedoActionListener;
 import com.retroleveleditor.action_listeners.UndoActionListener;
 import com.retroleveleditor.panels.MainPanel;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
