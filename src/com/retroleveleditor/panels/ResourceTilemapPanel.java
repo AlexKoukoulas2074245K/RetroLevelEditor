@@ -3,12 +3,18 @@ package com.retroleveleditor.panels;
 import com.retroleveleditor.util.CharacterAtlasEntryDescriptor;
 import com.retroleveleditor.util.TileImage;
 
+import javafx.scene.text.Font;
 import javax.imageio.ImageIO;
-import java.io.*;
-import java.util.LinkedList;
-import java.util.List;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class ResourceTilemapPanel extends BaseTilemapPanel
 {
@@ -19,12 +25,14 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
 
     // Statically load tile selection image
     private static Image SELECTION_IMAGE = null;
+    private static Image MODEL_SELECTION_IMAGE = null;
 
     static
     {
         try
         {
             SELECTION_IMAGE = ImageIO.read(ResourceTilemapPanel.class.getResourceAsStream("/selection.png"));
+            MODEL_SELECTION_IMAGE = ImageIO.read(ResourceTilemapPanel.class.getResourceAsStream("/model_selection.png"));
         }
         catch (IOException e)
         {
@@ -45,6 +53,16 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
         TilePanel.selectedResourceTile = getTileAtCoords(0, 0);
     }
 
+    public ResourceTilemapPanel(final String modelsDirectory, final Map<File, File> modelToTextureFiles, final int tileSize)
+    {
+        super(1, (modelToTextureFiles.size() / 1) + 1, tileSize);
+
+        markTilesAsResourceTiles();
+        extractModelImagesAndNames(modelToTextureFiles);
+        getTileAtCoords(0, 0).setIsSelected(true);
+        TilePanel.selectedResourceTile = getTileAtCoords(0, 0);
+    }
+
     @Override
     public void paintComponent(Graphics g)
     {
@@ -61,7 +79,14 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
 
                 if (tile.isResourceTile() && tile.isSelected())
                 {
-                    g2.drawImage(SELECTION_IMAGE, tile.getX() - 1, tile.getY() - 1, tileSize, tileSize, null);
+                    if (this.isModelsPanel)
+                    {
+                        g2.drawImage(MODEL_SELECTION_IMAGE, tile.getX() - 1, tile.getY() - 1, tile.getWidth(), tile.getHeight(), null);
+                    }
+                    else
+                    {
+                        g2.drawImage(SELECTION_IMAGE, tile.getX() - 1, tile.getY() - 1, tileSize, tileSize, null);
+                    }
                 }
             }
         }
@@ -81,6 +106,35 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
             {
                 ((TilePanel) component).setIsResourceTile(true);
             }
+        }
+    }
+
+    private void extractModelImagesAndNames(final Map<File, File> modelToTextureFiles)
+    {
+        Component[] components = getComponents();
+        int componentIndex = 0;
+
+        for (Map.Entry<File, File> entry: modelToTextureFiles.entrySet())
+        {
+            if (components[componentIndex] instanceof TilePanel)
+            {
+                TilePanel tilePanel = (TilePanel)components[componentIndex];
+
+                try
+                {
+                    tilePanel.setDefaultTileImage(new TileImage(
+                            ImageIO.read(entry.getValue().getAbsoluteFile()),
+                            entry.getKey().getName().split("\\.")[0],
+                            -1, -1
+                            ));
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+
+            componentIndex++;
         }
     }
 
@@ -132,7 +186,7 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
                                     ATLAS_TILE_SIZE
                             );
 
-                    tile.setDefaultTileImage(new TileImage(tileImage, x, y));
+                    tile.setDefaultTileImage(new TileImage(tileImage, "", x, y));
 
                     if (++colIndex >= this.tileCols)
                     {

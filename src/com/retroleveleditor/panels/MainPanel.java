@@ -1,11 +1,15 @@
 package com.retroleveleditor.panels;
 
-import com.retroleveleditor.main.MainFrame;
 import com.retroleveleditor.util.SelectResourceDirectoryHandler;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.io.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainPanel extends JPanel
 {
@@ -41,7 +45,7 @@ public class MainPanel extends JPanel
 
         JTabbedPane resourcesTabbedPane = new JTabbedPane();
 
-        JScrollPane modelsScrollPane = new JScrollPane(new ModelsPanel(resourceRootDirectory + MODELS_RELATIVE_DIRECTORY), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane modelsScrollPane = new JScrollPane(new ResourceTilemapPanel(resourceRootDirectory + MODELS_RELATIVE_DIRECTORY, extractModelsToTextureFiles(), tileSize), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         modelsScrollPane.getVerticalScrollBar().setUnitIncrement(SCROLL_UNIT);
         modelsScrollPane.setPreferredSize(new Dimension(SIDE_BAR_PANELS_DEFAULT_WIDTH, RESOURCES_PANEL_DEFAULT_HEIGHT));
 
@@ -52,7 +56,6 @@ public class MainPanel extends JPanel
         JScrollPane environmentsScrollPane = new JScrollPane(new ResourceTilemapPanel(resourceRootDirectory + ENVIRONMENTS_ATLAS_RELATIVE_PATH,4, tileSize), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         environmentsScrollPane.getVerticalScrollBar().setUnitIncrement(SCROLL_UNIT);
         environmentsScrollPane.setPreferredSize(new Dimension(SIDE_BAR_PANELS_DEFAULT_WIDTH, RESOURCES_PANEL_DEFAULT_HEIGHT));
-
 
         resourcesTabbedPane.addTab("Environments", environmentsScrollPane);
         resourcesTabbedPane.addTab("Characters", charactersScrollPane);
@@ -84,6 +87,33 @@ public class MainPanel extends JPanel
         {
             e.printStackTrace();
         }
+    }
+
+    private Map<File, File> extractModelsToTextureFiles()
+    {
+        Map<File, File> result = new HashMap<>();
+
+        File[] allModelFiles = new File(resourceRootDirectory + MODELS_RELATIVE_DIRECTORY).listFiles();
+        File[] allTextureFiles = new File(resourceRootDirectory + TEXTURES_RELATIVE_DIRECTORY).listFiles();
+
+        for (File f: allModelFiles)
+        {
+            if (f.getName().startsWith("."))
+            {
+                continue;
+            }
+
+            String modelFileName = f.getName().split("\\.")[0];
+            for (File tf: allTextureFiles)
+            {
+                if (tf.getName().startsWith(modelFileName))
+                {
+                    result.put(f, tf);
+                }
+            }
+        }
+
+        return result;
     }
 
     private void checkForEditorConfig()

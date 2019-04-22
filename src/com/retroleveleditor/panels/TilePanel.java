@@ -9,8 +9,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
-public class TilePanel extends JPanel implements MouseListener
+public class TilePanel extends JPanel implements MouseListener, MouseMotionListener
 {
     public static TilePanel selectedResourceTile = null;
     private static boolean mouseLeftDown = false;
@@ -38,6 +39,7 @@ public class TilePanel extends JPanel implements MouseListener
         this.charTileImage = null;
 
         addMouseListener(this);
+        addMouseMotionListener(this);
         setPreferredSize(new Dimension(tileSize, tileSize));
     }
 
@@ -107,6 +109,20 @@ public class TilePanel extends JPanel implements MouseListener
     public void mouseExited(MouseEvent e)
     {
         this.isMouseHoveringOverTile = false;
+        getRootPane().revalidate();
+        getRootPane().repaint();
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e)
+    {
+        getRootPane().revalidate();
+        getRootPane().repaint();
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e)
+    {
         getRootPane().revalidate();
         getRootPane().repaint();
     }
@@ -196,12 +212,10 @@ public class TilePanel extends JPanel implements MouseListener
 
     private void OnMouseRightPressAndHold()
     {
-        ((BaseTilemapPanel)getParent()).deselectAllTiles();
-
         if (isResourceTile == false)
         {
+            ((BaseTilemapPanel)getParent()).deselectAllTiles();
             CommandManager.executeCommand(new ClearLevelEditorTileImagesCommand(this));
         }
     }
-
 }

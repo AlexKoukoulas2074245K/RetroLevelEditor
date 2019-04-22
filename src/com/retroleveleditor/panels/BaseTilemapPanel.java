@@ -13,20 +13,21 @@ public class BaseTilemapPanel extends JPanel implements MouseWheelListener
     protected final int tileCols;
     protected final int tileRows;
     protected int tileSize;
+    protected boolean isModelsPanel;
 
     public BaseTilemapPanel(final int tilemapCols, final int tilemapRows, final int tileSize)
     {
         super(new GridLayout(tilemapRows, tilemapCols));
 
         this.tileSize = tileSize;
-        this.tileCols = tilemapCols;
+        this.tileCols = Math.max(1, tilemapCols);
+        this.isModelsPanel = tilemapCols == 1;
         this.tileRows = tilemapRows;
 
         resetTilemap();
 
         addMouseWheelListener(this);
     }
-
 
     @Override
     public void paintComponent(Graphics g)
@@ -35,7 +36,7 @@ public class BaseTilemapPanel extends JPanel implements MouseWheelListener
 
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setColor(Color.white);
-        g2.fillRect(0, 0, getSize().width, getSize().height);
+        g2.fillRect(0, 0, getWidth(), getHeight());
 
         Component[] components = getComponents();
         for(Component component: components)
@@ -45,17 +46,39 @@ public class BaseTilemapPanel extends JPanel implements MouseWheelListener
                 // Draw Tile outlines
                 TilePanel tile = (TilePanel) component;
                 g2.setColor(Color.black);
-                g2.drawLine(tile.getX(), tile.getY() + tileSize - 1, tile.getX() + tileSize - 1, tile.getY() + tileSize - 1);
-                g2.drawLine(tile.getX() + tileSize - 1, tile.getY(), tile.getX() + tileSize - 1, tile.getY() + tileSize - 1);
 
-                if (tile.getDefaultTileImage() != null)
+                // Draw models resource tab
+                if (this.isModelsPanel)
                 {
-                    g2.drawImage(tile.getDefaultTileImage().image, tile.getX() - 1, tile.getY() - 1, tileSize, tileSize, null);
+                    g2.drawLine(tile.getX(), tile.getY() + tile.getHeight() - 1, tile.getX() + tile.getWidth() - 1, tile.getY() + tile.getHeight() - 1);
+                    g2.drawLine(tile.getX() + tile.getWidth() - 1, tile.getY(), tile.getX() + tile.getWidth() - 1, tile.getY() + tile.getHeight() - 1);
+
+                    if (tile.getDefaultTileImage() != null)
+                    {
+                        g2.drawImage(tile.getDefaultTileImage().image, tile.getX() + tile.getWidth() - tile.getHeight(), tile.getY(), tile.getHeight(), tile.getHeight(), null);
+                        g2.drawString(tile.getDefaultTileImage().modelName, tile.getX() + 1, tile.getY() + tile.getHeight()/2);
+                    }
+
+                    if (tile.getCharTileImage() != null)
+                    {
+                        g2.drawImage(tile.getCharTileImage().image, tile.getX() - 1, tile.getY() - 1, tile.getWidth(), tile.getHeight(), null);
+                    }
                 }
-
-                if (tile.getCharTileImage() != null)
+                // Draw characters and environments resource tab
+                else
                 {
-                    g2.drawImage(tile.getCharTileImage().image, tile.getX() - 1, tile.getY() - 1, tileSize, tileSize, null);
+                    g2.drawLine(tile.getX(), tile.getY() + tileSize - 1, tile.getX() + tileSize - 1, tile.getY() + tileSize - 1);
+                    g2.drawLine(tile.getX() + tileSize - 1, tile.getY(), tile.getX() + tileSize - 1, tile.getY() + tileSize - 1);
+
+                    if (tile.getDefaultTileImage() != null)
+                    {
+                        g2.drawImage(tile.getDefaultTileImage().image, tile.getX() - 1, tile.getY() - 1, tileSize, tileSize, null);
+                    }
+
+                    if (tile.getCharTileImage() != null)
+                    {
+                        g2.drawImage(tile.getCharTileImage().image, tile.getX() - 1, tile.getY() - 1, tileSize, tileSize, null);
+                    }
                 }
             }
         }
@@ -64,6 +87,9 @@ public class BaseTilemapPanel extends JPanel implements MouseWheelListener
     @Override
     public void mouseWheelMoved(MouseWheelEvent e)
     {
+        getRootPane().revalidate();
+        getRootPane().repaint();
+        
         if (e.isControlDown())
         {
             this.tileSize -= (int)e.getPreciseWheelRotation();
