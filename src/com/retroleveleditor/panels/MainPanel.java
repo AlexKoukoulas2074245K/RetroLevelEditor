@@ -111,7 +111,7 @@ public class MainPanel extends JPanel
         JPanel resourceAndComponentPanel = new JPanel(new BorderLayout(10, 10));
         resourceAndComponentPanel.add(resourcesTabbedPane, BorderLayout.NORTH);
 
-        LevelEditorTilemapPanel levelEditorPanel = new LevelEditorTilemapPanel(levelEditorTileCols, levelEditorTileRows, tileSize);
+        levelEditorPanel = new LevelEditorTilemapPanel(levelEditorTileCols, levelEditorTileRows, tileSize);
         JScrollPane levelEditorScrollPane = new JScrollPane(levelEditorPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         levelEditorScrollPane.getVerticalScrollBar().setUnitIncrement(SCROLL_UNIT);
         levelEditorScrollPane.getHorizontalScrollBar().setUnitIncrement(SCROLL_UNIT);
@@ -130,6 +130,8 @@ public class MainPanel extends JPanel
     {
         return this.currentWorkingFile;
     }
+
+    public BaseTilemapPanel getLevelEditorTilemap() { return this.levelEditorPanel; }
 
     public void setCurrentWorkingFile(final File newWorkingFile)
     {

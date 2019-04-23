@@ -6,7 +6,10 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class SaveActionListener implements ActionListener
 {
@@ -14,13 +17,11 @@ public class SaveActionListener implements ActionListener
     public static String resourceDirectoryChooserOriginPath = ".";
 
     private final MainPanel mainPanel;
-    private final boolean shouldShowSuccessDialog;
     private final boolean shouldAlwaysSaveToDifferentLocation;
 
-    public SaveActionListener(final MainPanel mainPanel, final boolean shouldShowSuccessDialog, final boolean shouldAlwaysSaveToDifferentLocation)
+    public SaveActionListener(final MainPanel mainPanel, final boolean shouldAlwaysSaveToDifferentLocation)
     {
         this.mainPanel = mainPanel;
-        this.shouldShowSuccessDialog = shouldShowSuccessDialog;
         this.shouldAlwaysSaveToDifferentLocation = shouldAlwaysSaveToDifferentLocation;
     }
 
@@ -54,19 +55,13 @@ public class SaveActionListener implements ActionListener
                     if (selOption == JOptionPane.YES_OPTION)
                     {
                         saveLevelToFile(adjustedFile);
-                        if (shouldShowSuccessDialog)
-                        {
-                            JOptionPane.showMessageDialog(mainPanel, "Successfully saved level at: " + adjustedFile.getAbsolutePath(), "Save Level", JOptionPane.INFORMATION_MESSAGE);
-                        }
+                        JOptionPane.showMessageDialog(mainPanel, "Successfully saved level at: " + adjustedFile.getAbsolutePath(), "Save Level", JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
                 else
                 {
                     saveLevelToFile(adjustedFile);
-                    if (shouldShowSuccessDialog)
-                    {
-                        JOptionPane.showMessageDialog(mainPanel, "Successfully saved level at: " + adjustedFile.getAbsolutePath(), "Save Level", JOptionPane.INFORMATION_MESSAGE);
-                    }
+                    JOptionPane.showMessageDialog(mainPanel, "Successfully saved level at: " + adjustedFile.getAbsolutePath(), "Save Level", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         }
@@ -75,6 +70,19 @@ public class SaveActionListener implements ActionListener
 
     private void saveLevelToFile(final File file)
     {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file)))
+        {
+            StringBuilder fileContentsBuilder = new StringBuilder();
+            fileContentsBuilder.append("{\n");
+
+
+            fileContentsBuilder.append("}\n");
+            bw.write(fileContentsBuilder.toString());
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
 
         mainPanel.setCurrentWorkingFile(file);
         SaveActionListener.resourceDirectoryChooserOriginPath = file.getAbsolutePath();

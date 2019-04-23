@@ -66,10 +66,10 @@ public class MainFrame extends JFrame
         //loadMenuItem.addActionListener(new OpenMenuItemActionHandler(this));
 
         saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, MENU_MODIFIER_KEY));
-        saveMenuItem.addActionListener(new SaveActionListener(mainPanel, false, false));
+        saveMenuItem.addActionListener(new SaveActionListener(mainPanel, false));
 
         saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, MENU_MODIFIER_KEY|ActionEvent.SHIFT_MASK));
-        saveAsMenuItem.addActionListener(new SaveActionListener(mainPanel, true, true));
+        saveAsMenuItem.addActionListener(new SaveActionListener(mainPanel, true));
 
         changeResourceDirectoryMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, MENU_MODIFIER_KEY));
         changeResourceDirectoryMenuItem.addActionListener(new SelectResourceDirectoryHandler(mainPanel));
