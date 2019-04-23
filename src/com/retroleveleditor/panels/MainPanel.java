@@ -91,6 +91,7 @@ public class MainPanel extends JPanel
                 TilePanel currentlySelectedTile = TilePanel.selectedResourceTile;
                 JViewport scrollPaneViewport = ((JScrollPane)resourcesTabbedPane.getSelectedComponent()).getViewport();
                 ResourceTilemapPanel resourceTilemapPanel = (ResourceTilemapPanel)scrollPaneViewport.getView();
+                resourceTilemapPanel.deselectAllTiles();
 
                 if (resourceTilemapPanel.isModelsPanel)
                 {
@@ -103,7 +104,6 @@ public class MainPanel extends JPanel
                 }
 
                 TilePanel.selectedResourceTile.setIsSelected(true);
-
             }
         });
 
