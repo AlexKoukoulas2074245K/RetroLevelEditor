@@ -117,7 +117,7 @@ public class MainPanel extends JPanel
         levelEditorScrollPane.setPreferredSize(new Dimension(LEVEL_EDITOR_DEFAULT_WIDTH, LEVEL_EDITOR_DEFAULT_HEIGHT));
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, levelEditorScrollPane, resourceAndComponentPanel);
-        splitPane.setResizeWeight(0.8);
+        splitPane.setResizeWeight(0.84);
 
         splitPane.setOneTouchExpandable(true);
         splitPane.setContinuousLayout(true);

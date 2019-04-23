@@ -1,9 +1,14 @@
 package com.retroleveleditor.panels;
 
+import com.retroleveleditor.util.Pair;
+import com.retroleveleditor.util.TileImage;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BaseTilemapPanel extends JPanel implements MouseWheelListener
 {
@@ -39,11 +44,37 @@ public class BaseTilemapPanel extends JPanel implements MouseWheelListener
         g2.fillRect(0, 0, getWidth(), getHeight());
 
         Component[] components = getComponents();
-        for(Component component: components)
+        Map<Component, TileImage> componentsWithTrailingModelImages = new HashMap<>();
+        for (Component component: components)
         {
             if (component instanceof TilePanel)
             {
-                // Draw Tile outlines
+                TilePanel tile = (TilePanel) component;
+                if (!tile.isResourceTile() && tile.getDefaultTileImage() != null)
+                {
+                    final String modelName = tile.getDefaultTileImage().modelName;
+                    if (modelName.length() > 0)
+                    {
+                        final int modelXTileDims = tile.getDefaultTileImage().atlasCol;
+                        final int modelYTileDims = tile.getDefaultTileImage().atlasRow;
+
+                        for (int row = tile.getRow(); row < tile.getRow() + modelYTileDims; ++row)
+                        {
+                            for (int col = tile.getCol(); col < tile.getCol() + modelXTileDims; ++col)
+                            {
+                                if (row == tile.getRow() && col == tile.getCol()) continue;
+                                componentsWithTrailingModelImages.put(getTileAtCoords(col, row), tile.getDefaultTileImage());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        for (Component component: components)
+        {
+            if (component instanceof TilePanel)
+            {
                 TilePanel tile = (TilePanel) component;
                 g2.setColor(Color.black);
 
@@ -63,11 +94,19 @@ public class BaseTilemapPanel extends JPanel implements MouseWheelListener
                         g2.setFont(defaultFont);
                     }
                 }
-                // Draw characters and environments resource tab
+                // Draw every other tilemap
                 else
                 {
                     g2.drawLine(tile.getX(), tile.getY() + tileSize - 1, tile.getX() + tileSize - 1, tile.getY() + tileSize - 1);
                     g2.drawLine(tile.getX() + tileSize - 1, tile.getY(), tile.getX() + tileSize - 1, tile.getY() + tileSize - 1);
+
+                    if (componentsWithTrailingModelImages.containsKey(component))
+                    {
+                        g2.drawImage(componentsWithTrailingModelImages.get(component).image, tile.getX() - 1, tile.getY() - 1, tileSize, tileSize, null);
+                        g2.setColor(new Color(255, 255, 255, 150));
+                        g2.fillRect(tile.getX() - 1, tile.getY() - 1, tileSize, tileSize);
+                        g2.setColor(new Color(255, 255, 255, 255));
+                    }
 
                     if (tile.getDefaultTileImage() != null)
                     {

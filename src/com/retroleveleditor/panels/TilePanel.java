@@ -198,7 +198,11 @@ public class TilePanel extends JPanel implements MouseListener, MouseMotionListe
             ResourceTilemapPanel currentResourcePanel = (ResourceTilemapPanel)TilePanel.selectedResourceTile.getParent();
 
             // If the current resource tab is the characters one
-            if (currentResourcePanel.getAtlasPath().endsWith(MainPanel.CHARACTERS_ATLAS_RELATIVE_PATH))
+            if (currentResourcePanel.isModelsPanel())
+            {
+                CommandManager.executeCommand(new SetLevelEditorTileImageCommand(this, TilePanel.selectedResourceTile.getDefaultTileImage(), this.charTileImage));
+            }
+            else if (currentResourcePanel.getAtlasPath().endsWith(MainPanel.CHARACTERS_ATLAS_RELATIVE_PATH))
             {
                 CommandManager.executeCommand(new SetLevelEditorTileImageCommand(this, this.defaultTileImage, TilePanel.selectedResourceTile.getDefaultTileImage()));
             }

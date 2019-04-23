@@ -136,7 +136,7 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
                     tilePanel.setDefaultTileImage(new TileImage(
                             ImageIO.read(entry.getValue().getAbsoluteFile()),
                             modelName + " (" + modelOverworldDims.x + "," + modelOverworldDims.y + ")",
-                            -1, -1
+                            modelOverworldDims.x, modelOverworldDims.y
                             ));
                 }
                 catch (IOException e)
