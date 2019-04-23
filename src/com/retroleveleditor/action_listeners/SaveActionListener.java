@@ -1,11 +1,16 @@
 package com.retroleveleditor.action_listeners;
 
+import com.retroleveleditor.panels.BaseTilemapPanel;
 import com.retroleveleditor.panels.MainPanel;
+import com.retroleveleditor.panels.TilePanel;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -70,10 +75,12 @@ public class SaveActionListener implements ActionListener
 
     private void saveLevelToFile(final File file)
     {
+        exportOptimizedLevelGroundLayer(file);
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(file)))
         {
             StringBuilder fileContentsBuilder = new StringBuilder();
             fileContentsBuilder.append("{\n");
+
 
 
             fileContentsBuilder.append("}\n");
@@ -87,4 +94,87 @@ public class SaveActionListener implements ActionListener
         mainPanel.setCurrentWorkingFile(file);
         SaveActionListener.resourceDirectoryChooserOriginPath = file.getAbsolutePath();
     }
+
+    private void exportOptimizedLevelGroundLayer(final File levelFilePath)
+    {
+        BaseTilemapPanel levelTilemap = mainPanel.getLevelEditorTilemap();
+
+        int powerOfTwoCounter = 16;
+        int targetWidth = powerOfTwoCounter;
+        int targetHeight = powerOfTwoCounter;
+
+        while (powerOfTwoCounter < 2048)
+        {
+            if (levelTilemap.getTileCols() * 16 < powerOfTwoCounter && levelTilemap.getTileRows() * 16 < powerOfTwoCounter)
+            {
+                targetWidth = powerOfTwoCounter;
+                targetHeight = powerOfTwoCounter;
+                break;
+            }
+            powerOfTwoCounter *= 2;
+        }
+
+        BufferedImage emptyTileImage = null;
+        try
+        {
+            emptyTileImage = ImageIO.read(getClass().getResourceAsStream("/empty_tile.png"));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        BufferedImage groundLayerImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D gfx = groundLayerImage.createGraphics();
+
+        final int colDifference = targetWidth/16 - levelTilemap.getTileCols();
+        final int rowDifference = targetHeight/16 - levelTilemap.getTileRows();
+
+        final int colStart = -colDifference/2;
+        final int rowStart = -rowDifference/2;
+        final int colEnd = levelTilemap.getTileCols() + ((colDifference % 2 == 0) ? colDifference/2 : colDifference/2 + 1);
+        final int rowEnd = levelTilemap.getTileRows() + ((rowDifference % 2 == 0) ? rowDifference/2 : rowDifference/2 + 1);
+
+        int renderTargetColIndex = 0;
+        int renderTargetRowIndex = 0;
+
+        for (int y = rowStart; y <= rowEnd; ++y)
+        {
+            for (int x = colStart; x < colEnd; ++x)
+            {
+                if (y < levelTilemap.getTileRows() && x < levelTilemap.getTileCols() && y >= 0 && x >= 0)
+                {
+                    TilePanel respectiveTile = levelTilemap.getTileAtCoords(x, y);
+                    if (respectiveTile.getDefaultTileImage() != null && respectiveTile.getDefaultTileImage().modelName.length() == 0)
+                    {
+                        gfx.drawImage(respectiveTile.getDefaultTileImage().image, renderTargetColIndex * 16, renderTargetRowIndex * 16, 16, 16, null);
+                    }
+                    else
+                    {
+                        gfx.drawImage(emptyTileImage, renderTargetColIndex * 16, renderTargetRowIndex * 16, 16, 16, null);
+                    }
+                }
+                else
+                {
+                    gfx.drawImage(emptyTileImage, renderTargetColIndex * 16, renderTargetRowIndex * 16, 16, 16, null);
+                }
+
+                if (++renderTargetColIndex >= targetWidth/16)
+                {
+                    renderTargetColIndex = 0;
+                    renderTargetRowIndex++;
+                }
+            }
+        }
+
+        File file = new File(levelFilePath.getAbsolutePath().substring(0, levelFilePath.getAbsolutePath().length() - 5) + "_groundLayer.png");
+        try
+        {
+            ImageIO.write(groundLayerImage, "png", file);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
 }

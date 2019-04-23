@@ -31,6 +31,7 @@ public class MainPanel extends JPanel
     private static final int LEVEL_EDITOR_DEFAULT_WIDTH = 768;
     private static final int LEVEL_EDITOR_DEFAULT_HEIGHT = 700;
 
+    private LevelEditorTilemapPanel levelEditorPanel;
     private String resourceRootDirectory;
     private File currentWorkingFile;
 
