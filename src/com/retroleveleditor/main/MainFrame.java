@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.security.Key;
 
 public class MainFrame extends JFrame
 {
@@ -53,7 +54,8 @@ public class MainFrame extends JFrame
         JMenu fileMenu = new JMenu("File");
         JMenuItem newMenuItem = new JMenuItem("New..");
         JMenuItem loadMenuItem = new JMenuItem("Open..");
-        JMenuItem saveMenuItem = new JMenuItem("Save As..");
+        JMenuItem saveMenuItem = new JMenuItem("Save..");
+        JMenuItem saveAsMenuItem = new JMenuItem("Save As..");
         JMenuItem changeResourceDirectoryMenuItem = new JMenuItem("Change Root Res Directory");
         JMenuItem quitMenuItem = new JMenuItem("Quit");
 
@@ -64,7 +66,10 @@ public class MainFrame extends JFrame
         //loadMenuItem.addActionListener(new OpenMenuItemActionHandler(this));
 
         saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, MENU_MODIFIER_KEY));
-        //saveMenuItem.addActionListener(new SaveAsMenuItemActionHandler(this));
+        saveMenuItem.addActionListener(new SaveActionListener(mainPanel, false, false));
+
+        saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, MENU_MODIFIER_KEY|ActionEvent.SHIFT_MASK));
+        saveAsMenuItem.addActionListener(new SaveActionListener(mainPanel, true, true));
 
         changeResourceDirectoryMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, MENU_MODIFIER_KEY));
         changeResourceDirectoryMenuItem.addActionListener(new SelectResourceDirectoryHandler(mainPanel));
@@ -75,6 +80,7 @@ public class MainFrame extends JFrame
         fileMenu.add(newMenuItem);
         fileMenu.add(loadMenuItem);
         fileMenu.add(saveMenuItem);
+        fileMenu.add(saveAsMenuItem);
         fileMenu.add(changeResourceDirectoryMenuItem);
         fileMenu.add(quitMenuItem);
 

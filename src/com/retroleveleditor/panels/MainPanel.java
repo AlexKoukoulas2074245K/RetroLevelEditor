@@ -32,6 +32,7 @@ public class MainPanel extends JPanel
     private static final int LEVEL_EDITOR_DEFAULT_HEIGHT = 700;
 
     private String resourceRootDirectory;
+    private File currentWorkingFile;
 
     public static boolean isValidResourceRootPath(final String rootResourcePath)
     {
@@ -123,6 +124,16 @@ public class MainPanel extends JPanel
         splitPane.setContinuousLayout(true);
         splitPane.setPreferredSize(new Dimension(LEVEL_EDITOR_DEFAULT_WIDTH + SIDE_BAR_PANELS_DEFAULT_WIDTH, LEVEL_EDITOR_DEFAULT_HEIGHT));
         add(splitPane, BorderLayout.CENTER);
+    }
+
+    public File getCurrentWorkingFile()
+    {
+        return this.currentWorkingFile;
+    }
+
+    public void setCurrentWorkingFile(final File newWorkingFile)
+    {
+        this.currentWorkingFile = newWorkingFile;
     }
 
     public void setResourceRootDirectory(final String resourceRootDirectory)
