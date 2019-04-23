@@ -1,17 +1,19 @@
 package com.retroleveleditor.panels;
 
 import com.retroleveleditor.util.CharacterAtlasEntryDescriptor;
+import com.retroleveleditor.util.Pair;
 import com.retroleveleditor.util.TileImage;
 
 import javafx.scene.text.Font;
+import sun.plugin2.os.windows.OVERLAPPED;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.nio.Buffer;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -19,9 +21,11 @@ import java.util.Map;
 public class ResourceTilemapPanel extends BaseTilemapPanel
 {
     // Structure of all atlases. Change as needed
+    private static final float GAME_OVERWORLD_TILE_SIZE = 1.6f;
     private static final int ATLAS_COLS = 8;
     private static final int ATLAS_ROWS = 64;
     private static final int ATLAS_TILE_SIZE = 16;
+
 
     // Statically load tile selection image
     private static Image SELECTION_IMAGE = null;
@@ -40,12 +44,15 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
         }
     }
 
+    private Map<String, Pair<Integer>> modelNamesToOverworldDims;
     private String atlasPath;
+    private String gameDataPath;
 
-    public ResourceTilemapPanel(final String atlasPath, final int resourcePanelCols, final int tileSize)
+    public ResourceTilemapPanel(final String atlasPath, final String gameDataPath, final int resourcePanelCols, final int tileSize)
     {
         super(resourcePanelCols, ((ATLAS_COLS * ATLAS_ROWS) / resourcePanelCols) + 1, tileSize);
         this.atlasPath = atlasPath;
+        this.gameDataPath = gameDataPath;
 
         markTilesAsResourceTiles();
         extractAtlasImages();
@@ -53,9 +60,10 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
         TilePanel.selectedResourceTile = getTileAtCoords(0, 0);
     }
 
-    public ResourceTilemapPanel(final String modelsDirectory, final Map<File, File> modelToTextureFiles, final int tileSize)
+    public ResourceTilemapPanel(final String modelsDirectory, final String gameDataPath, final Map<File, File> modelToTextureFiles, final int tileSize)
     {
         super(1, modelToTextureFiles.size(), tileSize);
+        this.gameDataPath = gameDataPath;
 
         markTilesAsResourceTiles();
         extractModelImagesAndNames(modelToTextureFiles);
@@ -111,6 +119,7 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
 
     private void extractModelImagesAndNames(final Map<File, File> modelToTextureFiles)
     {
+        CalculateModelOverworldTileDimensions(modelToTextureFiles);
         Component[] components = getComponents();
         int componentIndex = 0;
 
@@ -122,9 +131,11 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
 
                 try
                 {
+                    final String modelName = entry.getKey().getName().split("\\.")[0];
+                    Pair<Integer> modelOverworldDims = this.modelNamesToOverworldDims.get(modelName);
                     tilePanel.setDefaultTileImage(new TileImage(
                             ImageIO.read(entry.getValue().getAbsoluteFile()),
-                            entry.getKey().getName().split("\\.")[0],
+                            modelName + " (" + modelOverworldDims.x + "," + modelOverworldDims.y + ")",
                             -1, -1
                             ));
                 }
@@ -206,7 +217,7 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
     {
         List<CharacterAtlasEntryDescriptor> characterEntries = new LinkedList<>();
 
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/npcs_atlas_coords.dat"))))
+        try (BufferedReader br = new BufferedReader(new FileReader(new File(this.gameDataPath + "npcs_atlas_coords.dat"))))
         {
             String line = null;
             while ((line = br.readLine()) != null)
@@ -221,5 +232,49 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
         }
 
         return characterEntries;
+    }
+
+    private void CalculateModelOverworldTileDimensions(final Map<File, File> modelToTextureFiles)
+    {
+        this.modelNamesToOverworldDims = new HashMap<>();
+
+        for (Map.Entry<File, File> entry: modelToTextureFiles.entrySet())
+        {
+            try(BufferedReader br = new BufferedReader(new FileReader(entry.getKey())))
+            {
+                String line = "";
+                float minX = +100.0f;
+                float maxX = -100.0f;
+                float minZ = +100.0f;
+                float maxZ = -100.0f;
+
+                while ((line = br.readLine()) != null)
+                {
+                    if (line.startsWith("v "))
+                    {
+                        String[] vertexPositionComps = line.split(" ");
+                        float vx = Float.parseFloat(vertexPositionComps[1]);
+                        float vz = Float.parseFloat(vertexPositionComps[3]);
+
+                        if (vx < minX) minX = vx;
+                        if (vx > maxX) maxX = vx;
+                        if (vz < minZ) minZ = vz;
+                        if (vz > maxZ) maxZ = vz;
+                    }
+                }
+
+                float xDim = Math.round((maxX - minX)/GAME_OVERWORLD_TILE_SIZE)*GAME_OVERWORLD_TILE_SIZE;
+                float zDim = Math.round((maxZ - minZ)/GAME_OVERWORLD_TILE_SIZE)*GAME_OVERWORLD_TILE_SIZE;
+
+                int colDim = Math.max(Math.round(xDim/GAME_OVERWORLD_TILE_SIZE), 1);
+                int rowDim = Math.max(Math.round(zDim/GAME_OVERWORLD_TILE_SIZE), 1);
+
+                this.modelNamesToOverworldDims.put(entry.getKey().getName().split("\\.")[0], new Pair<Integer>(colDim, rowDim));
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 }

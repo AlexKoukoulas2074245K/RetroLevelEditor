@@ -19,6 +19,7 @@ public class MainPanel extends JPanel
     public static final String CHARACTERS_ATLAS_RELATIVE_PATH = "/atlases/characters.png";
     public static final String TEXTURES_RELATIVE_DIRECTORY = "/textures/";
     public static final String MODELS_RELATIVE_DIRECTORY = "/models/";
+    public static final String GAME_DATA_RELATIVE_DIRECTORY = "/gamedata/";
 
     private static final int SCROLL_UNIT = 8;
     private static final int H_COMPONENT_GAP = 10;
@@ -36,7 +37,8 @@ public class MainPanel extends JPanel
     {
         return new File(rootResourcePath + MainPanel.ENVIRONMENTS_ATLAS_RELATIVE_PATH).exists() &&
                new File(rootResourcePath + MainPanel.CHARACTERS_ATLAS_RELATIVE_PATH).exists() &&
-               new File(rootResourcePath + MainPanel.TEXTURES_RELATIVE_DIRECTORY).exists();
+               new File(rootResourcePath + MainPanel.TEXTURES_RELATIVE_DIRECTORY).exists() &&
+               new File(rootResourcePath + MainPanel.GAME_DATA_RELATIVE_DIRECTORY).exists();
     }
 
     public MainPanel(final int levelEditorTileCols, final int levelEditorTileRows, final int tileSize)
@@ -47,15 +49,33 @@ public class MainPanel extends JPanel
 
         JTabbedPane resourcesTabbedPane = new JTabbedPane();
 
-        JScrollPane modelsScrollPane = new JScrollPane(new ResourceTilemapPanel(resourceRootDirectory + MODELS_RELATIVE_DIRECTORY, extractModelsToTextureFiles(), tileSize), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane modelsScrollPane = new JScrollPane(new ResourceTilemapPanel
+        (
+                resourceRootDirectory + MODELS_RELATIVE_DIRECTORY,
+                resourceRootDirectory + GAME_DATA_RELATIVE_DIRECTORY,
+                extractModelsToTextureFiles(),
+                tileSize
+        ), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         modelsScrollPane.getVerticalScrollBar().setUnitIncrement(SCROLL_UNIT);
         modelsScrollPane.setPreferredSize(new Dimension(SIDE_BAR_PANELS_DEFAULT_WIDTH, RESOURCES_PANEL_DEFAULT_HEIGHT));
 
-        JScrollPane charactersScrollPane = new JScrollPane(new ResourceTilemapPanel(resourceRootDirectory + CHARACTERS_ATLAS_RELATIVE_PATH,4, tileSize), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane charactersScrollPane = new JScrollPane(new ResourceTilemapPanel
+        (
+                resourceRootDirectory + CHARACTERS_ATLAS_RELATIVE_PATH,
+                resourceRootDirectory + GAME_DATA_RELATIVE_DIRECTORY,
+                4,
+                tileSize
+        ), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         charactersScrollPane.getVerticalScrollBar().setUnitIncrement(SCROLL_UNIT);
         charactersScrollPane.setPreferredSize(new Dimension(SIDE_BAR_PANELS_DEFAULT_WIDTH, RESOURCES_PANEL_DEFAULT_HEIGHT));
 
-        JScrollPane environmentsScrollPane = new JScrollPane(new ResourceTilemapPanel(resourceRootDirectory + ENVIRONMENTS_ATLAS_RELATIVE_PATH,4, tileSize), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane environmentsScrollPane = new JScrollPane(new ResourceTilemapPanel
+        (
+                resourceRootDirectory + ENVIRONMENTS_ATLAS_RELATIVE_PATH,
+                resourceRootDirectory + GAME_DATA_RELATIVE_DIRECTORY,
+                4,
+                tileSize
+        ), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         environmentsScrollPane.getVerticalScrollBar().setUnitIncrement(SCROLL_UNIT);
         environmentsScrollPane.setPreferredSize(new Dimension(SIDE_BAR_PANELS_DEFAULT_WIDTH, RESOURCES_PANEL_DEFAULT_HEIGHT));
 
@@ -96,8 +116,11 @@ public class MainPanel extends JPanel
         levelEditorScrollPane.getHorizontalScrollBar().setUnitIncrement(SCROLL_UNIT);
         levelEditorScrollPane.setPreferredSize(new Dimension(LEVEL_EDITOR_DEFAULT_WIDTH, LEVEL_EDITOR_DEFAULT_HEIGHT));
 
-        add(resourceAndComponentPanel, BorderLayout.EAST);
-        add(levelEditorScrollPane, BorderLayout.CENTER);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, levelEditorPanel, resourceAndComponentPanel);
+        splitPane.setResizeWeight(0.5);
+        splitPane.setOneTouchExpandable(true);
+        splitPane.setContinuousLayout(true);
+        add(splitPane, BorderLayout.CENTER);
     }
 
     public void setResourceRootDirectory(final String resourceRootDirectory)
