@@ -3,6 +3,7 @@ package com.retroleveleditor.action_listeners;
 import com.retroleveleditor.panels.BaseTilemapPanel;
 import com.retroleveleditor.panels.MainPanel;
 import com.retroleveleditor.panels.TilePanel;
+import com.sun.xml.internal.rngom.parse.host.Base;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -78,10 +79,14 @@ public class SaveActionListener implements ActionListener
         exportOptimizedLevelGroundLayer(file);
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(file)))
         {
+            BaseTilemapPanel levelTilemap = mainPanel.getLevelEditorTilemap();
+
             StringBuilder fileContentsBuilder = new StringBuilder();
             fileContentsBuilder.append("{\n");
 
-
+            fileContentsBuilder.append("    {\n");
+            fileContentsBuilder.append("        \"dimensions\" : { \"cols\": " + levelTilemap.getTileCols() + ", \"rows\": " + levelTilemap.getTileRows() + "},\n");
+            fileContentsBuilder.append("    }\n");
 
             fileContentsBuilder.append("}\n");
             bw.write(fileContentsBuilder.toString());
