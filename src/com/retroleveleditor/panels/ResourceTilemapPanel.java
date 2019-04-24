@@ -21,7 +21,7 @@ import java.util.Map;
 public class ResourceTilemapPanel extends BaseTilemapPanel
 {
     // Structure of all atlases. Change as needed
-    private static final float GAME_OVERWORLD_TILE_SIZE = 1.6f;
+    public static final float GAME_OVERWORLD_TILE_SIZE = 1.6f;
     private static final int ATLAS_COLS = 8;
     private static final int ATLAS_ROWS = 64;
     private static final int ATLAS_TILE_SIZE = 16;
@@ -197,7 +197,15 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
                                     ATLAS_TILE_SIZE
                             );
 
-                    tile.setDefaultTileImage(new TileImage(tileImage, "", x, y));
+                    if (isCharacterAtlas)
+                    {
+                        tile.setCharTileImage(new TileImage(tileImage, "", x, y));
+                    }
+                    else
+                    {
+                        tile.setDefaultTileImage(new TileImage(tileImage, "", x, y));
+                    }
+
 
                     if (++colIndex >= this.tileCols)
                     {

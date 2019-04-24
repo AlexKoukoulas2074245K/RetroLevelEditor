@@ -2,8 +2,9 @@ package com.retroleveleditor.action_listeners;
 
 import com.retroleveleditor.panels.BaseTilemapPanel;
 import com.retroleveleditor.panels.MainPanel;
+import com.retroleveleditor.panels.ResourceTilemapPanel;
 import com.retroleveleditor.panels.TilePanel;
-import com.sun.xml.internal.rngom.parse.host.Base;
+import com.retroleveleditor.util.Pair;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -19,9 +20,9 @@ import java.io.IOException;
 
 public class SaveActionListener implements ActionListener
 {
-    private static final String LEVEL_FILE_EXTENSION = ".json";
     public static String resourceDirectoryChooserOriginPath = ".";
-
+    private static final String LEVEL_FILE_EXTENSION = ".json";
+    private static final String OPTIMIZED_GROUND_LAYER_TEXTURE_NAME = "_groundLayer.png";
     private final MainPanel mainPanel;
     private final boolean shouldAlwaysSaveToDifferentLocation;
 
@@ -76,17 +77,55 @@ public class SaveActionListener implements ActionListener
 
     private void saveLevelToFile(final File file)
     {
-        exportOptimizedLevelGroundLayer(file);
+        Pair<Integer> exportedImageSize = exportOptimizedLevelGroundLayer(file);
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(file)))
         {
             BaseTilemapPanel levelTilemap = mainPanel.getLevelEditorTilemap();
 
             StringBuilder fileContentsBuilder = new StringBuilder();
             fileContentsBuilder.append("{\n");
-
+            fileContentsBuilder.append("    \"level_header\":\n");
             fileContentsBuilder.append("    {\n");
-            fileContentsBuilder.append("        \"dimensions\" : { \"cols\": " + levelTilemap.getTileCols() + ", \"rows\": " + levelTilemap.getTileRows() + "},\n");
-            fileContentsBuilder.append("    }\n");
+            fileContentsBuilder.append("        \"name\": \"" + file.getName().split("\\.")[0] + "\",\n");
+            fileContentsBuilder.append("        \"dimensions\" : { \"cols\": " + levelTilemap.getTileCols() + ", \"rows\": " + levelTilemap.getTileRows() + "}\n");
+            fileContentsBuilder.append("    },\n");
+            fileContentsBuilder.append("    \"level_ground_layer_editor\":\n");
+            fileContentsBuilder.append("    [\n");
+
+            Component[] components = levelTilemap.getComponents();
+            for (Component component: components)
+            {
+                if (component instanceof TilePanel)
+                {
+                    TilePanel tile = (TilePanel)component;
+                    if (tile.getDefaultTileImage() != null && tile.getDefaultTileImage().modelName.length() == 0)
+                    {
+                        fileContentsBuilder.append("        { \"editor_col\": " + tile.getCol() +
+                                                           ", \"editor_row\": " + tile.getRow() +
+                                                           ", \"game_position_x\": " + String.format("%.1f", (tile.getGameOverworldCol() * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) +
+                                                           ", \"game_position_z\": " + String.format("%.1f", (tile.getGameOverworldRow(levelTilemap.getTileRows()) * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) +
+                                                           ", \"atlas_col\": " + tile.getDefaultTileImage().atlasCol +
+                                                           ", \"atlas_row\": " + tile.getDefaultTileImage().atlasRow + " },\n");
+                    }
+                }
+            }
+
+            // Delete trailing comma on final entry
+            if (fileContentsBuilder.charAt(fileContentsBuilder.length() - 2) == ',')
+            {
+                fileContentsBuilder.deleteCharAt(fileContentsBuilder.length() - 2);
+            }
+            fileContentsBuilder.append("    ],\n");
+
+
+            fileContentsBuilder.append("    \"level_ground_layer_game\":\n");
+            fileContentsBuilder.append("    [\n");
+            fileContentsBuilder.append("        { \"texture_name\": \"" + (file.getName().split("\\.")[0] + OPTIMIZED_GROUND_LAYER_TEXTURE_NAME) + "\"" +
+                                               ", \"game_position_x\": " + String.format("%.1f", (((exportedImageSize.x/16) * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)/2.0f)) +
+                                               ", \"game_position_z\": " + String.format("%.1f", (((exportedImageSize.y/16) * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)/2.0f)) +
+                                                   " }\n");
+            fileContentsBuilder.append("    ],\n");
+
 
             fileContentsBuilder.append("}\n");
             bw.write(fileContentsBuilder.toString());
@@ -100,7 +139,7 @@ public class SaveActionListener implements ActionListener
         SaveActionListener.resourceDirectoryChooserOriginPath = file.getAbsolutePath();
     }
 
-    private void exportOptimizedLevelGroundLayer(final File levelFilePath)
+    private Pair<Integer> exportOptimizedLevelGroundLayer(final File levelFilePath)
     {
         BaseTilemapPanel levelTilemap = mainPanel.getLevelEditorTilemap();
 
@@ -110,7 +149,7 @@ public class SaveActionListener implements ActionListener
 
         while (powerOfTwoCounter < 2048)
         {
-            if (levelTilemap.getTileCols() * 16 < powerOfTwoCounter && levelTilemap.getTileRows() * 16 < powerOfTwoCounter)
+            if (levelTilemap.getTileCols() * 16 <= powerOfTwoCounter && levelTilemap.getTileRows() * 16 <= powerOfTwoCounter)
             {
                 targetWidth = powerOfTwoCounter;
                 targetHeight = powerOfTwoCounter;
@@ -171,7 +210,7 @@ public class SaveActionListener implements ActionListener
             }
         }
 
-        File file = new File(levelFilePath.getAbsolutePath().substring(0, levelFilePath.getAbsolutePath().length() - 5) + "_groundLayer.png");
+        File file = new File(levelFilePath.getAbsolutePath().substring(0, levelFilePath.getAbsolutePath().length() - 5) + OPTIMIZED_GROUND_LAYER_TEXTURE_NAME);
         try
         {
             ImageIO.write(groundLayerImage, "png", file);
@@ -180,6 +219,8 @@ public class SaveActionListener implements ActionListener
         {
             e.printStackTrace();
         }
+
+        return new Pair<Integer>(targetWidth, targetHeight);
     }
 
 }

@@ -143,14 +143,18 @@ public class TilePanel extends JPanel implements MouseListener, MouseMotionListe
         return this.tileRow;
     }
 
-    public boolean isResourceTile()
-    {
-        return this.isResourceTile;
-    }
+    public int getGameOverworldCol() { return this.tileCol; }
+
+    public int getGameOverworldRow(final int numberOfRows) { return numberOfRows - this.tileRow; }
 
     public String getCoordsString(final int numberOfRows)
     {
         return this.tileCol + "," + (numberOfRows - this.tileRow);
+    }
+
+    public boolean isResourceTile()
+    {
+        return this.isResourceTile;
     }
 
     public TileImage getDefaultTileImage()
@@ -204,7 +208,7 @@ public class TilePanel extends JPanel implements MouseListener, MouseMotionListe
             }
             else if (currentResourcePanel.getAtlasPath().endsWith(MainPanel.CHARACTERS_ATLAS_RELATIVE_PATH))
             {
-                CommandManager.executeCommand(new SetLevelEditorTileImageCommand(this, this.defaultTileImage, TilePanel.selectedResourceTile.getDefaultTileImage()));
+                CommandManager.executeCommand(new SetLevelEditorTileImageCommand(this, this.defaultTileImage, TilePanel.selectedResourceTile.getCharTileImage()));
             }
             else
             {
