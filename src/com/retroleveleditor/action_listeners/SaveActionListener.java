@@ -139,6 +139,8 @@ public class SaveActionListener implements ActionListener
                     {
                         fileContentsBuilder.append("        { \"editor_col\": " + tile.getCol() +
                                 ", \"editor_row\": " + tile.getRow() +
+                                ", \"game_col\": " + tile.getGameOverworldCol() +
+                                ", \"game_row\": " + tile.getGameOverworldRow(levelTilemap.getTileRows()) +
                                 ", \"game_position_x\": " + String.format("%.1f", (tile.getGameOverworldCol() * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) +
                                 ", \"game_position_z\": " + String.format("%.1f", (tile.getGameOverworldRow(levelTilemap.getTileRows()) * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) +
                                 ", \"atlas_col\": " + tile.getCharTileImage().atlasCol +
@@ -166,10 +168,41 @@ public class SaveActionListener implements ActionListener
                     if (tile.getDefaultTileImage() != null && tile.getDefaultTileImage().modelName.length() > 0)
                     {
                         fileContentsBuilder.append("        " +
-
                                 "{ \"model_name\": \"" + tile.getDefaultTileImage().modelName + "\"" +
                                 ", \"editor_col\": " + tile.getCol() +
                                 ", \"editor_row\": " + tile.getRow() +
+                                ", \"game_col\": " + tile.getGameOverworldCol() +
+                                ", \"game_row\": " + tile.getGameOverworldRow(levelTilemap.getTileRows()) +
+                                ", \"game_position_x\": " + String.format("%.1f", (tile.getGameOverworldCol() * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) +
+                                ", \"game_position_z\": " + String.format("%.1f", (tile.getGameOverworldRow(levelTilemap.getTileRows()) * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) + " },\n");
+                    }
+                }
+            }
+
+            // Delete trailing comma on final entry
+            if (fileContentsBuilder.charAt(fileContentsBuilder.length() - 2) == ',')
+            {
+                fileContentsBuilder.deleteCharAt(fileContentsBuilder.length() - 2);
+            }
+            fileContentsBuilder.append("    ],\n");
+
+            // Save tile traits
+            fileContentsBuilder.append("    \"level_tile_traits\":\n");
+            fileContentsBuilder.append("    [\n");
+
+            for (Component component: components)
+            {
+                if (component instanceof TilePanel)
+                {
+                    TilePanel tile = (TilePanel)component;
+                    if (tile.getTileTraits() != TilePanel.TileTraits.NONE)
+                    {
+                        fileContentsBuilder.append("        " +
+                                "{ \"tile_traits\": \"" + tile.getTileTraits().toString() + "\"" +
+                                ", \"editor_col\": " + tile.getCol() +
+                                ", \"editor_row\": " + tile.getRow() +
+                                ", \"game_col\": " + tile.getGameOverworldCol() +
+                                ", \"game_row\": " + tile.getGameOverworldRow(levelTilemap.getTileRows()) +
                                 ", \"game_position_x\": " + String.format("%.1f", (tile.getGameOverworldCol() * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) +
                                 ", \"game_position_z\": " + String.format("%.1f", (tile.getGameOverworldRow(levelTilemap.getTileRows()) * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) + " },\n");
                     }

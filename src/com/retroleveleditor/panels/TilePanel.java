@@ -1,8 +1,9 @@
 package com.retroleveleditor.panels;
 
-import com.retroleveleditor.commands.ClearLevelEditorTileImagesCommand;
+import com.retroleveleditor.commands.ClearLevelEditorTileCommand;
 import com.retroleveleditor.commands.CommandManager;
 import com.retroleveleditor.commands.SetLevelEditorTileImageCommand;
+import com.retroleveleditor.commands.SetLevelEditorTileTraitsCommand;
 import com.retroleveleditor.util.TileImage;
 
 import javax.swing.*;
@@ -15,7 +16,7 @@ public class TilePanel extends JPanel implements MouseListener, MouseMotionListe
 {
     public enum TileTraits
     {
-        NONE, SOLID, WARP
+        UNUSED, NONE, SOLID, WARP
     }
 
     public static TilePanel selectedResourceTile = null;
@@ -152,11 +153,11 @@ public class TilePanel extends JPanel implements MouseListener, MouseMotionListe
 
     public int getGameOverworldCol() { return this.tileCol; }
 
-    public int getGameOverworldRow(final int numberOfRows) { return numberOfRows - this.tileRow; }
+    public int getGameOverworldRow(final int numberOfRows) { return numberOfRows - 1 - this.tileRow; }
 
     public String getCoordsString(final int numberOfRows)
     {
-        return this.tileCol + "," + (numberOfRows - this.tileRow);
+        return getGameOverworldCol() + "," + getGameOverworldRow(numberOfRows);
     }
 
     public boolean isResourceTile()
@@ -202,9 +203,8 @@ public class TilePanel extends JPanel implements MouseListener, MouseMotionListe
     {
         ((BaseTilemapPanel)getParent()).deselectAllTiles();
 
-        if (isResourceTile && isMouseHoveringOverTile)
+        if (isResourceTile && isMouseHoveringOverTile && this.tileTraits != TileTraits.UNUSED)
         {
-
             isSelected = true;
             TilePanel.selectedResourceTile = this;
         }
@@ -213,7 +213,11 @@ public class TilePanel extends JPanel implements MouseListener, MouseMotionListe
             ResourceTilemapPanel currentResourcePanel = (ResourceTilemapPanel)TilePanel.selectedResourceTile.getParent();
 
             // If the current resource tab is the characters one
-            if (currentResourcePanel.isModelsPanel())
+            if (currentResourcePanel.isTraitsPanel())
+            {
+                CommandManager.executeCommand(new SetLevelEditorTileTraitsCommand(this, TilePanel.selectedResourceTile.getTileTraits()));
+            }
+            else if (currentResourcePanel.isModelsPanel())
             {
                 CommandManager.executeCommand(new SetLevelEditorTileImageCommand(this, TilePanel.selectedResourceTile.getDefaultTileImage(), this.charTileImage));
             }
@@ -234,7 +238,7 @@ public class TilePanel extends JPanel implements MouseListener, MouseMotionListe
         if (isResourceTile == false)
         {
             ((BaseTilemapPanel)getParent()).deselectAllTiles();
-            CommandManager.executeCommand(new ClearLevelEditorTileImagesCommand(this));
+            CommandManager.executeCommand(new ClearLevelEditorTileCommand(this));
         }
     }
 }

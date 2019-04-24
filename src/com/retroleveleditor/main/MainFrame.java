@@ -40,6 +40,11 @@ public class MainFrame extends JFrame
         createMenus();
     }
 
+    public MainPanel getMainPanel()
+    {
+        return mainPanel;
+    }
+
     private void createMenus()
     {
         JMenuBar menuBar = new JMenuBar();
@@ -53,7 +58,7 @@ public class MainFrame extends JFrame
     {
         JMenu fileMenu = new JMenu("File");
         JMenuItem newMenuItem = new JMenuItem("New..");
-        JMenuItem loadMenuItem = new JMenuItem("Open..");
+        JMenuItem openMenuItem = new JMenuItem("Open..");
         JMenuItem saveMenuItem = new JMenuItem("Save..");
         JMenuItem saveAsMenuItem = new JMenuItem("Save As..");
         JMenuItem changeResourceDirectoryMenuItem = new JMenuItem("Change Root Res Directory");
@@ -62,8 +67,8 @@ public class MainFrame extends JFrame
         newMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, MENU_MODIFIER_KEY));
         newMenuItem.addActionListener(new NewCanvasActionListener(this));
 
-        loadMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, MENU_MODIFIER_KEY));
-        //loadMenuItem.addActionListener(new OpenMenuItemActionHandler(this));
+        openMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, MENU_MODIFIER_KEY));
+        openMenuItem.addActionListener(new OpenActionListener(this));
 
         saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, MENU_MODIFIER_KEY));
         saveMenuItem.addActionListener(new SaveActionListener(mainPanel, false));
@@ -78,7 +83,7 @@ public class MainFrame extends JFrame
         quitMenuItem.addActionListener(new QuitActionHandler(this));
 
         fileMenu.add(newMenuItem);
-        fileMenu.add(loadMenuItem);
+        fileMenu.add(openMenuItem);
         fileMenu.add(saveMenuItem);
         fileMenu.add(saveAsMenuItem);
         fileMenu.add(changeResourceDirectoryMenuItem);

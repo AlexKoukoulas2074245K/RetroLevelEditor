@@ -32,6 +32,8 @@ public class MainPanel extends JPanel
     private static final int LEVEL_EDITOR_DEFAULT_HEIGHT = 700;
 
     private LevelEditorTilemapPanel levelEditorPanel;
+    private ResourceTilemapPanel modelsPanel;
+
     private String resourceRootDirectory;
     private File currentWorkingFile;
 
@@ -58,13 +60,14 @@ public class MainPanel extends JPanel
         tileTraitsScrollPane.getVerticalScrollBar().setUnitIncrement(SCROLL_UNIT);
         tileTraitsScrollPane.setPreferredSize(new Dimension(SIDE_BAR_PANELS_DEFAULT_WIDTH, RESOURCES_PANEL_DEFAULT_HEIGHT));
 
-        JScrollPane modelsScrollPane = new JScrollPane(new ResourceTilemapPanel
+        this.modelsPanel = new ResourceTilemapPanel
         (
                 resourceRootDirectory + MODELS_RELATIVE_DIRECTORY,
                 resourceRootDirectory + GAME_DATA_RELATIVE_DIRECTORY,
                 extractModelsToTextureFiles(),
                 tileSize
-        ), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        );
+        JScrollPane modelsScrollPane = new JScrollPane(modelsPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         modelsScrollPane.getVerticalScrollBar().setUnitIncrement(SCROLL_UNIT);
         modelsScrollPane.setPreferredSize(new Dimension(SIDE_BAR_PANELS_DEFAULT_WIDTH, RESOURCES_PANEL_DEFAULT_HEIGHT));
 
@@ -141,6 +144,8 @@ public class MainPanel extends JPanel
     }
 
     public BaseTilemapPanel getLevelEditorTilemap() { return this.levelEditorPanel; }
+
+    public ResourceTilemapPanel getModelsPanel() { return this.modelsPanel; }
 
     public void setCurrentWorkingFile(final File newWorkingFile)
     {

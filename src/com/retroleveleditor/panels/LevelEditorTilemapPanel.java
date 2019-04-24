@@ -23,6 +23,22 @@ public class LevelEditorTilemapPanel extends BaseTilemapPanel
             {
                 TilePanel tile = (TilePanel)component;
 
+                if (tile.getTileTraits() != TilePanel.TileTraits.NONE)
+                {
+                    if (tile.getTileTraits() == TilePanel.TileTraits.SOLID)
+                    {
+                        g2.setColor(new Color(0, 0, 0, 150));
+                    }
+
+                    else if (tile.getTileTraits() == TilePanel.TileTraits.WARP)
+                    {
+                        g2.setColor(new Color(150, 0, 150, 150));
+                    }
+
+                    g2.fillRect(tile.getX() - 1, tile.getY() - 1, tile.getWidth(), tile.getHeight());
+                    g2.setColor(new Color(255, 255, 255, 255));
+                }
+
                 if (tile.isMouseHoveringOverTile())
                 {
                     g2.setColor(Color.BLACK);

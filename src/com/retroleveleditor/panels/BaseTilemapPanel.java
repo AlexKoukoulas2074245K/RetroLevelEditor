@@ -101,22 +101,26 @@ public class BaseTilemapPanel extends JPanel implements MouseWheelListener
                     g2.drawLine(tile.getX(), tile.getY() + tile.getHeight() - 1, tile.getX() + tile.getWidth() - 1, tile.getY() + tile.getHeight() - 1);
                     g2.drawLine(tile.getX() + tile.getWidth() - 1, tile.getY(), tile.getX() + tile.getWidth() - 1, tile.getY() + tile.getHeight() - 1);
 
-                    if (tile.getTileTraits() == TilePanel.TileTraits.SOLID)
-                    {
-                        g2.setColor(new Color(0, 0, 0, 150));
-                    }
-                    else if (tile.getTileTraits() == TilePanel.TileTraits.WARP)
-                    {
-                        g2.setColor(new Color(150, 0, 150, 150));
-                    }
-
-                    g2.fillRect(tile.getX() + tile.getWidth() - tile.getHeight(), tile.getY(), tile.getHeight(), tile.getHeight());
-                    g2.setColor(new Color(255, 255, 255, 255));
-
                     Font defaultFont = g2.getFont();
                     adjustFontForStringToFitInSpace(g2, tile.getTileTraits().toString(), tile.getWidth() - tile.getHeight());
                     g2.drawString(tile.getTileTraits().toString(), tile.getX() + 5, tile.getY() + tile.getHeight()/2);
                     g2.setFont(defaultFont);
+
+                    if (tile.getTileTraits() == TilePanel.TileTraits.SOLID)
+                    {
+                        g2.setColor(new Color(0, 0, 0, 255));
+                    }
+                    else if (tile.getTileTraits() == TilePanel.TileTraits.WARP)
+                    {
+                        g2.setColor(new Color(150, 0, 150, 255));
+                    }
+
+                    if (tile.getTileTraits() != TilePanel.TileTraits.NONE && tile.getTileTraits() != TilePanel.TileTraits.UNUSED)
+                    {
+                        g2.fillRect(tile.getX() + tile.getWidth() - tile.getHeight(), tile.getY(), tile.getHeight(), tile.getHeight());
+                    }
+
+                    g2.setColor(new Color(255, 255, 255, 255));
                 }
                 // Draw every other tilemap
                 else
@@ -181,6 +185,8 @@ public class BaseTilemapPanel extends JPanel implements MouseWheelListener
     }
 
     public boolean isModelsPanel() { return this.isModelsPanel; }
+
+    public boolean isTraitsPanel() { return this.isTraitsPanel; }
 
     public TilePanel getTileAtCoords(final int col, final int row)
     {

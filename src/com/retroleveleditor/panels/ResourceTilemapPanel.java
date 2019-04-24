@@ -21,12 +21,8 @@ import java.util.Map;
 
 public class ResourceTilemapPanel extends BaseTilemapPanel
 {
-    // Structure of all atlases. Change as needed
-    public static final float GAME_OVERWORLD_TILE_SIZE = 1.6f;
-    private static final int ATLAS_COLS = 8;
-    private static final int ATLAS_ROWS = 64;
-    private static final int ATLAS_TILE_SIZE = 16;
-
+    public static BufferedImage ENVIRONMENT_ATLAS_IMAGE = null;
+    public static BufferedImage CHARACTER_ATLAS_IMAGE = null;
 
     // Statically load tile selection image
     private static Image SELECTION_IMAGE = null;
@@ -44,6 +40,13 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
             e.printStackTrace();
         }
     }
+
+    // Structure of all atlases. Change as needed
+    public static final float GAME_OVERWORLD_TILE_SIZE = 1.6f;
+    private static final int ATLAS_COLS = 8;
+    private static final int ATLAS_ROWS = 64;
+    private static final int ATLAS_TILE_SIZE = 16;
+    private static final int MAX_TILE_TRAIT_TILE_ENRIES = 14;
 
     private Map<String, Pair<Integer>> modelNamesToOverworldDims;
     private String atlasPath;
@@ -74,13 +77,18 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
 
     public ResourceTilemapPanel(final int tileSize)
     {
-        super(1, TilePanel.TileTraits.values().length, tileSize, false, true);
+        super(1, MAX_TILE_TRAIT_TILE_ENRIES - TilePanel.TileTraits.values().length, tileSize, false, true);
         markTilesAsResourceTiles();
         getTileAtCoords(0, 0).setIsSelected(true);
         TilePanel.selectedResourceTile = getTileAtCoords(0, 0);
 
         getTileAtCoords(0, 1).setTileTraits(TilePanel.TileTraits.SOLID);
         getTileAtCoords(0, 2).setTileTraits(TilePanel.TileTraits.WARP);
+
+        for (int i = 3; i < MAX_TILE_TRAIT_TILE_ENRIES - TilePanel.TileTraits.values().length; ++i)
+        {
+            getTileAtCoords(0, i).setTileTraits(TilePanel.TileTraits.UNUSED);
+        }
     }
 
     @Override
@@ -97,7 +105,7 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
             {
                 TilePanel tile = (TilePanel) component;
 
-                if (tile.isResourceTile() && tile.isSelected())
+                if (tile.isSelected())
                 {
                     if (this.isModelsPanel || this.isTraitsPanel)
                     {
@@ -115,6 +123,24 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
     public String getAtlasPath()
     {
         return this.atlasPath;
+    }
+
+    public TileImage getModelTileImage(final String modelName)
+    {
+        Component[] components = getComponents();
+        for (Component component : components)
+        {
+            if (component instanceof TilePanel)
+            {
+                TilePanel tile = (TilePanel)component;
+                if (tile.getDefaultTileImage() != null && tile.getDefaultTileImage().modelName.equals(modelName))
+                {
+                    return tile.getDefaultTileImage();
+                }
+            }
+        }
+
+        return null;
     }
 
     private void markTilesAsResourceTiles()
@@ -174,6 +200,9 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
             }
 
             BufferedImage atlasImage = ImageIO.read(new File(this.atlasPath));
+            if (isCharacterAtlas) CHARACTER_ATLAS_IMAGE = atlasImage;
+            else ENVIRONMENT_ATLAS_IMAGE = atlasImage;
+
             int colIndex = 0;
             int rowIndex = 0;
             for (int y = 0; y < ATLAS_ROWS; ++y)
