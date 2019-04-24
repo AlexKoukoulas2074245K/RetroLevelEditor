@@ -126,6 +126,62 @@ public class SaveActionListener implements ActionListener
                                                    " }\n");
             fileContentsBuilder.append("    ],\n");
 
+            // Save npcs
+            fileContentsBuilder.append("    \"level_npc_list\":\n");
+            fileContentsBuilder.append("    [\n");
+
+            for (Component component: components)
+            {
+                if (component instanceof TilePanel)
+                {
+                    TilePanel tile = (TilePanel)component;
+                    if (tile.getCharTileImage() != null)
+                    {
+                        fileContentsBuilder.append("        { \"editor_col\": " + tile.getCol() +
+                                ", \"editor_row\": " + tile.getRow() +
+                                ", \"game_position_x\": " + String.format("%.1f", (tile.getGameOverworldCol() * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) +
+                                ", \"game_position_z\": " + String.format("%.1f", (tile.getGameOverworldRow(levelTilemap.getTileRows()) * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) +
+                                ", \"atlas_col\": " + tile.getCharTileImage().atlasCol +
+                                ", \"atlas_row\": " + tile.getCharTileImage().atlasRow + " },\n");
+                    }
+                }
+            }
+
+            // Delete trailing comma on final entry
+            if (fileContentsBuilder.charAt(fileContentsBuilder.length() - 2) == ',')
+            {
+                fileContentsBuilder.deleteCharAt(fileContentsBuilder.length() - 2);
+            }
+            fileContentsBuilder.append("    ],\n");
+
+            // Save models
+            fileContentsBuilder.append("    \"level_model_list\":\n");
+            fileContentsBuilder.append("    [\n");
+
+            for (Component component: components)
+            {
+                if (component instanceof TilePanel)
+                {
+                    TilePanel tile = (TilePanel)component;
+                    if (tile.getDefaultTileImage() != null && tile.getDefaultTileImage().modelName.length() > 0)
+                    {
+                        fileContentsBuilder.append("        " +
+
+                                "{ \"model_name\": \"" + tile.getDefaultTileImage().modelName + "\"" +
+                                ", \"editor_col\": " + tile.getCol() +
+                                ", \"editor_row\": " + tile.getRow() +
+                                ", \"game_position_x\": " + String.format("%.1f", (tile.getGameOverworldCol() * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) +
+                                ", \"game_position_z\": " + String.format("%.1f", (tile.getGameOverworldRow(levelTilemap.getTileRows()) * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) + " },\n");
+                    }
+                }
+            }
+
+            // Delete trailing comma on final entry
+            if (fileContentsBuilder.charAt(fileContentsBuilder.length() - 2) == ',')
+            {
+                fileContentsBuilder.deleteCharAt(fileContentsBuilder.length() - 2);
+            }
+            fileContentsBuilder.append("    ]\n");
 
             fileContentsBuilder.append("}\n");
             bw.write(fileContentsBuilder.toString());
