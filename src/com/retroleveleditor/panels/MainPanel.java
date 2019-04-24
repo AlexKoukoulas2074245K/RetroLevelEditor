@@ -27,7 +27,7 @@ public class MainPanel extends JPanel
     private static final String CONFIG_FILE_PATH = "config.rle";
 
     private static final int SIDE_BAR_PANELS_DEFAULT_WIDTH = 211;
-    private static final int RESOURCES_PANEL_DEFAULT_HEIGHT = 350;
+    private static final int RESOURCES_PANEL_DEFAULT_HEIGHT = 640;
     private static final int LEVEL_EDITOR_DEFAULT_WIDTH = 768;
     private static final int LEVEL_EDITOR_DEFAULT_HEIGHT = 700;
 
@@ -50,6 +50,13 @@ public class MainPanel extends JPanel
         checkForEditorConfig();
 
         JTabbedPane resourcesTabbedPane = new JTabbedPane();
+
+        JScrollPane tileTraitsScrollPane = new JScrollPane(new ResourceTilemapPanel
+        (
+                tileSize
+        ), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        tileTraitsScrollPane.getVerticalScrollBar().setUnitIncrement(SCROLL_UNIT);
+        tileTraitsScrollPane.setPreferredSize(new Dimension(SIDE_BAR_PANELS_DEFAULT_WIDTH, RESOURCES_PANEL_DEFAULT_HEIGHT));
 
         JScrollPane modelsScrollPane = new JScrollPane(new ResourceTilemapPanel
         (
@@ -84,6 +91,7 @@ public class MainPanel extends JPanel
         resourcesTabbedPane.addTab("Environments", environmentsScrollPane);
         resourcesTabbedPane.addTab("Characters", charactersScrollPane);
         resourcesTabbedPane.addTab("Models", modelsScrollPane);
+        resourcesTabbedPane.addTab("TileTraits", tileTraitsScrollPane);
 
         // Handle selected tiles when resource tabs are changed
         resourcesTabbedPane.addChangeListener(new ChangeListener()
@@ -95,7 +103,7 @@ public class MainPanel extends JPanel
                 ResourceTilemapPanel resourceTilemapPanel = (ResourceTilemapPanel)scrollPaneViewport.getView();
                 resourceTilemapPanel.deselectAllTiles();
 
-                if (resourceTilemapPanel.isModelsPanel)
+                if (resourceTilemapPanel.isModelsPanel || resourceTilemapPanel.isTraitsPanel)
                 {
                     TilePanel.selectedResourceTile = resourceTilemapPanel.getTileAtCoords(0, 0);
 

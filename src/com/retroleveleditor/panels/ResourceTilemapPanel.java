@@ -7,6 +7,7 @@ import com.retroleveleditor.util.TileImage;
 import javafx.scene.text.Font;
 import sun.plugin2.os.windows.OVERLAPPED;
 
+import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -50,7 +51,7 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
 
     public ResourceTilemapPanel(final String atlasPath, final String gameDataPath, final int resourcePanelCols, final int tileSize)
     {
-        super(resourcePanelCols, ((ATLAS_COLS * ATLAS_ROWS) / resourcePanelCols) + 1, tileSize);
+        super(resourcePanelCols, ((ATLAS_COLS * ATLAS_ROWS) / resourcePanelCols) + 1, tileSize, false ,false);
         this.atlasPath = atlasPath;
         this.gameDataPath = gameDataPath;
 
@@ -62,13 +63,24 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
 
     public ResourceTilemapPanel(final String modelsDirectory, final String gameDataPath, final Map<File, File> modelToTextureFiles, final int tileSize)
     {
-        super(1, modelToTextureFiles.size(), tileSize);
+        super(1, modelToTextureFiles.size(), tileSize, true, false);
         this.gameDataPath = gameDataPath;
 
         markTilesAsResourceTiles();
         extractModelImagesAndNames(modelToTextureFiles);
         getTileAtCoords(0, 0).setIsSelected(true);
         TilePanel.selectedResourceTile = getTileAtCoords(0, 0);
+    }
+
+    public ResourceTilemapPanel(final int tileSize)
+    {
+        super(1, TilePanel.TileTraits.values().length, tileSize, false, true);
+        markTilesAsResourceTiles();
+        getTileAtCoords(0, 0).setIsSelected(true);
+        TilePanel.selectedResourceTile = getTileAtCoords(0, 0);
+
+        getTileAtCoords(0, 1).setTileTraits(TilePanel.TileTraits.SOLID);
+        getTileAtCoords(0, 2).setTileTraits(TilePanel.TileTraits.WARP);
     }
 
     @Override
@@ -87,7 +99,7 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
 
                 if (tile.isResourceTile() && tile.isSelected())
                 {
-                    if (this.isModelsPanel)
+                    if (this.isModelsPanel || this.isTraitsPanel)
                     {
                         g2.drawImage(MODEL_SELECTION_IMAGE, tile.getX() - 1, tile.getY() - 1, tile.getWidth(), tile.getHeight(), null);
                     }

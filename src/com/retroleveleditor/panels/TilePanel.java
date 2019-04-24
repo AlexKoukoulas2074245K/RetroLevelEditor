@@ -13,6 +13,11 @@ import java.awt.event.MouseMotionListener;
 
 public class TilePanel extends JPanel implements MouseListener, MouseMotionListener
 {
+    public enum TileTraits
+    {
+        NONE, SOLID, WARP
+    }
+
     public static TilePanel selectedResourceTile = null;
     private static boolean mouseLeftDown = false;
     private static boolean mouseRightDown = false;
@@ -23,6 +28,7 @@ public class TilePanel extends JPanel implements MouseListener, MouseMotionListe
     private boolean isSelected;
     private boolean isResourceTile;
 
+    private TileTraits tileTraits;
     private TileImage defaultTileImage;
     private TileImage charTileImage;
 
@@ -37,6 +43,7 @@ public class TilePanel extends JPanel implements MouseListener, MouseMotionListe
         this.isSelected = false;
         this.defaultTileImage = null;
         this.charTileImage = null;
+        this.tileTraits = TileTraits.NONE;
 
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -167,6 +174,8 @@ public class TilePanel extends JPanel implements MouseListener, MouseMotionListe
         return this.charTileImage;
     }
 
+    public TileTraits getTileTraits() { return this.tileTraits; }
+
     public void setDefaultTileImage(final TileImage image)
     {
         this.defaultTileImage = image;
@@ -186,6 +195,8 @@ public class TilePanel extends JPanel implements MouseListener, MouseMotionListe
     {
         this.isResourceTile = isResourceTile;
     }
+
+    public void setTileTraits(final TileTraits tileTraits) { this.tileTraits = tileTraits; }
 
     private void OnMouseLeftPressAndHold()
     {

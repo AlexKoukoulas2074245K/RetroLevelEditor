@@ -17,16 +17,18 @@ public class BaseTilemapPanel extends JPanel implements MouseWheelListener
 
     protected final int tileCols;
     protected final int tileRows;
+    protected final boolean isModelsPanel;
+    protected final boolean isTraitsPanel;
     protected int tileSize;
-    protected boolean isModelsPanel;
 
-    public BaseTilemapPanel(final int tilemapCols, final int tilemapRows, final int tileSize)
+    public BaseTilemapPanel(final int tilemapCols, final int tilemapRows, final int tileSize, final boolean isModelsPanel, final boolean isTraitsPanel)
     {
         super(new GridLayout(tilemapRows, tilemapCols));
 
         this.tileSize = tileSize;
         this.tileCols = Math.max(1, tilemapCols);
-        this.isModelsPanel = tilemapCols == 1;
+        this.isModelsPanel = isModelsPanel;
+        this.isTraitsPanel = isTraitsPanel;
         this.tileRows = tilemapRows;
 
         resetTilemap();
@@ -93,6 +95,28 @@ public class BaseTilemapPanel extends JPanel implements MouseWheelListener
                         g2.drawString(tile.getDefaultTileImage().modelName, tile.getX() + 5, tile.getY() + tile.getHeight()/2);
                         g2.setFont(defaultFont);
                     }
+                }
+                else if (this.isTraitsPanel)
+                {
+                    g2.drawLine(tile.getX(), tile.getY() + tile.getHeight() - 1, tile.getX() + tile.getWidth() - 1, tile.getY() + tile.getHeight() - 1);
+                    g2.drawLine(tile.getX() + tile.getWidth() - 1, tile.getY(), tile.getX() + tile.getWidth() - 1, tile.getY() + tile.getHeight() - 1);
+
+                    if (tile.getTileTraits() == TilePanel.TileTraits.SOLID)
+                    {
+                        g2.setColor(new Color(0, 0, 0, 150));
+                    }
+                    else if (tile.getTileTraits() == TilePanel.TileTraits.WARP)
+                    {
+                        g2.setColor(new Color(150, 0, 150, 150));
+                    }
+
+                    g2.fillRect(tile.getX() + tile.getWidth() - tile.getHeight(), tile.getY(), tile.getHeight(), tile.getHeight());
+                    g2.setColor(new Color(255, 255, 255, 255));
+
+                    Font defaultFont = g2.getFont();
+                    adjustFontForStringToFitInSpace(g2, tile.getTileTraits().toString(), tile.getWidth() - tile.getHeight());
+                    g2.drawString(tile.getTileTraits().toString(), tile.getX() + 5, tile.getY() + tile.getHeight()/2);
+                    g2.setFont(defaultFont);
                 }
                 // Draw every other tilemap
                 else

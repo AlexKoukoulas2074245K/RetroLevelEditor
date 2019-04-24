@@ -6,7 +6,7 @@ public class LevelEditorTilemapPanel extends BaseTilemapPanel
 {
     public LevelEditorTilemapPanel(final int tilemapCols, final int tilemapRows, final int tileSize)
     {
-        super(tilemapCols, tilemapRows, tileSize);
+        super(tilemapCols, tilemapRows, tileSize, false, false);
     }
 
     @Override
