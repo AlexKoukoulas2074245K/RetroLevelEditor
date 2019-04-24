@@ -86,7 +86,6 @@ public class OpenActionListener implements ActionListener
                 TilePanel tile = mainPanel.getLevelEditorTilemap().getTileAtCoords(modelJsonObject.getInt("editor_col"), modelJsonObject.getInt("editor_row"));
 
                 final String modelName = modelJsonObject.getString("model_name");
-                System.out.println(mainPanel.getModelsPanel().getModelTileImage(modelName));
                 tile.setDefaultTileImage(mainPanel.getModelsPanel().getModelTileImage(modelName));
             }
 

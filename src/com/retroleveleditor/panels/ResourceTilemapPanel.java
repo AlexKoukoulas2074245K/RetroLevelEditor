@@ -84,8 +84,9 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
 
         getTileAtCoords(0, 1).setTileTraits(TilePanel.TileTraits.SOLID);
         getTileAtCoords(0, 2).setTileTraits(TilePanel.TileTraits.WARP);
+        getTileAtCoords(0, 3).setTileTraits(TilePanel.TileTraits.ENCOUNTER);
 
-        for (int i = 3; i < MAX_TILE_TRAIT_TILE_ENRIES - TilePanel.TileTraits.values().length; ++i)
+        for (int i = 4; i < MAX_TILE_TRAIT_TILE_ENRIES - TilePanel.TileTraits.values().length; ++i)
         {
             getTileAtCoords(0, i).setTileTraits(TilePanel.TileTraits.UNUSED);
         }

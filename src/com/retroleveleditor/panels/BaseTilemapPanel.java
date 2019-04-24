@@ -114,6 +114,10 @@ public class BaseTilemapPanel extends JPanel implements MouseWheelListener
                     {
                         g2.setColor(new Color(150, 0, 150, 255));
                     }
+                    else if (tile.getTileTraits() == TilePanel.TileTraits.ENCOUNTER)
+                    {
+                        g2.setColor(new Color(150, 150, 0, 255));
+                    }
 
                     if (tile.getTileTraits() != TilePanel.TileTraits.NONE && tile.getTileTraits() != TilePanel.TileTraits.UNUSED)
                     {
@@ -128,14 +132,6 @@ public class BaseTilemapPanel extends JPanel implements MouseWheelListener
                     g2.drawLine(tile.getX(), tile.getY() + tileSize - 1, tile.getX() + tileSize - 1, tile.getY() + tileSize - 1);
                     g2.drawLine(tile.getX() + tileSize - 1, tile.getY(), tile.getX() + tileSize - 1, tile.getY() + tileSize - 1);
 
-                    if (componentsWithTrailingModelImages.containsKey(component))
-                    {
-                        g2.drawImage(componentsWithTrailingModelImages.get(component).image, tile.getX() - 1, tile.getY() - 1, tileSize, tileSize, null);
-                        g2.setColor(new Color(255, 255, 255, 150));
-                        g2.fillRect(tile.getX() - 1, tile.getY() - 1, tileSize, tileSize);
-                        g2.setColor(new Color(255, 255, 255, 255));
-                    }
-
                     if (tile.getDefaultTileImage() != null)
                     {
                         g2.drawImage(tile.getDefaultTileImage().image, tile.getX() - 1, tile.getY() - 1, tileSize, tileSize, null);
@@ -144,6 +140,14 @@ public class BaseTilemapPanel extends JPanel implements MouseWheelListener
                     if (tile.getCharTileImage() != null)
                     {
                         g2.drawImage(tile.getCharTileImage().image, tile.getX() - 1, tile.getY() - 1, tileSize, tileSize, null);
+                    }
+                    
+                    if (componentsWithTrailingModelImages.containsKey(component))
+                    {
+                        g2.drawImage(componentsWithTrailingModelImages.get(component).image, tile.getX() - 1, tile.getY() - 1, tileSize, tileSize, null);
+                        g2.setColor(new Color(255, 255, 255, 150));
+                        g2.fillRect(tile.getX() - 1, tile.getY() - 1, tileSize, tileSize);
+                        g2.setColor(new Color(255, 255, 255, 255));
                     }
                 }
             }
