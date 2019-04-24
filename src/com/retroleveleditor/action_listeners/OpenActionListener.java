@@ -56,7 +56,7 @@ public class OpenActionListener implements ActionListener
             MainPanel mainPanel = mainFrame.getMainPanel();
 
             JSONArray groundLayerArray = rootJsonObject.getJSONArray("level_ground_layer_editor");
-            for (int i = 1; i < groundLayerArray.length(); ++i)
+            for (int i = 0; i < groundLayerArray.length(); ++i)
             {
                 JSONObject groundTileJsonObject = groundLayerArray.getJSONObject(i);
                 TilePanel tile = mainPanel.getLevelEditorTilemap().getTileAtCoords(groundTileJsonObject.getInt("editor_col"), groundTileJsonObject.getInt("editor_row"));
@@ -68,7 +68,7 @@ public class OpenActionListener implements ActionListener
             }
 
             JSONArray npcArray = rootJsonObject.getJSONArray("level_npc_list");
-            for (int i = 1; i < npcArray.length(); ++i)
+            for (int i = 0; i < npcArray.length(); ++i)
             {
                 JSONObject npcJsonObject = npcArray.getJSONObject(i);
                 TilePanel tile = mainPanel.getLevelEditorTilemap().getTileAtCoords(npcJsonObject.getInt("editor_col"), npcJsonObject.getInt("editor_row"));
@@ -80,7 +80,7 @@ public class OpenActionListener implements ActionListener
             }
 
             JSONArray modelsArray = rootJsonObject.getJSONArray("level_model_list");
-            for (int i = 1; i < modelsArray.length(); ++i)
+            for (int i = 0; i < modelsArray.length(); ++i)
             {
                 JSONObject modelJsonObject = modelsArray.getJSONObject(i);
                 TilePanel tile = mainPanel.getLevelEditorTilemap().getTileAtCoords(modelJsonObject.getInt("editor_col"), modelJsonObject.getInt("editor_row"));
@@ -92,7 +92,7 @@ public class OpenActionListener implements ActionListener
 
 
             JSONArray tileTraitsArray = rootJsonObject.getJSONArray("level_tile_traits");
-            for (int i = 1; i < tileTraitsArray.length(); ++i)
+            for (int i = 0; i < tileTraitsArray.length(); ++i)
             {
                 JSONObject tileTraitJsonObject = tileTraitsArray.getJSONObject(i);
                 TilePanel tile = mainPanel.getLevelEditorTilemap().getTileAtCoords(tileTraitJsonObject.getInt("editor_col"), tileTraitJsonObject.getInt("editor_row"));
