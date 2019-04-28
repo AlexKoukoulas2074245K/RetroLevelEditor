@@ -147,6 +147,8 @@ public class MainPanel extends JPanel
 
     public ResourceTilemapPanel getModelsPanel() { return this.modelsPanel; }
 
+    public String getGameDataDirectoryPath() { return this.resourceRootDirectory + GAME_DATA_RELATIVE_DIRECTORY; }
+
     public void setCurrentWorkingFile(final File newWorkingFile)
     {
         this.currentWorkingFile = newWorkingFile;

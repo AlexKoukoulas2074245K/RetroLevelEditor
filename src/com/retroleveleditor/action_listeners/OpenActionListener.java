@@ -76,7 +76,7 @@ public class OpenActionListener implements ActionListener
                 final int atlasCol = npcJsonObject.getInt("atlas_col");
                 final int atlasRow = npcJsonObject.getInt("atlas_row");
 
-                tile.setDefaultTileImage(new TileImage(ResourceTilemapPanel.CHARACTER_ATLAS_IMAGE.getSubimage(atlasCol * 16, atlasRow * 16, 16, 16), "", atlasCol, atlasRow));
+                tile.setCharTileImage(new TileImage(ResourceTilemapPanel.CHARACTER_ATLAS_IMAGE.getSubimage(atlasCol * 16, atlasRow * 16, 16, 16), "", atlasCol, atlasRow));
             }
 
             JSONArray modelsArray = rootJsonObject.getJSONArray("level_model_list");
