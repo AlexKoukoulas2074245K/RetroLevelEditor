@@ -8,6 +8,7 @@ import com.retroleveleditor.util.CharacterAtlasEntryDescriptor;
 import com.retroleveleditor.util.CharacterMovementType;
 import com.retroleveleditor.util.Pair;
 
+import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -16,6 +17,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -164,23 +167,37 @@ public class SaveActionListener implements ActionListener
             fileContentsBuilder.append("    \"level_model_list\":\n");
             fileContentsBuilder.append("    [\n");
 
+            List<TilePanel> modelTiles = new ArrayList();
             for (Component component: components)
             {
-                if (component instanceof TilePanel)
-                {
-                    TilePanel tile = (TilePanel)component;
+                if (component instanceof TilePanel) {
+                    TilePanel tile = (TilePanel) component;
                     if (tile.getDefaultTileImage() != null && tile.getDefaultTileImage().modelName.length() > 0)
                     {
-                        fileContentsBuilder.append("        " +
-                                "{ \"model_name\": \"" + tile.getDefaultTileImage().modelName + "\"" +
-                                ", \"editor_col\": " + tile.getCol() +
-                                ", \"editor_row\": " + tile.getRow() +
-                                ", \"game_col\": " + tile.getGameOverworldCol() +
-                                ", \"game_row\": " + tile.getGameOverworldRow(levelTilemap.getTileRows()) +
-                                ", \"game_position_x\": " + String.format("%.1f", (tile.getGameOverworldCol() * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) +
-                                ", \"game_position_z\": " + String.format("%.1f", (tile.getGameOverworldRow(levelTilemap.getTileRows()) * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) + " },\n");
+                        modelTiles.add(tile);
                     }
                 }
+            }
+
+            modelTiles.sort(new Comparator<TilePanel>()
+            {
+                @Override
+                public int compare(TilePanel tileA, TilePanel tileB)
+                {
+                    return tileA.getDefaultTileImage().modelName.compareTo(tileB.getDefaultTileImage().modelName);
+                }
+            });
+
+            for (TilePanel tile: modelTiles)
+            {
+                fileContentsBuilder.append("        " +
+                        "{ \"model_name\": \"" + tile.getDefaultTileImage().modelName + "\"" +
+                        ", \"editor_col\": " + tile.getCol() +
+                        ", \"editor_row\": " + tile.getRow() +
+                        ", \"game_col\": " + tile.getGameOverworldCol() +
+                        ", \"game_row\": " + tile.getGameOverworldRow(levelTilemap.getTileRows()) +
+                        ", \"game_position_x\": " + String.format("%.1f", (tile.getGameOverworldCol() * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) +
+                        ", \"game_position_z\": " + String.format("%.1f", (tile.getGameOverworldRow(levelTilemap.getTileRows()) * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) + " },\n");
             }
 
             // Delete trailing comma on final entry
