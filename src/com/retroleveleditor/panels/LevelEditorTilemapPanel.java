@@ -34,6 +34,14 @@ public class LevelEditorTilemapPanel extends BaseTilemapPanel
                     {
                         g2.setColor(new Color(150, 0, 150, 150));
                     }
+                    else if (tile.getTileTraits() == TilePanel.TileTraits.NO_ANIM_WARP)
+                    {
+                        g2.setColor(new Color(150, 0, 0, 255));
+                    }
+                    else if (tile.getTileTraits() == TilePanel.TileTraits.PRESS_WARP)
+                    {
+                        g2.setColor(new Color(0, 0, 255, 255));
+                    }
                     else if (tile.getTileTraits() == TilePanel.TileTraits.ENCOUNTER)
                     {
                         g2.setColor(new Color(150, 150, 0, 150));
