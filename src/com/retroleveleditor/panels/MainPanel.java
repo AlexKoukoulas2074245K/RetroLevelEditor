@@ -143,6 +143,8 @@ public class MainPanel extends JPanel
         return this.currentWorkingFile;
     }
 
+    public String getResourceRootDirectory() { return this.resourceRootDirectory; }
+
     public BaseTilemapPanel getLevelEditorTilemap() { return this.levelEditorPanel; }
 
     public ResourceTilemapPanel getModelsPanel() { return this.modelsPanel; }

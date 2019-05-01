@@ -320,7 +320,8 @@ public class SaveActionListener implements ActionListener
             }
         }
 
-        File file = new File(levelFilePath.getAbsolutePath().substring(0, levelFilePath.getAbsolutePath().length() - 5) + OPTIMIZED_GROUND_LAYER_TEXTURE_NAME);
+        String exportedImagePath = mainPanel.getResourceRootDirectory() + MainPanel.TEXTURES_RELATIVE_DIRECTORY + levelFilePath.getName().split("\\.")[0] + OPTIMIZED_GROUND_LAYER_TEXTURE_NAME;
+        File file = new File(exportedImagePath);
         try
         {
             ImageIO.write(groundLayerImage, "png", file);
