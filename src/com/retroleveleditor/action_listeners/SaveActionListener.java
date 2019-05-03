@@ -91,7 +91,8 @@ public class SaveActionListener implements ActionListener
             fileContentsBuilder.append("    \"level_header\":\n");
             fileContentsBuilder.append("    {\n");
             fileContentsBuilder.append("        \"name\": \"" + file.getName().split("\\.")[0] + "\",\n");
-            fileContentsBuilder.append("        \"dimensions\" : { \"cols\": " + levelTilemap.getTileCols() + ", \"rows\": " + levelTilemap.getTileRows() + "}\n");
+            fileContentsBuilder.append("        \"dimensions\": { \"cols\": " + levelTilemap.getTileCols() + ", \"rows\": " + levelTilemap.getTileRows() + "},\n");
+            fileContentsBuilder.append("        \"color\": \"PALLET\"\n");
             fileContentsBuilder.append("    },\n");
             fileContentsBuilder.append("    \"level_ground_layer_editor\":\n");
             fileContentsBuilder.append("    [\n");
