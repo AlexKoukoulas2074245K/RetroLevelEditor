@@ -6,6 +6,7 @@ import com.retroleveleditor.panels.ResourceTilemapPanel;
 import com.retroleveleditor.panels.TilePanel;
 import com.retroleveleditor.util.CharacterAtlasEntryDescriptor;
 import com.retroleveleditor.util.CharacterMovementType;
+import com.retroleveleditor.util.NpcInteractionParameters;
 import com.retroleveleditor.util.Pair;
 
 import java.util.List;
@@ -135,6 +136,7 @@ public class SaveActionListener implements ActionListener
             fileContentsBuilder.append("    \"level_npc_list\":\n");
             fileContentsBuilder.append("    [\n");
 
+            Map<String, NpcInteractionParameters> legacyInteractionData = extractLegacyInteractionData();
             Map<String, CharacterMovementType> characterMovementTypes = extractMovementTypes();
 
             for (Component component: components)
@@ -144,7 +146,22 @@ public class SaveActionListener implements ActionListener
                     TilePanel tile = (TilePanel)component;
                     if (tile.getCharTileImage() != null)
                     {
+                        String npcDataKey = file.getName().split("\\.")[0] + "-" + tile.getGameOverworldCol() + "," + tile.getGameOverworldRow(levelTilemap.getTileRows());
+                        String npcData = "";
+
+                        if (legacyInteractionData.containsKey(npcDataKey))
+                        {
+                            NpcInteractionParameters legacyParams = legacyInteractionData.get(npcDataKey);
+                            npcData = ", \"dialog\": \"" + legacyParams.dialog + "\"" +
+                                      ", \"direction\": " + legacyParams.direction;
+                        }
+                        else
+                        {
+                            JOptionPane.showMessageDialog(mainPanel, "Could extract interaction parameters for npc at: " + tile.getGameOverworldCol() + ", " + tile.getGameOverworldRow(levelTilemap.getTileRows()));
+                        }
+
                         fileContentsBuilder.append("        { \"movement_type\": \"" + characterMovementTypes.get(tile.getCharTileImage().atlasCol + "," + tile.getCharTileImage().atlasRow).toString() + "\"" +
+                                npcData +
                                 ", \"editor_col\": " + tile.getCol() +
                                 ", \"editor_row\": " + tile.getRow() +
                                 ", \"game_col\": " + tile.getGameOverworldCol() +
@@ -354,5 +371,32 @@ public class SaveActionListener implements ActionListener
 
         return result;
 
+    }
+
+    private Map<String, NpcInteractionParameters> extractLegacyInteractionData()
+    {
+        Map<String, NpcInteractionParameters> result = new HashMap<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(mainPanel.getGameDataDirectoryPath() + "npcs_properties.dat")))
+        {
+            String line = null;
+            while ((line = br.readLine()) != null)
+            {
+                if (line.startsWith("--"))
+                {
+                    break;
+                }
+
+                String[] dialogSplit = line.split("\\{");
+                String[] lineComponents = line.split(" ");
+                String resultKey = lineComponents[0] + "-" + lineComponents[1];
+                result.put(resultKey, new NpcInteractionParameters(dialogSplit[1].substring(0, dialogSplit[1].length() - 1), Integer.parseInt(lineComponents[2])));
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 }
