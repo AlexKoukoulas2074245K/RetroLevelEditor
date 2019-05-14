@@ -174,6 +174,26 @@ public class SaveActionListener implements ActionListener
                 }
             }
 
+            for (Map.Entry<String, NpcInteractionParameters> entry: legacyInteractionData.entrySet())
+            {
+                if (entry.getKey().startsWith(file.getName().split("\\.")[0]) && entry.getValue().direction == -1)
+                {
+                    String npcData = ", \"dialog\": \"" + entry.getValue().dialog + "\"" +
+                            ", \"direction\": " + entry.getValue().direction;
+
+                    fileContentsBuilder.append("        { \"movement_type\": \"STATIC\"" +
+                            npcData +
+                            ", \"editor_col\": " + 0 +
+                            ", \"editor_row\": " + 0 +
+                            ", \"game_col\": " + entry.getValue().coordsString.split(",")[0] +
+                            ", \"game_row\": " + entry.getValue().coordsString.split(",")[1] +
+                            ", \"game_position_x\": " + String.format("%.1f", (Integer.parseInt(entry.getValue().coordsString.split(",")[0]) * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) +
+                            ", \"game_position_z\": " + String.format("%.1f", (Integer.parseInt(entry.getValue().coordsString.split(",")[1]) * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) +
+                            ", \"atlas_col\": " + -1 +
+                            ", \"atlas_row\": " + -1 + " },\n");
+                }
+            }
+
             // Delete trailing comma on final entry
             if (fileContentsBuilder.charAt(fileContentsBuilder.length() - 2) == ',')
             {
@@ -389,7 +409,7 @@ public class SaveActionListener implements ActionListener
                 String[] dialogSplit = line.split("\\{");
                 String[] lineComponents = line.split(" ");
                 String resultKey = lineComponents[0] + "-" + lineComponents[1];
-                result.put(resultKey, new NpcInteractionParameters(dialogSplit[1].substring(0, dialogSplit[1].length() - 1), Integer.parseInt(lineComponents[2])));
+                result.put(resultKey, new NpcInteractionParameters(dialogSplit[1].substring(0, dialogSplit[1].length() - 1), lineComponents[1], Integer.parseInt(lineComponents[2])));
             }
         }
         catch (IOException e)

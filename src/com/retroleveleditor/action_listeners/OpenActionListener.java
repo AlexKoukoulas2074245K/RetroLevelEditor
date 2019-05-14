@@ -71,6 +71,11 @@ public class OpenActionListener implements ActionListener
             for (int i = 0; i < npcArray.length(); ++i)
             {
                 JSONObject npcJsonObject = npcArray.getJSONObject(i);
+                if (npcJsonObject.getInt("direction") == -1)
+                {
+                    continue;
+                }
+
                 TilePanel tile = mainPanel.getLevelEditorTilemap().getTileAtCoords(npcJsonObject.getInt("editor_col"), npcJsonObject.getInt("editor_row"));
 
                 final int atlasCol = npcJsonObject.getInt("atlas_col");
