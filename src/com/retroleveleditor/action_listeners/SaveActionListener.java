@@ -358,15 +358,35 @@ public class SaveActionListener implements ActionListener
             }
         }
 
+
         String exportedImagePath = mainPanel.getResourceRootDirectory() + MainPanel.TEXTURES_RELATIVE_DIRECTORY + levelFilePath.getName().split("\\.")[0] + OPTIMIZED_GROUND_LAYER_TEXTURE_NAME;
-        File file = new File(exportedImagePath);
-        try
+        File exportedImageFile = new File(exportedImagePath);
+
+        if (exportedImageFile.exists())
         {
-            ImageIO.write(groundLayerImage, "png", file);
+            int overwriteOption = JOptionPane.showConfirmDialog (null, "Overwrite ground layer texture?", "Overwrite Ground Layer", JOptionPane.YES_NO_OPTION);
+            if (overwriteOption == JOptionPane.YES_OPTION)
+            {
+                try
+                {
+                    ImageIO.write(groundLayerImage, "png", new File(exportedImagePath));
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+            }
         }
-        catch (IOException e)
+        else
         {
-            e.printStackTrace();
+            try
+            {
+                ImageIO.write(groundLayerImage, "png", new File(exportedImagePath));
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
         }
 
         return new Pair<Integer>(targetWidth, targetHeight);

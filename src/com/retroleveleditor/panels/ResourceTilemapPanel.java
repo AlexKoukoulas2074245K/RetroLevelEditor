@@ -14,10 +14,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.Buffer;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class ResourceTilemapPanel extends BaseTilemapPanel
 {
@@ -164,7 +162,23 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
         Component[] components = getComponents();
         int componentIndex = 0;
 
+        List<Pair<File>> sortedModelToTextureFiles = new ArrayList<>();
+
         for (Map.Entry<File, File> entry: modelToTextureFiles.entrySet())
+        {
+            sortedModelToTextureFiles.add(new Pair(entry.getKey(), entry.getValue()));
+        }
+
+        sortedModelToTextureFiles.sort(new Comparator<Pair<File>>()
+        {
+            @Override
+            public int compare(Pair<File> o1, Pair<File> o2)
+            {
+                return o1.x.compareTo(o2.x);
+            }
+        });
+
+        for (Pair<File> pair: sortedModelToTextureFiles)
         {
             if (components[componentIndex] instanceof TilePanel)
             {
@@ -172,10 +186,10 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
 
                 try
                 {
-                    final String modelName = entry.getKey().getName().split("\\.")[0];
+                    final String modelName = pair.x.getName().split("\\.")[0];
                     Pair<Integer> modelOverworldDims = this.modelNamesToOverworldDims.get(modelName);
                     tilePanel.setDefaultTileImage(new TileImage(
-                            ImageIO.read(entry.getValue().getAbsoluteFile()),
+                            ImageIO.read(pair.y.getAbsoluteFile()),
                             modelName + " (" + modelOverworldDims.x + "," + modelOverworldDims.y + ")",
                             modelOverworldDims.x, modelOverworldDims.y
                             ));
