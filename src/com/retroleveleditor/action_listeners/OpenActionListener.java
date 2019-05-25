@@ -1,9 +1,11 @@
 package com.retroleveleditor.action_listeners;
 
 import com.retroleveleditor.main.MainFrame;
+import com.retroleveleditor.panels.LevelEditorTilemapPanel;
 import com.retroleveleditor.panels.MainPanel;
 import com.retroleveleditor.panels.ResourceTilemapPanel;
 import com.retroleveleditor.panels.TilePanel;
+import com.retroleveleditor.util.Colors;
 import com.retroleveleditor.util.TileImage;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -48,12 +50,22 @@ public class OpenActionListener implements ActionListener
             String fileContents = new String(Files.readAllBytes(file.toPath()));
             JSONObject rootJsonObject = new JSONObject(fileContents);
 
+
             JSONObject levelHeader = rootJsonObject.getJSONObject("level_header");
             JSONObject levelDimensions = levelHeader.getJSONObject("dimensions");
 
             mainFrame.resetContentPane(levelDimensions.getInt("cols"), levelDimensions.getInt("rows"), 48);
 
             MainPanel mainPanel = mainFrame.getMainPanel();
+
+            for (Colors color: Colors.values())
+            {
+                if (color.getName().equals(levelHeader.getString("color")))
+                {
+                    ((LevelEditorTilemapPanel)mainPanel.getLevelEditorTilemap()).setLevelColor(color);
+                    break;
+                }
+            }
 
             JSONArray groundLayerArray = rootJsonObject.getJSONArray("level_ground_layer_editor");
             for (int i = 0; i < groundLayerArray.length(); ++i)
