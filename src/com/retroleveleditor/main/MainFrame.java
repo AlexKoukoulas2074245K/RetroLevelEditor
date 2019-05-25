@@ -50,6 +50,7 @@ public class MainFrame extends JFrame
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(createFileMenu());
         menuBar.add(createEditMenu());
+        menuBar.add(createColorsMenu());
         menuBar.add(createOptionsMenu());
         setJMenuBar(menuBar);
     }
@@ -103,13 +104,27 @@ public class MainFrame extends JFrame
         undoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, MENU_MODIFIER_KEY));
         undoMenuItem.addActionListener(new UndoActionListener(this));
 
-        redoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, MENU_MODIFIER_KEY | InputEvent.SHIFT_MASK));
+        redoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, MENU_MODIFIER_KEY | ActionEvent.SHIFT_MASK));
         redoMenuItem.addActionListener(new RedoActionListener(this));
 
         editMenu.add(undoMenuItem);
         editMenu.add(redoMenuItem);
 
         return editMenu;
+    }
+
+    private JMenu createColorsMenu()
+    {
+        JMenu colorsMenu = new JMenu("Colors");
+
+        JMenuItem setLevelColorMenuItem = new JMenuItem("Set Level Color");
+
+        setLevelColorMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.SHIFT_MASK));
+        setLevelColorMenuItem.addActionListener(new SetLevelColorActionListener(this));
+
+        colorsMenu.add(setLevelColorMenuItem);
+
+        return colorsMenu;
     }
 
     private JMenu createOptionsMenu()

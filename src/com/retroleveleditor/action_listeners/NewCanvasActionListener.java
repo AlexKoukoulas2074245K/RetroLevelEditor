@@ -55,7 +55,7 @@ public class NewCanvasActionListener implements ActionListener
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                mainFrame.resetContentPane((int)levelRowsPanel.getTextField().getValue(), (int)levelColsPanel.getTextField().getValue(), (int)newLevelTileSizePanel.getTextField().getValue());
+                mainFrame.resetContentPane((int)levelColsPanel.getTextField().getValue(), (int)levelRowsPanel.getTextField().getValue(), (int)newLevelTileSizePanel.getTextField().getValue());
                 jDialog.dispose();
                 mainFrame.getRootPane().revalidate();
                 mainFrame.getRootPane().repaint();

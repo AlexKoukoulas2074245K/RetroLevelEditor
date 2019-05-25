@@ -1,12 +1,17 @@
 package com.retroleveleditor.panels;
 
+import com.retroleveleditor.util.Colors;
+
 import java.awt.*;
 
 public class LevelEditorTilemapPanel extends BaseTilemapPanel
 {
+    private Colors levelColor;
+
     public LevelEditorTilemapPanel(final int tilemapCols, final int tilemapRows, final int tileSize)
     {
         super(tilemapCols, tilemapRows, tileSize, false, false);
+        levelColor = Colors.PALLET_COLOR;
     }
 
     @Override
@@ -58,4 +63,7 @@ public class LevelEditorTilemapPanel extends BaseTilemapPanel
             }
         }
     }
+
+    public Colors getLevelColor() { return this.levelColor; }
+    public void setLevelColor(final Colors levelColor) { this.levelColor = levelColor; }
 }

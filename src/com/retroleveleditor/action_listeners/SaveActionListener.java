@@ -1,9 +1,6 @@
 package com.retroleveleditor.action_listeners;
 
-import com.retroleveleditor.panels.BaseTilemapPanel;
-import com.retroleveleditor.panels.MainPanel;
-import com.retroleveleditor.panels.ResourceTilemapPanel;
-import com.retroleveleditor.panels.TilePanel;
+import com.retroleveleditor.panels.*;
 import com.retroleveleditor.util.CharacterAtlasEntryDescriptor;
 import com.retroleveleditor.util.CharacterMovementType;
 import com.retroleveleditor.util.NpcInteractionParameters;
@@ -93,7 +90,7 @@ public class SaveActionListener implements ActionListener
             fileContentsBuilder.append("    {\n");
             fileContentsBuilder.append("        \"name\": \"" + file.getName().split("\\.")[0] + "\",\n");
             fileContentsBuilder.append("        \"dimensions\": { \"cols\": " + levelTilemap.getTileCols() + ", \"rows\": " + levelTilemap.getTileRows() + "},\n");
-            fileContentsBuilder.append("        \"color\": \"PALLET\"\n");
+            fileContentsBuilder.append("        \"color\": \"" + ((LevelEditorTilemapPanel)levelTilemap).getLevelColor().getName() + "\"\n");
             fileContentsBuilder.append("    },\n");
             fileContentsBuilder.append("    \"level_ground_layer_editor\":\n");
             fileContentsBuilder.append("    [\n");
