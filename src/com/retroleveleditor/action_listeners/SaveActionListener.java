@@ -294,11 +294,11 @@ public class SaveActionListener implements ActionListener
 
         while (powerOfTwoCounter < 2048)
         {
-            if (levelTilemap.getTileCols() * 16 <= powerOfTwoCounter)
+            if (levelTilemap.getTileCols() * 16 <= powerOfTwoCounter && targetWidth == 16)
             {
                 targetWidth = powerOfTwoCounter;
             }
-            if (levelTilemap.getTileRows() * 16 <= powerOfTwoCounter)
+            if (levelTilemap.getTileRows() * 16 <= powerOfTwoCounter && targetHeight == 16)
             {
                 targetHeight = powerOfTwoCounter;
             }
