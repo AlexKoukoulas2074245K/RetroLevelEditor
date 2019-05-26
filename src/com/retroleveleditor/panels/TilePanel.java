@@ -28,6 +28,7 @@ public class TilePanel extends JPanel implements MouseListener, MouseMotionListe
     private boolean isMouseHoveringOverTile;
     private boolean isSelected;
     private boolean isResourceTile;
+    private boolean isFillerTile;
 
     private TileTraits tileTraits;
     private TileImage defaultTileImage;
@@ -140,6 +141,7 @@ public class TilePanel extends JPanel implements MouseListener, MouseMotionListe
         return this.isMouseHoveringOverTile;
     }
     public boolean isSelected() { return this.isSelected; }
+    public boolean isFillerTile() { return this.isFillerTile; }
 
     public int getCol()
     {
@@ -191,6 +193,8 @@ public class TilePanel extends JPanel implements MouseListener, MouseMotionListe
     {
         this.isSelected = isSelected;
     }
+
+    public void setIsFillerTile(final boolean isFillerTile) { this.isFillerTile = isFillerTile; }
 
     public void setIsResourceTile(final boolean isResourceTile)
     {

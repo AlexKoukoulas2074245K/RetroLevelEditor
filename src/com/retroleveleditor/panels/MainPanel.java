@@ -2,6 +2,7 @@ package com.retroleveleditor.panels;
 
 import com.retroleveleditor.util.SelectResourceDirectoryHandler;
 
+import javax.annotation.Resource;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -33,6 +34,7 @@ public class MainPanel extends JPanel
 
     private LevelEditorTilemapPanel levelEditorPanel;
     private ResourceTilemapPanel modelsPanel;
+    private ResourceTilemapPanel environmentsPanel;
 
     private String resourceRootDirectory;
     private File currentWorkingFile;
@@ -81,15 +83,16 @@ public class MainPanel extends JPanel
         charactersScrollPane.getVerticalScrollBar().setUnitIncrement(SCROLL_UNIT);
         charactersScrollPane.setPreferredSize(new Dimension(SIDE_BAR_PANELS_DEFAULT_WIDTH, RESOURCES_PANEL_DEFAULT_HEIGHT));
 
-        JScrollPane environmentsScrollPane = new JScrollPane(new ResourceTilemapPanel
+        environmentsPanel = new ResourceTilemapPanel
         (
                 resourceRootDirectory + ENVIRONMENTS_ATLAS_RELATIVE_PATH,
-                resourceRootDirectory + GAME_DATA_RELATIVE_DIRECTORY,
-                4,
-                tileSize
-        ), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+         resourceRootDirectory + GAME_DATA_RELATIVE_DIRECTORY, 4, tileSize
+        );
+
+        JScrollPane environmentsScrollPane = new JScrollPane(environmentsPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         environmentsScrollPane.getVerticalScrollBar().setUnitIncrement(SCROLL_UNIT);
         environmentsScrollPane.setPreferredSize(new Dimension(SIDE_BAR_PANELS_DEFAULT_WIDTH, RESOURCES_PANEL_DEFAULT_HEIGHT));
+        environmentsPanel.getTileAtCoords(0, 0).setIsFillerTile(true);
 
         resourcesTabbedPane.addTab("Environments", environmentsScrollPane);
         resourcesTabbedPane.addTab("Characters", charactersScrollPane);
@@ -146,6 +149,8 @@ public class MainPanel extends JPanel
     public String getResourceRootDirectory() { return this.resourceRootDirectory; }
 
     public BaseTilemapPanel getLevelEditorTilemap() { return this.levelEditorPanel; }
+
+    public ResourceTilemapPanel getEnvironmentsPanel() { return this.environmentsPanel; }
 
     public ResourceTilemapPanel getModelsPanel() { return this.modelsPanel; }
 

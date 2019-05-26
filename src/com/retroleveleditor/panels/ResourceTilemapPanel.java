@@ -24,6 +24,7 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
 
     // Statically load tile selection image
     private static Image SELECTION_IMAGE = null;
+    private static Image FILLER_SELECTION_IMAGE = null;
     private static Image MODEL_SELECTION_IMAGE = null;
 
     static
@@ -31,6 +32,7 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
         try
         {
             SELECTION_IMAGE = ImageIO.read(ResourceTilemapPanel.class.getResourceAsStream("/selection.png"));
+            FILLER_SELECTION_IMAGE = ImageIO.read(ResourceTilemapPanel.class.getResourceAsStream("/filler_selection.png"));
             MODEL_SELECTION_IMAGE = ImageIO.read(ResourceTilemapPanel.class.getResourceAsStream("/model_selection.png"));
         }
         catch (IOException e)
@@ -106,7 +108,11 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
             {
                 TilePanel tile = (TilePanel) component;
 
-                if (tile.isSelected())
+                if (tile.isFillerTile())
+                {
+                    g2.drawImage(FILLER_SELECTION_IMAGE, tile.getX() - 1, tile.getY() - 1, tileSize, tileSize, null);
+                }
+                else if (tile.isSelected())
                 {
                     if (this.isModelsPanel || this.isTraitsPanel)
                     {

@@ -50,7 +50,6 @@ public class MainFrame extends JFrame
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(createFileMenu());
         menuBar.add(createEditMenu());
-        menuBar.add(createColorsMenu());
         menuBar.add(createOptionsMenu());
         setJMenuBar(menuBar);
     }
@@ -113,29 +112,22 @@ public class MainFrame extends JFrame
         return editMenu;
     }
 
-    private JMenu createColorsMenu()
-    {
-        JMenu colorsMenu = new JMenu("Colors");
-
-        JMenuItem setLevelColorMenuItem = new JMenuItem("Set Level Color");
-
-        setLevelColorMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.SHIFT_MASK));
-        setLevelColorMenuItem.addActionListener(new SetLevelColorActionListener(this));
-
-        colorsMenu.add(setLevelColorMenuItem);
-
-        return colorsMenu;
-    }
-
     private JMenu createOptionsMenu()
     {
         JMenu optionsMenu = new JMenu("Options");
 
-        //JMenuItem toggleHitBoxDisplayMenuItem = new JMenuItem("Toggle Hitbox Display");
-        //toggleHitBoxDisplayMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, MENU_MODIFIER_KEY));
-        //toggleHitBoxDisplayMenuItem.addActionListener(new ToggleHitBoxDisplayMenuItemActionHandler(this));
+        JMenuItem setLevelColorMenuItem      = new JMenuItem("Set Level Color");
+        JMenuItem setLevelTileFillerMenuItem = new JMenuItem("Set Level Tile Filler");
 
-        //optionsMenu.add(toggleHitBoxDisplayMenuItem);
+        setLevelColorMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.SHIFT_MASK));
+        setLevelColorMenuItem.addActionListener(new SetLevelColorActionListener(this));
+
+        setLevelTileFillerMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.SHIFT_MASK));
+        setLevelTileFillerMenuItem.addActionListener(new SetLevelTileFillerActionListener(this));
+
+        optionsMenu.add(setLevelColorMenuItem);
+        optionsMenu.add(setLevelTileFillerMenuItem);
+
         return optionsMenu;
     }
 }

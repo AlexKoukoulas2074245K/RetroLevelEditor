@@ -303,15 +303,21 @@ public class SaveActionListener implements ActionListener
             powerOfTwoCounter *= 2;
         }
 
-        BufferedImage emptyTileImage = null;
-        try
+        Image fillerTileImage = null;
+        Component[] resourceTileComponents = mainPanel.getEnvironmentsPanel().getComponents();
+        for (Component component: resourceTileComponents)
         {
-            emptyTileImage = ImageIO.read(getClass().getResourceAsStream("/empty_tile.png"));
+            if (component instanceof TilePanel)
+            {
+                TilePanel tile = (TilePanel) component;
+
+                if (tile.isFillerTile())
+                {
+                    fillerTileImage = tile.getDefaultTileImage().image;
+                }
+            }
         }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+
         BufferedImage groundLayerImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D gfx = groundLayerImage.createGraphics();
 
@@ -339,12 +345,12 @@ public class SaveActionListener implements ActionListener
                     }
                     else
                     {
-                        gfx.drawImage(emptyTileImage, renderTargetColIndex * 16, renderTargetRowIndex * 16, 16, 16, null);
+                        gfx.drawImage(fillerTileImage, renderTargetColIndex * 16, renderTargetRowIndex * 16, 16, 16, null);
                     }
                 }
                 else
                 {
-                    gfx.drawImage(emptyTileImage, renderTargetColIndex * 16, renderTargetRowIndex * 16, 16, 16, null);
+                    gfx.drawImage(fillerTileImage, renderTargetColIndex * 16, renderTargetRowIndex * 16, 16, 16, null);
                 }
 
                 if (++renderTargetColIndex >= targetWidth/16)
