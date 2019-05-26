@@ -8,6 +8,7 @@ import com.retroleveleditor.util.Pair;
 
 import java.util.List;
 import javax.imageio.ImageIO;
+import javax.rmi.CORBA.Tie;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
@@ -82,6 +83,20 @@ public class SaveActionListener implements ActionListener
         Pair<Integer> exportedImageSize = exportOptimizedLevelGroundLayer(file);
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(file)))
         {
+            TilePanel fillerTile = null;
+            Component[] resourceEnvComponents = mainPanel.getEnvironmentsPanel().getComponents();
+            for (Component component: resourceEnvComponents)
+            {
+                if (component instanceof TilePanel)
+                {
+                    if (((TilePanel)component).isFillerTile())
+                    {
+                        fillerTile = ((TilePanel)component);
+                        break;
+                    }
+                }
+            }
+
             BaseTilemapPanel levelTilemap = mainPanel.getLevelEditorTilemap();
 
             StringBuilder fileContentsBuilder = new StringBuilder();
@@ -109,6 +124,15 @@ public class SaveActionListener implements ActionListener
                                                            ", \"game_position_z\": " + String.format("%.1f", (tile.getGameOverworldRow(levelTilemap.getTileRows()) * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) +
                                                            ", \"atlas_col\": " + tile.getDefaultTileImage().atlasCol +
                                                            ", \"atlas_row\": " + tile.getDefaultTileImage().atlasRow + " },\n");
+                    }
+                    else if (tile.getDefaultTileImage() != null && tile.getDefaultTileImage().modelName.length() > 0)
+                    {
+                        fileContentsBuilder.append("        { \"editor_col\": " + tile.getCol() +
+                                                           ", \"editor_row\": " + tile.getRow() +
+                                                           ", \"game_position_x\": " + String.format("%.1f", (tile.getGameOverworldCol() * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) +
+                                                           ", \"game_position_z\": " + String.format("%.1f", (tile.getGameOverworldRow(levelTilemap.getTileRows()) * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) +
+                                                           ", \"atlas_col\": " + fillerTile.getDefaultTileImage().atlasCol +
+                                                           ", \"atlas_row\": " + fillerTile.getDefaultTileImage().atlasRow + " },\n");
                     }
                 }
             }
