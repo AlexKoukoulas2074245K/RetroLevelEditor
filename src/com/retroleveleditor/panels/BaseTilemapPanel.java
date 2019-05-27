@@ -126,6 +126,18 @@ public class BaseTilemapPanel extends JPanel implements MouseWheelListener
                     {
                         g2.setColor(new Color(150, 150, 0, 255));
                     }
+                    else if (tile.getTileTraits() == TilePanel.TileTraits.JUMPING_LEDGE_BOT)
+                    {
+                        g2.setColor(new Color(100, 100, 100, 255));
+                    }
+                    else if (tile.getTileTraits() == TilePanel.TileTraits.JUMPING_LEDGE_LEFT)
+                    {
+                        g2.setColor(new Color(150, 150, 150, 255));
+                    }
+                    else if (tile.getTileTraits() == TilePanel.TileTraits.JUMPING_LEDGE_RIGHT)
+                    {
+                        g2.setColor(new Color(200, 200, 200, 255));
+                    }
 
                     if (tile.getTileTraits() != TilePanel.TileTraits.NONE && tile.getTileTraits() != TilePanel.TileTraits.UNUSED)
                     {

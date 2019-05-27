@@ -16,7 +16,16 @@ public class TilePanel extends JPanel implements MouseListener, MouseMotionListe
 {
     public enum TileTraits
     {
-        UNUSED, NONE, SOLID, WARP, NO_ANIM_WARP, PRESS_WARP, ENCOUNTER
+        UNUSED,
+        NONE,
+        SOLID,
+        WARP,
+        NO_ANIM_WARP,
+        PRESS_WARP,
+        ENCOUNTER,
+        JUMPING_LEDGE_BOT,
+        JUMPING_LEDGE_LEFT,
+        JUMPING_LEDGE_RIGHT
     }
 
     public static TilePanel selectedResourceTile = null;

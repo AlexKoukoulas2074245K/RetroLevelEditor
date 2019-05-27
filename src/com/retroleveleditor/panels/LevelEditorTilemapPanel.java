@@ -41,15 +41,27 @@ public class LevelEditorTilemapPanel extends BaseTilemapPanel
                     }
                     else if (tile.getTileTraits() == TilePanel.TileTraits.NO_ANIM_WARP)
                     {
-                        g2.setColor(new Color(150, 0, 0, 255));
+                        g2.setColor(new Color(150, 0, 0, 150));
                     }
                     else if (tile.getTileTraits() == TilePanel.TileTraits.PRESS_WARP)
                     {
-                        g2.setColor(new Color(0, 0, 255, 255));
+                        g2.setColor(new Color(0, 0, 255, 150));
                     }
                     else if (tile.getTileTraits() == TilePanel.TileTraits.ENCOUNTER)
                     {
                         g2.setColor(new Color(150, 150, 0, 150));
+                    }
+                    else if (tile.getTileTraits() == TilePanel.TileTraits.JUMPING_LEDGE_BOT)
+                    {
+                        g2.setColor(new Color(100, 100, 100, 150));
+                    }
+                    else if (tile.getTileTraits() == TilePanel.TileTraits.JUMPING_LEDGE_LEFT)
+                    {
+                        g2.setColor(new Color(150, 150, 150, 150));
+                    }
+                    else if (tile.getTileTraits() == TilePanel.TileTraits.JUMPING_LEDGE_RIGHT)
+                    {
+                        g2.setColor(new Color(200, 200, 200, 150));
                     }
                     g2.fillRect(tile.getX() - 1, tile.getY() - 1, tile.getWidth(), tile.getHeight());
                     g2.setColor(new Color(255, 255, 255, 255));

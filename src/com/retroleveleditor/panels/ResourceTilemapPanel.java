@@ -46,7 +46,6 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
     private static final int ATLAS_COLS = 8;
     private static final int ATLAS_ROWS = 64;
     private static final int ATLAS_TILE_SIZE = 16;
-    private static final int MAX_TILE_TRAIT_TILE_ENRIES = 14;
 
     private Map<String, Pair<Integer>> modelNamesToOverworldDims;
     private String atlasPath;
@@ -77,7 +76,7 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
 
     public ResourceTilemapPanel(final int tileSize)
     {
-        super(1, MAX_TILE_TRAIT_TILE_ENRIES - TilePanel.TileTraits.values().length, tileSize, false, true);
+        super(1, TilePanel.TileTraits.values().length, tileSize, false, true);
         markTilesAsResourceTiles();
         getTileAtCoords(0, 0).setIsSelected(true);
         TilePanel.selectedResourceTile = getTileAtCoords(0, 0);
@@ -87,11 +86,9 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
         getTileAtCoords(0, 3).setTileTraits(TilePanel.TileTraits.NO_ANIM_WARP);
         getTileAtCoords(0, 4).setTileTraits(TilePanel.TileTraits.PRESS_WARP);
         getTileAtCoords(0, 5).setTileTraits(TilePanel.TileTraits.ENCOUNTER);
-
-        for (int i = 6; i < MAX_TILE_TRAIT_TILE_ENRIES - TilePanel.TileTraits.values().length; ++i)
-        {
-            getTileAtCoords(0, i).setTileTraits(TilePanel.TileTraits.UNUSED);
-        }
+        getTileAtCoords(0, 6).setTileTraits(TilePanel.TileTraits.JUMPING_LEDGE_BOT);
+        getTileAtCoords(0, 7).setTileTraits(TilePanel.TileTraits.JUMPING_LEDGE_LEFT);
+        getTileAtCoords(0, 8).setTileTraits(TilePanel.TileTraits.JUMPING_LEDGE_RIGHT);
     }
 
     @Override
