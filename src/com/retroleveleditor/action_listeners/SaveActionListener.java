@@ -309,7 +309,14 @@ public class SaveActionListener implements ActionListener
                                 ", \"is_gym_leader\": " + (tile.getNpcAttributes().isGymLeader ? "true" : "false") +
                                 ", \"dialog\": \"" + tile.getNpcAttributes().mainDialog + "\"" +
                                 ", \"side_dialogs\": " + sideDialogStringBuilder.toString() +
-                                ", \"pokemon_roster\": " + pokemonRosterStringBuilder.toString() + " },\n");
+                                ", \"pokemon_roster\": " + pokemonRosterStringBuilder.toString() +
+                                ", \"editor_col\": " + tile.getCol() +
+                                ", \"editor_row\": " + tile.getRow() +
+                                ", \"game_col\": " + tile.getGameOverworldCol() +
+                                ", \"game_row\": " + tile.getGameOverworldRow(levelTilemap.getTileRows()) +
+                                ", \"game_position_x\": " + String.format("%.1f", (tile.getGameOverworldCol() * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) +
+                                ", \"game_position_z\": " + String.format("%.1f", (tile.getGameOverworldRow(levelTilemap.getTileRows()) * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) +
+                                " },\n");
                     }
                 }
             }

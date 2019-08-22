@@ -6,6 +6,8 @@ import com.retroleveleditor.panels.MainPanel;
 import com.retroleveleditor.panels.ResourceTilemapPanel;
 import com.retroleveleditor.panels.TilePanel;
 import com.retroleveleditor.util.Colors;
+import com.retroleveleditor.util.NpcAttributes;
+import com.retroleveleditor.util.PokemonInfo;
 import com.retroleveleditor.util.TileImage;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -18,6 +20,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OpenActionListener implements ActionListener
 {
@@ -83,10 +87,6 @@ public class OpenActionListener implements ActionListener
             for (int i = 0; i < npcArray.length(); ++i)
             {
                 JSONObject npcJsonObject = npcArray.getJSONObject(i);
-                if (npcJsonObject.getInt("direction") == -1)
-                {
-                    continue;
-                }
 
                 TilePanel tile = mainPanel.getLevelEditorTilemap().getTileAtCoords(npcJsonObject.getInt("editor_col"), npcJsonObject.getInt("editor_row"));
 
@@ -113,6 +113,37 @@ public class OpenActionListener implements ActionListener
                 JSONObject tileTraitJsonObject = tileTraitsArray.getJSONObject(i);
                 TilePanel tile = mainPanel.getLevelEditorTilemap().getTileAtCoords(tileTraitJsonObject.getInt("editor_col"), tileTraitJsonObject.getInt("editor_row"));
                 tile.setTileTraits(TilePanel.TileTraits.valueOf(tileTraitJsonObject.getString("tile_traits")));
+            }
+
+            JSONArray npcAttributesArray = rootJsonObject.getJSONArray("level_npc_attributes");
+            for (int i = 0; i < npcAttributesArray.length(); ++i)
+            {
+                JSONObject npcAttributesJsonObject = npcAttributesArray.getJSONObject(i);
+
+                TilePanel tile = mainPanel.getLevelEditorTilemap().getTileAtCoords(npcAttributesJsonObject.getInt("editor_col"), npcAttributesJsonObject.getInt("editor_row"));
+
+                NpcAttributes.MovemenType movemenType = NpcAttributes.MovemenType.valueOf(npcAttributesJsonObject.getString("movement_type"));
+                int direction = npcAttributesJsonObject.getInt("direction");
+                boolean isTrainer = npcAttributesJsonObject.getBoolean("is_trainer");
+                boolean isGymLeader = npcAttributesJsonObject.getBoolean("is_gym_leader");
+                String mainDialog = npcAttributesJsonObject.getString("dialog");
+
+                List<String> sideDialogs = new ArrayList<>();
+                JSONArray sideDialogArray = npcAttributesJsonObject.getJSONArray("side_dialogs");
+                for (int j = 0; j < sideDialogArray.length(); ++j)
+                {
+                    sideDialogs.add(sideDialogArray.getString(j));
+                }
+
+                List<PokemonInfo> pokemonRoster = new ArrayList<PokemonInfo>();
+                JSONArray pokemonRosterArray = npcAttributesJsonObject.getJSONArray("pokemon_roster");
+                for (int j = 0; j < pokemonRosterArray.length(); ++j)
+                {
+                    JSONObject pokemonObject = pokemonRosterArray.getJSONObject(j);
+                    pokemonRoster.add(new PokemonInfo(pokemonObject.getString("name"), pokemonObject.getInt("level")));
+                }
+
+                tile.setNpcAttributes(new NpcAttributes(mainDialog, sideDialogs, pokemonRoster, movemenType, direction, isTrainer, isGymLeader));
             }
 
             mainFrame.getRootPane().revalidate();
