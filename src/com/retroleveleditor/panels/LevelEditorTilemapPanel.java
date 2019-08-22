@@ -2,12 +2,28 @@ package com.retroleveleditor.panels;
 
 import com.retroleveleditor.util.Colors;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.io.IOException;
 
 public class LevelEditorTilemapPanel extends BaseTilemapPanel
 {
     private Colors levelColor;
 
+    // Statically load tile selection image
+    private static Image DATA_IMAGE = null;
+
+    static
+    {
+        try
+        {
+            DATA_IMAGE = ImageIO.read(ResourceTilemapPanel.class.getResourceAsStream("/data_icon.png"));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
 
     public LevelEditorTilemapPanel(final int tilemapCols, final int tilemapRows, final int tileSize)
     {
@@ -75,8 +91,7 @@ public class LevelEditorTilemapPanel extends BaseTilemapPanel
                 }
                 if (tile.getNpcAttributes() != null)
                 {
-                    g2.setColor(Color.BLACK);
-                    g2.drawString("Data", tile.getX() + 1, tile.getY() + tile.getHeight() - 2);
+                    g2.drawImage(DATA_IMAGE, tile.getX() + 1, tile.getY() + tile.getHeight()/3, tile.getWidth()/2, tile.getHeight()/2, null);
                 }
             }
         }
