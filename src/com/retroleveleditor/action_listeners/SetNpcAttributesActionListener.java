@@ -6,7 +6,6 @@ import com.retroleveleditor.main.MainFrame;
 import com.retroleveleditor.panels.TilePanel;
 import com.retroleveleditor.util.NpcAttributes;
 import com.retroleveleditor.util.PokemonInfo;
-import sun.plugin.com.event.COMEventHandler;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
