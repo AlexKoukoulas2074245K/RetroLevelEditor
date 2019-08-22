@@ -1,9 +1,12 @@
 package com.retroleveleditor.panels;
 
+import com.retroleveleditor.action_listeners.SetNpcAttributesActionListener;
 import com.retroleveleditor.commands.ClearLevelEditorTileCommand;
 import com.retroleveleditor.commands.CommandManager;
 import com.retroleveleditor.commands.SetLevelEditorTileImageCommand;
 import com.retroleveleditor.commands.SetLevelEditorTileTraitsCommand;
+import com.retroleveleditor.main.MainFrame;
+import com.retroleveleditor.util.NpcAttributes;
 import com.retroleveleditor.util.TileImage;
 
 import javax.swing.*;
@@ -42,6 +45,7 @@ public class TilePanel extends JPanel implements MouseListener, MouseMotionListe
     private TileTraits tileTraits;
     private TileImage defaultTileImage;
     private TileImage charTileImage;
+    private NpcAttributes npcAttributes;
 
     public TilePanel(final int tileCol, final int tileRow, final int tileSize)
     {
@@ -187,6 +191,8 @@ public class TilePanel extends JPanel implements MouseListener, MouseMotionListe
 
     public TileTraits getTileTraits() { return this.tileTraits; }
 
+    public NpcAttributes getNpcAttributes() { return this.npcAttributes; }
+
     public void setDefaultTileImage(final TileImage image)
     {
         this.defaultTileImage = image;
@@ -210,6 +216,8 @@ public class TilePanel extends JPanel implements MouseListener, MouseMotionListe
     }
 
     public void setTileTraits(final TileTraits tileTraits) { this.tileTraits = tileTraits; }
+
+    public void setNpcAttributes(final NpcAttributes npcAttributes) { this.npcAttributes = npcAttributes; }
 
     private void OnMouseLeftPressAndHold()
     {
@@ -257,6 +265,8 @@ public class TilePanel extends JPanel implements MouseListener, MouseMotionListe
     private void beginCharacterPlacementFlow()
     {
         CommandManager.executeCommand(new SetLevelEditorTileImageCommand(this, this.defaultTileImage, TilePanel.selectedResourceTile.getCharTileImage()));
+        SetNpcAttributesActionListener npcAttributesActionListener = new SetNpcAttributesActionListener((MainFrame)SwingUtilities.getWindowAncestor(this));
+        npcAttributesActionListener.actionPerformed(null);
     }
 
 }

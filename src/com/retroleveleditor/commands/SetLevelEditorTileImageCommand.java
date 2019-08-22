@@ -1,6 +1,7 @@
 package com.retroleveleditor.commands;
 
 import com.retroleveleditor.panels.TilePanel;
+import com.retroleveleditor.util.NpcAttributes;
 import com.retroleveleditor.util.TileImage;
 
 public class SetLevelEditorTileImageCommand implements ICommand

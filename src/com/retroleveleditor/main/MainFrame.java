@@ -116,8 +116,12 @@ public class MainFrame extends JFrame
     {
         JMenu optionsMenu = new JMenu("Options");
 
+        JMenuItem setNpcAttributesMenuItem   = new JMenuItem("Set Npc Attributes");
         JMenuItem setLevelColorMenuItem      = new JMenuItem("Set Level Color");
         JMenuItem setLevelTileFillerMenuItem = new JMenuItem("Set Level Tile Filler");
+
+        setNpcAttributesMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.SHIFT_MASK));
+        setNpcAttributesMenuItem.addActionListener(new SetNpcAttributesActionListener(this));
 
         setLevelColorMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.SHIFT_MASK));
         setLevelColorMenuItem.addActionListener(new SetLevelColorActionListener(this));
@@ -125,6 +129,7 @@ public class MainFrame extends JFrame
         setLevelTileFillerMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.SHIFT_MASK));
         setLevelTileFillerMenuItem.addActionListener(new SetLevelTileFillerActionListener(this));
 
+        optionsMenu.add(setNpcAttributesMenuItem);
         optionsMenu.add(setLevelColorMenuItem);
         optionsMenu.add(setLevelTileFillerMenuItem);
 

@@ -1,25 +1,23 @@
 package com.retroleveleditor.action_listeners;
 
 import com.retroleveleditor.panels.*;
-import com.retroleveleditor.util.CharacterAtlasEntryDescriptor;
-import com.retroleveleditor.util.CharacterMovementType;
-import com.retroleveleditor.util.NpcInteractionParameters;
 import com.retroleveleditor.util.Pair;
+import com.retroleveleditor.util.PokemonInfo;
 
-import java.util.List;
 import javax.imageio.ImageIO;
-import javax.rmi.CORBA.Tie;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 public class SaveActionListener implements ActionListener
 {
@@ -157,9 +155,6 @@ public class SaveActionListener implements ActionListener
             fileContentsBuilder.append("    \"level_npc_list\":\n");
             fileContentsBuilder.append("    [\n");
 
-            Map<String, NpcInteractionParameters> legacyInteractionData = extractLegacyInteractionData();
-            Map<String, CharacterMovementType> characterMovementTypes = extractMovementTypes();
-
             for (Component component: components)
             {
                 if (component instanceof TilePanel)
@@ -167,22 +162,7 @@ public class SaveActionListener implements ActionListener
                     TilePanel tile = (TilePanel)component;
                     if (tile.getCharTileImage() != null)
                     {
-                        String npcDataKey = file.getName().split("\\.")[0] + "-" + tile.getGameOverworldCol() + "," + tile.getGameOverworldRow(levelTilemap.getTileRows());
-                        String npcData = "";
-
-                        if (legacyInteractionData.containsKey(npcDataKey))
-                        {
-                            NpcInteractionParameters legacyParams = legacyInteractionData.get(npcDataKey);
-                            npcData = ", \"dialog\": \"" + legacyParams.dialog + "\"" +
-                                      ", \"direction\": " + legacyParams.direction;
-                        }
-                        else
-                        {
-                            JOptionPane.showMessageDialog(mainPanel, "Could extract interaction parameters for npc at: " + tile.getGameOverworldCol() + ", " + tile.getGameOverworldRow(levelTilemap.getTileRows()));
-                        }
-
-                        fileContentsBuilder.append("        { \"movement_type\": \"" + characterMovementTypes.get(tile.getCharTileImage().atlasCol + "," + tile.getCharTileImage().atlasRow).toString() + "\"" +
-                                npcData +
+                        fileContentsBuilder.append("        { " +
                                 ", \"editor_col\": " + tile.getCol() +
                                 ", \"editor_row\": " + tile.getRow() +
                                 ", \"game_col\": " + tile.getGameOverworldCol() +
@@ -192,26 +172,6 @@ public class SaveActionListener implements ActionListener
                                 ", \"atlas_col\": " + tile.getCharTileImage().atlasCol +
                                 ", \"atlas_row\": " + tile.getCharTileImage().atlasRow + " },\n");
                     }
-                }
-            }
-
-            for (Map.Entry<String, NpcInteractionParameters> entry: legacyInteractionData.entrySet())
-            {
-                if (entry.getKey().startsWith(file.getName().split("\\.")[0]) && entry.getValue().direction == -1)
-                {
-                    String npcData = ", \"dialog\": \"" + entry.getValue().dialog + "\"" +
-                            ", \"direction\": " + entry.getValue().direction;
-
-                    fileContentsBuilder.append("        { \"movement_type\": \"STATIC\"" +
-                            npcData +
-                            ", \"editor_col\": " + 0 +
-                            ", \"editor_row\": " + 0 +
-                            ", \"game_col\": " + entry.getValue().coordsString.split(",")[0] +
-                            ", \"game_row\": " + entry.getValue().coordsString.split(",")[1] +
-                            ", \"game_position_x\": " + String.format("%.1f", (Integer.parseInt(entry.getValue().coordsString.split(",")[0]) * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) +
-                            ", \"game_position_z\": " + String.format("%.1f", (Integer.parseInt(entry.getValue().coordsString.split(",")[1]) * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) +
-                            ", \"atlas_col\": " + -1 +
-                            ", \"atlas_row\": " + -1 + " },\n");
                 }
             }
 
@@ -287,6 +247,46 @@ public class SaveActionListener implements ActionListener
                                 ", \"game_position_z\": " + String.format("%.1f", (tile.getGameOverworldRow(levelTilemap.getTileRows()) * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) + " },\n");
                     }
                 }
+            }
+
+            String npcDataString = "";
+
+            if (tile.getNpcAttributes() != null)
+            {
+                StringBuilder sideDialogStringBuilder = new StringBuilder();
+                sideDialogStringBuilder.append('[');
+                for (String dialog: tile.getNpcAttributes().sideDialogs)
+                {
+                    sideDialogStringBuilder.append(dialog);
+                    sideDialogStringBuilder.append(',');
+                }
+                // Delete trailing comma on final entry
+                sideDialogStringBuilder.append(']');
+                if (sideDialogStringBuilder.charAt(fileContentsBuilder.length() - 2) == ',')
+                {
+                    sideDialogStringBuilder.deleteCharAt(fileContentsBuilder.length() - 2);
+                }
+
+                StringBuilder pokemonRosterStringBuilder = new StringBuilder();
+                pokemonRosterStringBuilder.append('[');
+                for (PokemonInfo pokemonInfo: tile.getNpcAttributes().pokemonRoster)
+                {
+                    sideDialogStringBuilder.append("{ \"name\": \"" + pokemonInfo.pokemonName + "\", \"level\": " + pokemonInfo.pokemonLevel + " },");
+                }
+
+                pokemonRosterStringBuilder.append(']');
+                if (pokemonRosterStringBuilder.charAt(fileContentsBuilder.length() - 2) == ',')
+                {
+                    pokemonRosterStringBuilder.deleteCharAt(fileContentsBuilder.length() - 2);
+                }
+
+                npcDataString += "\"movement_type\": \"" + tile.getNpcAttributes().movementType.toString() + "\"" +
+                        ", \"direction\": " + tile.getNpcAttributes().direction +
+                        ", \"is_trainer\": " + (tile.getNpcAttributes().isTrainer ? "true" : "false") +
+                        ", \"is_gym_leader\": " + (tile.getNpcAttributes().isGymLeader ? "true" : "false") +
+                        ", \"dialog\": \"" + tile.getNpcAttributes().mainDialog + "\"" +
+                        ", \"side_dialogs\": " + sideDialogStringBuilder.toString() +
+                        ", \"pokemon_roster\": " + pokemonRosterStringBuilder.toString();
             }
 
             // Delete trailing comma on final entry
@@ -425,53 +425,5 @@ public class SaveActionListener implements ActionListener
         }
 
         return new Pair<Integer>(targetWidth, targetHeight);
-    }
-
-    private Map<String, CharacterMovementType> extractMovementTypes()
-    {
-        Map<String, CharacterMovementType> result = new HashMap<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(mainPanel.getGameDataDirectoryPath() + "npcs_atlas_coords.dat")))
-        {
-            String line = null;
-            while ((line = br.readLine()) != null)
-            {
-                String[] lineComponents = line.split(",");
-                result.put((lineComponents[0] + "," + lineComponents[1]), CharacterMovementType.valueOf(lineComponents[2]));
-            }
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
-        return result;
-
-    }
-
-    private Map<String, NpcInteractionParameters> extractLegacyInteractionData()
-    {
-        Map<String, NpcInteractionParameters> result = new HashMap<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(mainPanel.getGameDataDirectoryPath() + "npcs_properties.dat")))
-        {
-            String line = null;
-            while ((line = br.readLine()) != null)
-            {
-                if (line.startsWith("--"))
-                {
-                    break;
-                }
-
-                String[] dialogSplit = line.split("\\{");
-                String[] lineComponents = line.split(" ");
-                String resultKey = lineComponents[0] + "-" + lineComponents[1];
-                result.put(resultKey, new NpcInteractionParameters(dialogSplit[1].substring(0, dialogSplit[1].length() - 1), lineComponents[1], Integer.parseInt(lineComponents[2])));
-            }
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
-        return result;
     }
 }

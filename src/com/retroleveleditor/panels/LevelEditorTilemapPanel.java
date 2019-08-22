@@ -8,6 +8,7 @@ public class LevelEditorTilemapPanel extends BaseTilemapPanel
 {
     private Colors levelColor;
 
+
     public LevelEditorTilemapPanel(final int tilemapCols, final int tilemapRows, final int tileSize)
     {
         super(tilemapCols, tilemapRows, tileSize, false, false);
@@ -71,6 +72,11 @@ public class LevelEditorTilemapPanel extends BaseTilemapPanel
                 {
                     g2.setColor(Color.BLACK);
                     g2.drawString(tile.getCoordsString(this.tileRows), tile.getX() + 1, tile.getY() + 10);
+                }
+                if (tile.getNpcAttributes() != null)
+                {
+                    g2.setColor(Color.BLACK);
+                    g2.drawString("Data", tile.getX() + 1, tile.getY() + tile.getHeight() - 2);
                 }
             }
         }

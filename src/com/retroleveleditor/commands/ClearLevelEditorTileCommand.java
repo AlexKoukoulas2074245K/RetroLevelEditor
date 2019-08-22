@@ -1,6 +1,7 @@
 package com.retroleveleditor.commands;
 
 import com.retroleveleditor.panels.TilePanel;
+import com.retroleveleditor.util.NpcAttributes;
 import com.retroleveleditor.util.TileImage;
 
 public class ClearLevelEditorTileCommand implements ICommand
@@ -9,6 +10,7 @@ public class ClearLevelEditorTileCommand implements ICommand
     private TileImage previousDefaultImage;
     private TileImage previousCharImage;
     private TilePanel.TileTraits previousTileTraits;
+    private NpcAttributes npcAttributes;
 
     public ClearLevelEditorTileCommand(final TilePanel tile)
     {
@@ -16,6 +18,7 @@ public class ClearLevelEditorTileCommand implements ICommand
         this.previousDefaultImage = tile.getDefaultTileImage();
         this.previousCharImage = tile.getCharTileImage();
         this.previousTileTraits = tile.getTileTraits();
+        this.npcAttributes = tile.getNpcAttributes();
     }
 
     @Override
@@ -24,6 +27,7 @@ public class ClearLevelEditorTileCommand implements ICommand
         this.tile.setDefaultTileImage(null);
         this.tile.setCharTileImage(null);
         this.tile.setTileTraits(TilePanel.TileTraits.NONE);
+        this.tile.setNpcAttributes(null);
     }
 
     @Override
@@ -32,6 +36,7 @@ public class ClearLevelEditorTileCommand implements ICommand
         this.tile.setDefaultTileImage(previousDefaultImage);
         this.tile.setCharTileImage(previousCharImage);
         this.tile.setTileTraits(previousTileTraits);
+        this.tile.setNpcAttributes(npcAttributes);
     }
 
     @Override

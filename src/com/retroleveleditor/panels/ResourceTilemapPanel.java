@@ -1,19 +1,12 @@
 package com.retroleveleditor.panels;
 
-import com.retroleveleditor.util.CharacterAtlasEntryDescriptor;
 import com.retroleveleditor.util.Pair;
 import com.retroleveleditor.util.TileImage;
 
-import javafx.scene.text.Font;
-import sun.plugin2.os.windows.OVERLAPPED;
-
-import javax.annotation.Resource;
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.nio.Buffer;
 import java.util.*;
 import java.util.List;
 
@@ -212,12 +205,6 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
         try
         {
             boolean isCharacterAtlas = this.atlasPath.endsWith(MainPanel.CHARACTERS_ATLAS_RELATIVE_PATH);
-            List<CharacterAtlasEntryDescriptor> characterEntries = null;
-
-            if (isCharacterAtlas)
-            {
-                characterEntries = extractCharacterEntriesInAtlas();
-            }
 
             BufferedImage atlasImage = ImageIO.read(new File(this.atlasPath));
             if (isCharacterAtlas) CHARACTER_ATLAS_IMAGE = atlasImage;
@@ -229,26 +216,6 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
             {
                 for (int x = 0; x < ATLAS_COLS; ++x)
                 {
-
-                    if (isCharacterAtlas)
-                    {
-                        if (characterEntries.size() == 0)
-                        {
-                            continue;
-                        }
-
-                        CharacterAtlasEntryDescriptor nextEntry = characterEntries.get(0);
-
-                        if (x != nextEntry.atlasCol || y != nextEntry.atlasRow)
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            characterEntries.remove(0);
-                        }
-                    }
-
                     TilePanel tile = getTileAtCoords(colIndex, rowIndex);
                     Image tileImage = atlasImage.getSubimage
                             (
@@ -280,27 +247,6 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
         {
             e.printStackTrace();
         }
-    }
-
-    private List<CharacterAtlasEntryDescriptor> extractCharacterEntriesInAtlas()
-    {
-        List<CharacterAtlasEntryDescriptor> characterEntries = new LinkedList<>();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(new File(this.gameDataPath + "npcs_atlas_coords.dat"))))
-        {
-            String line = null;
-            while ((line = br.readLine()) != null)
-            {
-                String[] lineComponents = line.split(",");
-                characterEntries.add(new CharacterAtlasEntryDescriptor(Integer.parseInt(lineComponents[0]), Integer.parseInt(lineComponents[1])));
-            }
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
-        return characterEntries;
     }
 
     private void CalculateModelOverworldTileDimensions(final Map<File, File> modelToTextureFiles)
