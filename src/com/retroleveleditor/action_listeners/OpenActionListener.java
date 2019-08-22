@@ -122,7 +122,7 @@ public class OpenActionListener implements ActionListener
 
                 TilePanel tile = mainPanel.getLevelEditorTilemap().getTileAtCoords(npcAttributesJsonObject.getInt("editor_col"), npcAttributesJsonObject.getInt("editor_row"));
 
-                NpcAttributes.MovemenType movemenType = NpcAttributes.MovemenType.valueOf(npcAttributesJsonObject.getString("movement_type"));
+                NpcAttributes.MovementType movemenType = NpcAttributes.MovementType.valueOf(npcAttributesJsonObject.getString("movement_type"));
                 int direction = npcAttributesJsonObject.getInt("direction");
                 boolean isTrainer = npcAttributesJsonObject.getBoolean("is_trainer");
                 boolean isGymLeader = npcAttributesJsonObject.getBoolean("is_gym_leader");

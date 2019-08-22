@@ -4,7 +4,7 @@ import java.util.List;
 
 public class NpcAttributes
 {
-    public enum MovemenType
+    public enum MovementType
     {
         STATIC, STATIONARY, DYNAMIC
     }
@@ -12,7 +12,7 @@ public class NpcAttributes
     public final String mainDialog;
     public final List<String> sideDialogs;
     public final List<PokemonInfo> pokemonRoster;
-    public final MovemenType movementType;
+    public final MovementType movementType;
     public final int direction;
     public final boolean isTrainer;
     public final boolean isGymLeader;
@@ -22,7 +22,7 @@ public class NpcAttributes
         final String mainDialog,
         final List<String> sideDialogs,
         final List<PokemonInfo> pokemonRoster,
-        final MovemenType movementType,
+        final MovementType movementType,
         final int direction,
         final boolean isTrainer,
         final boolean isGymLeader

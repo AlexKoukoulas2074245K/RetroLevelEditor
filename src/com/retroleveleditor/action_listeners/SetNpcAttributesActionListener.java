@@ -31,7 +31,7 @@ public class SetNpcAttributesActionListener implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        JDialog jDialog = new JDialog(mainFrame, "New Level Specification", Dialog.ModalityType.APPLICATION_MODAL);
+        JDialog jDialog = new JDialog(mainFrame, "Select Npc Attributes", Dialog.ModalityType.APPLICATION_MODAL);
         jDialog.getRootPane().registerKeyboardAction(new DisposeDialogHandler(jDialog), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
 
         NumberFormatter dimensionsFormatter = new NumberFormatter(NumberFormat.getInstance());
@@ -39,29 +39,48 @@ public class SetNpcAttributesActionListener implements ActionListener
         dimensionsFormatter.setMinimum(1);
         dimensionsFormatter.setCommitsOnValidEdit(false);
 
-        LabelledInputPanel levelColsPanel = new LabelledInputPanel("Columns: ", dimensionsFormatter, 2, 32);
-        LabelledInputPanel levelRowsPanel = new LabelledInputPanel("Rows: ", dimensionsFormatter, 2, 32);
+        JLabel movementTypeLabel = new JLabel("Movement Type");
+        String[] movementTypeStrings = new String[NpcAttributes.MovementType.values().length];
+        for (int i = 0; i < movementTypeStrings.length; ++i)
+        {
+            movementTypeStrings[i] = NpcAttributes.MovementType.values()[i].toString();
+        }
 
-        JPanel newLevelDimensionsPanel = new JPanel();
-        newLevelDimensionsPanel.setLayout(new BoxLayout(newLevelDimensionsPanel, BoxLayout.X_AXIS));
-        newLevelDimensionsPanel.add(levelColsPanel);
-        newLevelDimensionsPanel.add(new JLabel("x"));
-        newLevelDimensionsPanel.add(levelRowsPanel);
+        JComboBox<String> movementTypesComboBox = new JComboBox<>(movementTypeStrings);
 
-        LabelledInputPanel newLevelTileSizePanel = new LabelledInputPanel("Tile Size: ", dimensionsFormatter, 3, 48);
+        JPanel movementTypePanel = new JPanel();
+        movementTypePanel.setLayout(new BoxLayout(movementTypePanel, BoxLayout.X_AXIS));
+        movementTypePanel.add(movementTypeLabel);
+        movementTypePanel.add(movementTypesComboBox);
 
-        JPanel newLevelSpecsPanel = new JPanel();
-        newLevelSpecsPanel.setLayout(new BoxLayout(newLevelSpecsPanel, BoxLayout.Y_AXIS));
-        newLevelSpecsPanel.add(newLevelDimensionsPanel);
-        newLevelSpecsPanel.add(newLevelTileSizePanel);
 
-        JButton createButton = new JButton("Create");
+        String[] directionStrings = new String[5];
+        directionStrings[0] = "NO_DIRECTION";
+        directionStrings[1] = "NORTH";
+        directionStrings[2] = "EAST";
+        directionStrings[3] = "SOUTH";
+        directionStrings[4] = "WEST";
+
+        JComboBox<String> directionComboBox = new JComboBox<>(directionStrings);
+        JLabel directionLabel = new JLabel("Direction");
+
+        JPanel directionPanel = new JPanel();
+        directionPanel.setLayout(new BoxLayout(directionPanel, BoxLayout.X_AXIS));
+        directionPanel.add(directionLabel);
+        directionPanel.add(directionComboBox);
+
+        JPanel npcAttributesPanel = new JPanel();
+        npcAttributesPanel.setLayout(new BoxLayout(npcAttributesPanel, BoxLayout.Y_AXIS));
+        npcAttributesPanel.add(movementTypePanel);
+        npcAttributesPanel.add(directionPanel);
+
+        JButton createButton = new JButton("OK");
         createButton.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                mainFrame.resetContentPane((int)levelColsPanel.getTextField().getValue(), (int)levelRowsPanel.getTextField().getValue(), (int)newLevelTileSizePanel.getTextField().getValue());
+
                 jDialog.dispose();
                 mainFrame.getRootPane().revalidate();
                 mainFrame.getRootPane().repaint();
@@ -75,14 +94,14 @@ public class SetNpcAttributesActionListener implements ActionListener
         actionButtonsPanel.add(createButton);
         actionButtonsPanel.add(cancelButton);
 
-        JPanel newLevelActionButtonsPanel = new JPanel(new BorderLayout());
-        newLevelActionButtonsPanel.add(actionButtonsPanel, BorderLayout.EAST);
+        JPanel npcAttributesButtonsPanel = new JPanel(new BorderLayout());
+        npcAttributesButtonsPanel.add(actionButtonsPanel, BorderLayout.EAST);
 
-        JPanel newLevelPanel = new JPanel(new BorderLayout());
-        newLevelPanel.add(newLevelSpecsPanel, BorderLayout.NORTH);
-        newLevelPanel.add(newLevelActionButtonsPanel, BorderLayout.SOUTH);
+        JPanel npcAttributesMasterPanel = new JPanel(new BorderLayout());
+        npcAttributesMasterPanel.add(npcAttributesPanel, BorderLayout.NORTH);
+        npcAttributesMasterPanel.add(npcAttributesButtonsPanel, BorderLayout.SOUTH);
 
-        jDialog.setContentPane(newLevelPanel);
+        jDialog.setContentPane(npcAttributesMasterPanel);
         jDialog.getRootPane().setDefaultButton(createButton);
         jDialog.pack();
         jDialog.setResizable(false);

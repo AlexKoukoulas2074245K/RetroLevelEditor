@@ -265,8 +265,6 @@ public class TilePanel extends JPanel implements MouseListener, MouseMotionListe
     private void beginCharacterPlacementFlow()
     {
         CommandManager.executeCommand(new SetLevelEditorTileImageCommand(this, this.defaultTileImage, TilePanel.selectedResourceTile.getCharTileImage()));
-        SetNpcAttributesActionListener npcAttributesActionListener = new SetNpcAttributesActionListener((MainFrame)SwingUtilities.getWindowAncestor(this));
-        npcAttributesActionListener.actionPerformed(null);
     }
 
 }
