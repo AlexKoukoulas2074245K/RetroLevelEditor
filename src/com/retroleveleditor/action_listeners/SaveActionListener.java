@@ -257,7 +257,7 @@ public class SaveActionListener implements ActionListener
             fileContentsBuilder.append("    ],\n");
 
 
-            // Save tile traits
+            // Save npc attributes
             fileContentsBuilder.append("    \"level_npc_attributes\":\n");
             fileContentsBuilder.append("    [\n");
 
@@ -273,16 +273,18 @@ public class SaveActionListener implements ActionListener
                         sideDialogStringBuilder.append('[');
                         for (String dialog: tile.getNpcAttributes().sideDialogs)
                         {
+                            sideDialogStringBuilder.append("\"");
                             sideDialogStringBuilder.append(dialog);
+                            sideDialogStringBuilder.append("\"");
                             sideDialogStringBuilder.append(',');
                         }
                         // Delete trailing comma on final entry
                         sideDialogStringBuilder.append(']');
                         if (sideDialogStringBuilder.length() > 2)
                         {
-                            if (sideDialogStringBuilder.charAt(fileContentsBuilder.length() - 2) == ',')
+                            if (sideDialogStringBuilder.charAt(sideDialogStringBuilder.length() - 2) == ',')
                             {
-                                sideDialogStringBuilder.deleteCharAt(fileContentsBuilder.length() - 2);
+                                sideDialogStringBuilder.deleteCharAt(sideDialogStringBuilder.length() - 2);
                             }
                         }
 
@@ -290,15 +292,15 @@ public class SaveActionListener implements ActionListener
                         pokemonRosterStringBuilder.append('[');
                         for (PokemonInfo pokemonInfo: tile.getNpcAttributes().pokemonRoster)
                         {
-                            sideDialogStringBuilder.append("{ \"name\": \"" + pokemonInfo.pokemonName + "\", \"level\": " + pokemonInfo.pokemonLevel + " },");
+                            pokemonRosterStringBuilder.append("{ \"name\": \"" + pokemonInfo.pokemonName + "\", \"level\": " + pokemonInfo.pokemonLevel + " },");
                         }
 
                         pokemonRosterStringBuilder.append(']');
                         if (pokemonRosterStringBuilder.length() > 2)
                         {
-                            if (pokemonRosterStringBuilder.charAt(fileContentsBuilder.length() - 2) == ',')
+                            if (pokemonRosterStringBuilder.charAt(pokemonRosterStringBuilder.length() - 2) == ',')
                             {
-                                pokemonRosterStringBuilder.deleteCharAt(fileContentsBuilder.length() - 2);
+                                pokemonRosterStringBuilder.deleteCharAt(pokemonRosterStringBuilder.length() - 2);
                             }
                         }
 
