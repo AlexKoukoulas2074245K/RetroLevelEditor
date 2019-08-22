@@ -187,8 +187,6 @@ public class BaseTilemapPanel extends JPanel implements MouseWheelListener
             this.tileSize = Math.min(MAX_TILE_SIZE, this.tileSize);
 
             resetTilemap();
-            JFrame frame = (JFrame)SwingUtilities.getWindowAncestor(this);
-            frame.pack();
 
             getRootPane().revalidate();
             getRootPane().repaint();

@@ -64,7 +64,6 @@ public class TilePanel extends JPanel implements MouseListener, MouseMotionListe
     @Override
     public void paintComponent(Graphics g)
     {
-        return;
     }
 
     @Override
@@ -236,7 +235,7 @@ public class TilePanel extends JPanel implements MouseListener, MouseMotionListe
             }
             else if (currentResourcePanel.getAtlasPath().endsWith(MainPanel.CHARACTERS_ATLAS_RELATIVE_PATH))
             {
-                CommandManager.executeCommand(new SetLevelEditorTileImageCommand(this, this.defaultTileImage, TilePanel.selectedResourceTile.getCharTileImage()));
+                beginCharacterPlacementFlow();
             }
             else
             {
@@ -254,4 +253,10 @@ public class TilePanel extends JPanel implements MouseListener, MouseMotionListe
             CommandManager.executeCommand(new ClearLevelEditorTileCommand(this));
         }
     }
+
+    private void beginCharacterPlacementFlow()
+    {
+        CommandManager.executeCommand(new SetLevelEditorTileImageCommand(this, this.defaultTileImage, TilePanel.selectedResourceTile.getCharTileImage()));
+    }
+
 }
