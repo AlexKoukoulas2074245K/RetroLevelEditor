@@ -83,7 +83,7 @@ public class OpenActionListener implements ActionListener
                 tile.setDefaultTileImage(new TileImage(ResourceTilemapPanel.ENVIRONMENT_ATLAS_IMAGE.getSubimage(atlasCol * 16, atlasRow * 16, 16, 16), "", atlasCol, atlasRow));
             }
 
-            JSONArray npcArray = rootJsonObject.getJSONArray("level_npc_list");
+            JSONArray npcArray = rootJsonObject.getJSONArray("level_npc_sprites");
             for (int i = 0; i < npcArray.length(); ++i)
             {
                 JSONObject npcJsonObject = npcArray.getJSONObject(i);

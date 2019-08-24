@@ -152,7 +152,7 @@ public class SaveActionListener implements ActionListener
             fileContentsBuilder.append("    ],\n");
 
             // Save npcs
-            fileContentsBuilder.append("    \"level_npc_list\":\n");
+            fileContentsBuilder.append("    \"level_npc_sprites\":\n");
             fileContentsBuilder.append("    [\n");
 
             for (Component component: components)
