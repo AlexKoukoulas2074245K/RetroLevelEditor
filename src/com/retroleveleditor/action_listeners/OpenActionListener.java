@@ -127,6 +127,7 @@ public class OpenActionListener implements ActionListener
                 boolean isTrainer = npcAttributesJsonObject.getBoolean("is_trainer");
                 boolean isGymLeader = npcAttributesJsonObject.getBoolean("is_gym_leader");
                 String mainDialog = npcAttributesJsonObject.getString("dialog");
+                String trainerName = npcAttributesJsonObject.getString("trainer_name");
 
                 List<String> sideDialogs = new ArrayList<>();
                 JSONArray sideDialogArray = npcAttributesJsonObject.getJSONArray("side_dialogs");
@@ -143,7 +144,7 @@ public class OpenActionListener implements ActionListener
                     pokemonRoster.add(new PokemonInfo(pokemonObject.getString("name"), pokemonObject.getInt("level")));
                 }
 
-                tile.setNpcAttributes(new NpcAttributes(mainDialog, sideDialogs, pokemonRoster, movemenType, direction, isTrainer, isGymLeader));
+                tile.setNpcAttributes(new NpcAttributes(mainDialog, trainerName, sideDialogs, pokemonRoster, movemenType, direction, isTrainer, isGymLeader));
             }
 
             mainFrame.getRootPane().revalidate();

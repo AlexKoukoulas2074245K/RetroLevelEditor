@@ -151,6 +151,81 @@ public class SaveActionListener implements ActionListener
                                                    " }\n");
             fileContentsBuilder.append("    ],\n");
 
+
+            // Save npc attributes
+            fileContentsBuilder.append("    \"level_npc_attributes\":\n");
+            fileContentsBuilder.append("    [\n");
+
+            for (Component component: components)
+            {
+                if (component instanceof TilePanel)
+                {
+                    TilePanel tile = (TilePanel) component;
+
+                    if (tile.getNpcAttributes() != null)
+                    {
+                        StringBuilder sideDialogStringBuilder = new StringBuilder();
+                        sideDialogStringBuilder.append('[');
+                        for (String dialog: tile.getNpcAttributes().sideDialogs)
+                        {
+                            sideDialogStringBuilder.append("\"");
+                            sideDialogStringBuilder.append(dialog);
+                            sideDialogStringBuilder.append("\"");
+                            sideDialogStringBuilder.append(',');
+                        }
+                        // Delete trailing comma on final entry
+                        sideDialogStringBuilder.append(']');
+                        if (sideDialogStringBuilder.length() > 2)
+                        {
+                            if (sideDialogStringBuilder.charAt(sideDialogStringBuilder.length() - 2) == ',')
+                            {
+                                sideDialogStringBuilder.deleteCharAt(sideDialogStringBuilder.length() - 2);
+                            }
+                        }
+
+                        StringBuilder pokemonRosterStringBuilder = new StringBuilder();
+                        pokemonRosterStringBuilder.append('[');
+                        for (PokemonInfo pokemonInfo: tile.getNpcAttributes().pokemonRoster)
+                        {
+                            pokemonRosterStringBuilder.append("{ \"name\": \"" + pokemonInfo.pokemonName + "\", \"level\": " + pokemonInfo.pokemonLevel + " },");
+                        }
+
+                        pokemonRosterStringBuilder.append(']');
+                        if (pokemonRosterStringBuilder.length() > 2)
+                        {
+                            if (pokemonRosterStringBuilder.charAt(pokemonRosterStringBuilder.length() - 2) == ',')
+                            {
+                                pokemonRosterStringBuilder.deleteCharAt(pokemonRosterStringBuilder.length() - 2);
+                            }
+                        }
+
+                        fileContentsBuilder.append("         {" +
+                                " \"movement_type\": \"" + tile.getNpcAttributes().movementType.toString() + "\"" +
+                                ", \"direction\": " + tile.getNpcAttributes().direction +
+                                ", \"is_trainer\": " + (tile.getNpcAttributes().isTrainer ? "true" : "false") +
+                                ", \"is_gym_leader\": " + (tile.getNpcAttributes().isGymLeader ? "true" : "false") +
+                                ", \"trainer_name\": \"" + tile.getNpcAttributes().trainerName + "\"" +
+                                ", \"dialog\": \"" + tile.getNpcAttributes().mainDialog + "\"" +
+                                ", \"side_dialogs\": " + sideDialogStringBuilder.toString() +
+                                ", \"pokemon_roster\": " + pokemonRosterStringBuilder.toString() +
+                                ", \"editor_col\": " + tile.getCol() +
+                                ", \"editor_row\": " + tile.getRow() +
+                                ", \"game_col\": " + tile.getGameOverworldCol() +
+                                ", \"game_row\": " + tile.getGameOverworldRow(levelTilemap.getTileRows()) +
+                                ", \"game_position_x\": " + String.format("%.1f", (tile.getGameOverworldCol() * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) +
+                                ", \"game_position_z\": " + String.format("%.1f", (tile.getGameOverworldRow(levelTilemap.getTileRows()) * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) +
+                                " },\n");
+                    }
+                }
+            }
+
+            // Delete trailing comma on final entry
+            if (fileContentsBuilder.charAt(fileContentsBuilder.length() - 2) == ',')
+            {
+                fileContentsBuilder.deleteCharAt(fileContentsBuilder.length() - 2);
+            }
+            fileContentsBuilder.append("    ],\n");
+
             // Save npcs
             fileContentsBuilder.append("    \"level_npc_sprites\":\n");
             fileContentsBuilder.append("    [\n");
@@ -245,80 +320,6 @@ public class SaveActionListener implements ActionListener
                                 ", \"game_row\": " + tile.getGameOverworldRow(levelTilemap.getTileRows()) +
                                 ", \"game_position_x\": " + String.format("%.1f", (tile.getGameOverworldCol() * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) +
                                 ", \"game_position_z\": " + String.format("%.1f", (tile.getGameOverworldRow(levelTilemap.getTileRows()) * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) + " },\n");
-                    }
-                }
-            }
-
-            // Delete trailing comma on final entry
-            if (fileContentsBuilder.charAt(fileContentsBuilder.length() - 2) == ',')
-            {
-                fileContentsBuilder.deleteCharAt(fileContentsBuilder.length() - 2);
-            }
-            fileContentsBuilder.append("    ],\n");
-
-
-            // Save npc attributes
-            fileContentsBuilder.append("    \"level_npc_attributes\":\n");
-            fileContentsBuilder.append("    [\n");
-
-            for (Component component: components)
-            {
-                if (component instanceof TilePanel)
-                {
-                    TilePanel tile = (TilePanel) component;
-
-                    if (tile.getNpcAttributes() != null)
-                    {
-                        StringBuilder sideDialogStringBuilder = new StringBuilder();
-                        sideDialogStringBuilder.append('[');
-                        for (String dialog: tile.getNpcAttributes().sideDialogs)
-                        {
-                            sideDialogStringBuilder.append("\"");
-                            sideDialogStringBuilder.append(dialog);
-                            sideDialogStringBuilder.append("\"");
-                            sideDialogStringBuilder.append(',');
-                        }
-                        // Delete trailing comma on final entry
-                        sideDialogStringBuilder.append(']');
-                        if (sideDialogStringBuilder.length() > 2)
-                        {
-                            if (sideDialogStringBuilder.charAt(sideDialogStringBuilder.length() - 2) == ',')
-                            {
-                                sideDialogStringBuilder.deleteCharAt(sideDialogStringBuilder.length() - 2);
-                            }
-                        }
-
-                        StringBuilder pokemonRosterStringBuilder = new StringBuilder();
-                        pokemonRosterStringBuilder.append('[');
-                        for (PokemonInfo pokemonInfo: tile.getNpcAttributes().pokemonRoster)
-                        {
-                            pokemonRosterStringBuilder.append("{ \"name\": \"" + pokemonInfo.pokemonName + "\", \"level\": " + pokemonInfo.pokemonLevel + " },");
-                        }
-
-                        pokemonRosterStringBuilder.append(']');
-                        if (pokemonRosterStringBuilder.length() > 2)
-                        {
-                            if (pokemonRosterStringBuilder.charAt(pokemonRosterStringBuilder.length() - 2) == ',')
-                            {
-                                pokemonRosterStringBuilder.deleteCharAt(pokemonRosterStringBuilder.length() - 2);
-                            }
-                        }
-
-                        fileContentsBuilder.append("         {" +
-                                " \"movement_type\": \"" + tile.getNpcAttributes().movementType.toString() + "\"" +
-                                ", \"direction\": " + tile.getNpcAttributes().direction +
-                                ", \"is_trainer\": " + (tile.getNpcAttributes().isTrainer ? "true" : "false") +
-                                ", \"is_gym_leader\": " + (tile.getNpcAttributes().isGymLeader ? "true" : "false") +
-                                ", \"dialog\": \"" + tile.getNpcAttributes().mainDialog + "\"" +
-                                ", \"side_dialogs\": " + sideDialogStringBuilder.toString() +
-                                ", \"pokemon_roster\": " + pokemonRosterStringBuilder.toString() +
-                                ", \"editor_col\": " + tile.getCol() +
-                                ", \"editor_row\": " + tile.getRow() +
-                                ", \"game_col\": " + tile.getGameOverworldCol() +
-                                ", \"game_row\": " + tile.getGameOverworldRow(levelTilemap.getTileRows()) +
-                                ", \"game_position_x\": " + String.format("%.1f", (tile.getGameOverworldCol() * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) +
-                                ", \"game_position_z\": " + String.format("%.1f", (tile.getGameOverworldRow(levelTilemap.getTileRows()) * ResourceTilemapPanel.GAME_OVERWORLD_TILE_SIZE)) +
-                                " },\n");
                     }
                 }
             }

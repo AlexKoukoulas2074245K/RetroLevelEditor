@@ -187,6 +187,15 @@ public class SetNpcAttributesActionListener implements ActionListener
                         JCheckBox isGymLeaderCheckbox = new JCheckBox("isGymLeader");
                         isGymLeaderCheckbox.setHorizontalAlignment(SwingConstants.CENTER);
 
+                        JPanel trainerNamePanel = new JPanel(new BorderLayout());
+                        trainerNamePanel.add(new JLabel("Trainer Name", SwingConstants.CENTER), BorderLayout.NORTH);
+                        trainerNamePanel.add(new JTextField(10), BorderLayout.SOUTH);
+                        trainerNamePanel.setBorder(PANEL_BORDER);
+
+                        JPanel checkboxAndTrainerNamePanel = new JPanel(new BorderLayout());
+                        checkboxAndTrainerNamePanel.add(isGymLeaderCheckbox, BorderLayout.NORTH);
+                        checkboxAndTrainerNamePanel.add(trainerNamePanel, BorderLayout.SOUTH);
+
                         JPanel pokemonRosterButtonsAndEntriesPanel = new JPanel(new BorderLayout());
                         JPanel pokemonRosterButtons = new JPanel(new BorderLayout());
                         JButton addPokemonButton = new JButton("Add Pokemon");
@@ -205,7 +214,7 @@ public class SetNpcAttributesActionListener implements ActionListener
 
                         pokemonRosterButtonsAndEntriesPanel.add(allPokemonEntryPanels, BorderLayout.SOUTH);
 
-                        checkBoxAndPokemonRosterPanel.add(isGymLeaderCheckbox, BorderLayout.NORTH);
+                        checkBoxAndPokemonRosterPanel.add(checkboxAndTrainerNamePanel, BorderLayout.NORTH);
                         checkBoxAndPokemonRosterPanel.add(pokemonRosterButtonsAndEntriesPanel, BorderLayout.SOUTH);
                         checkBoxAndPokemonRosterPanel.setBorder(PANEL_BORDER);
 
@@ -295,6 +304,7 @@ public class SetNpcAttributesActionListener implements ActionListener
                 NpcAttributes.MovementType npcMovementType = NpcAttributes.MovementType.valueOf((String)movementTypesComboBox.getSelectedItem());
                 int npcDirection = directionComboBox.getSelectedIndex() - 1;
                 String npcMainDialog = mainDialogTextArea.getText();
+                String npcTrainerName = "";
                 npcMainDialog = npcMainDialog.replace("\t", "");
 
                 List<String> npcSideDialogs = new ArrayList<>();
@@ -327,9 +337,26 @@ public class SetNpcAttributesActionListener implements ActionListener
                         {
                             for (Component innerComponent : ((JPanel)component).getComponents())
                             {
-                                if (innerComponent instanceof JCheckBox)
+                                if (innerComponent instanceof JPanel)
                                 {
-                                    npcIsGymLeader = ((JCheckBox)innerComponent).isSelected();
+                                    for (Component checkBoxAndNameComponentEntry: ((JPanel)innerComponent).getComponents())
+                                    {
+                                        if (checkBoxAndNameComponentEntry instanceof JCheckBox)
+                                        {
+                                            npcIsGymLeader = ((JCheckBox)checkBoxAndNameComponentEntry).isSelected();
+                                        }
+                                        else if (checkBoxAndNameComponentEntry instanceof JPanel)
+                                        {
+                                            for (Component nameComponentsEntry: ((JPanel)checkBoxAndNameComponentEntry).getComponents())
+                                            {
+                                                if (nameComponentsEntry instanceof JTextField)
+                                                {
+                                                    npcTrainerName = ((JTextField)nameComponentsEntry).getText();
+                                                }
+                                            }
+                                        }
+                                    }
+
                                 }
                             }
                         }
@@ -367,6 +394,7 @@ public class SetNpcAttributesActionListener implements ActionListener
                             NpcAttributes npcAttributes = new NpcAttributes
                             (
                                 npcMainDialog,
+                                npcTrainerName,
                                 npcSideDialogs,
                                 npcPokemonRosterInfo,
                                 npcMovementType,

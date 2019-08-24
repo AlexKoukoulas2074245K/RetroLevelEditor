@@ -10,6 +10,7 @@ public class NpcAttributes
     }
 
     public final String mainDialog;
+    public final String trainerName;
     public final List<String> sideDialogs;
     public final List<PokemonInfo> pokemonRoster;
     public final MovementType movementType;
@@ -20,6 +21,7 @@ public class NpcAttributes
     public NpcAttributes
     (
         final String mainDialog,
+        final String trainerName,
         final List<String> sideDialogs,
         final List<PokemonInfo> pokemonRoster,
         final MovementType movementType,
@@ -29,6 +31,7 @@ public class NpcAttributes
     )
     {
         this.mainDialog    = mainDialog;
+        this.trainerName   = trainerName;
         this.sideDialogs   = sideDialogs;
         this.pokemonRoster = pokemonRoster;
         this.movementType  = movementType;
