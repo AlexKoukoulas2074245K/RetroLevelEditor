@@ -9,6 +9,7 @@ import com.retroleveleditor.util.DisposeDialogHandler;
 import com.retroleveleditor.util.NpcAttributes;
 import com.retroleveleditor.util.PokemonInfo;
 import com.retroleveleditor.util.SelectAllFocusListener;
+import org.json.JSONObject;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -18,7 +19,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
 import java.nio.ByteOrder;
+import java.nio.file.Files;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +32,7 @@ public class SetNpcAttributesActionListener implements ActionListener
     private static final int MAX_NUMBER_OF_SIDE_DIALOGS_ALLOWED = 4;
 
     private final String[] pokemonNames;
+    private final String[] trainerNames;
 
     private MainFrame mainFrame;
     private List<JPanel> sideDialogs;
@@ -42,6 +46,7 @@ public class SetNpcAttributesActionListener implements ActionListener
         this.pokemonRosterEntryPanels = new ArrayList<>();
         this.trainerDataPanel = null;
         this.pokemonNames = extractPokemonNames();
+        this.trainerNames = extractTrainerNames();
     }
 
     @Override
@@ -189,7 +194,7 @@ public class SetNpcAttributesActionListener implements ActionListener
 
                         JPanel trainerNamePanel = new JPanel(new BorderLayout());
                         trainerNamePanel.add(new JLabel("Trainer Name", SwingConstants.CENTER), BorderLayout.NORTH);
-                        trainerNamePanel.add(new JTextField(10), BorderLayout.SOUTH);
+                        trainerNamePanel.add(new JComboBox<String>(trainerNames), BorderLayout.SOUTH);
                         trainerNamePanel.setBorder(PANEL_BORDER);
 
                         JPanel checkboxAndTrainerNamePanel = new JPanel(new BorderLayout());
@@ -349,9 +354,9 @@ public class SetNpcAttributesActionListener implements ActionListener
                                         {
                                             for (Component nameComponentsEntry: ((JPanel)checkBoxAndNameComponentEntry).getComponents())
                                             {
-                                                if (nameComponentsEntry instanceof JTextField)
+                                                if (nameComponentsEntry instanceof JComboBox)
                                                 {
-                                                    npcTrainerName = ((JTextField)nameComponentsEntry).getText();
+                                                    npcTrainerName = (String)(((JComboBox<String>)nameComponentsEntry).getSelectedItem());
                                                 }
                                             }
                                         }
@@ -458,4 +463,26 @@ public class SetNpcAttributesActionListener implements ActionListener
         return pokemonNames;
     }
 
+    String[] extractTrainerNames()
+    {
+        String fileContents = null;
+        try
+        {
+            fileContents = new String(Files.readAllBytes(new File(mainFrame.getMainPanel().getGameDataDirectoryPath() + "trainer_types.json").toPath()));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        JSONObject rootJsonObject = new JSONObject(fileContents);
+
+        String[] trainerNames = new String[rootJsonObject.keySet().size()];
+        int trainerNameIndex = 0;
+        for (String trainerName: rootJsonObject.keySet())
+        {
+            trainerNames[trainerNameIndex++] = trainerName;
+        }
+
+        return trainerNames;
+    }
 }
