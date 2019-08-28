@@ -429,7 +429,7 @@ public class SaveActionListener implements ActionListener
                     {
                         gfx.drawImage(respectiveTile.getDefaultTileImage().image, renderTargetColIndex * 16, renderTargetRowIndex * 16, 16, 16, null);
                     }
-                    else if (respectiveTile.getDefaultTileImage() != null && undergroundModelNames.contains(respectiveTile.getDefaultTileImage().modelName))
+                    else if (respectiveTile.getDefaultTileImage() != null && isUndergroundModel(respectiveTile.getDefaultTileImage().modelName))
                     {
                         gfx.drawImage(TRANSPARENT_TILE_IMAGE, renderTargetColIndex * 16, renderTargetRowIndex * 16, 16, 16, null);
                     }
@@ -508,4 +508,18 @@ public class SaveActionListener implements ActionListener
 
         return undergroundModelNames;
     }
+
+    boolean isUndergroundModel(final String modelName)
+    {
+        for (String undergroundModelName: undergroundModelNames)
+        {
+            if (modelName.startsWith(undergroundModelName))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }
