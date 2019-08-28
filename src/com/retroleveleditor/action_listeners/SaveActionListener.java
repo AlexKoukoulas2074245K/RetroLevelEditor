@@ -3,6 +3,8 @@ package com.retroleveleditor.action_listeners;
 import com.retroleveleditor.panels.*;
 import com.retroleveleditor.util.Pair;
 import com.retroleveleditor.util.PokemonInfo;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -15,6 +17,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -24,13 +27,29 @@ public class SaveActionListener implements ActionListener
     public static String resourceDirectoryChooserOriginPath = ".";
     private static final String LEVEL_FILE_EXTENSION = ".json";
     private static final String OPTIMIZED_GROUND_LAYER_TEXTURE_NAME = "_groundLayer.png";
+    private static Image TRANSPARENT_TILE_IMAGE = null;
+    static
+    {
+        try
+        {
+            TRANSPARENT_TILE_IMAGE = ImageIO.read(ResourceTilemapPanel.class.getResourceAsStream("/transparent_tile.png"));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+
     private final MainPanel mainPanel;
     private final boolean shouldAlwaysSaveToDifferentLocation;
+    private final List<String> undergroundModelNames;
 
     public SaveActionListener(final MainPanel mainPanel, final boolean shouldAlwaysSaveToDifferentLocation)
     {
         this.mainPanel = mainPanel;
         this.shouldAlwaysSaveToDifferentLocation = shouldAlwaysSaveToDifferentLocation;
+        this.undergroundModelNames = extractUndergroundModelNames();
     }
 
     @Override
@@ -409,6 +428,10 @@ public class SaveActionListener implements ActionListener
                     {
                         gfx.drawImage(respectiveTile.getDefaultTileImage().image, renderTargetColIndex * 16, renderTargetRowIndex * 16, 16, 16, null);
                     }
+                    else if (respectiveTile.getDefaultTileImage() != null && undergroundModelNames.contains(respectiveTile.getDefaultTileImage().modelName))
+                    {
+                        gfx.drawImage(TRANSPARENT_TILE_IMAGE, renderTargetColIndex * 16, renderTargetRowIndex * 16, 16, 16, null);
+                    }
                     else
                     {
                         gfx.drawImage(fillerTileImage, renderTargetColIndex * 16, renderTargetRowIndex * 16, 16, 16, null);
@@ -459,5 +482,29 @@ public class SaveActionListener implements ActionListener
         }
 
         return new Pair<Integer>(targetWidth, targetHeight);
+    }
+
+    List<String> extractUndergroundModelNames()
+    {
+        List<String> undergroundModelNames = new ArrayList<>();
+
+        String fileContents = null;
+        try
+        {
+            fileContents = new String(Files.readAllBytes(new File(mainPanel.getGameDataDirectoryPath() + "underground_model_names.json").toPath()));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        JSONObject rootJsonObject = new JSONObject(fileContents);
+        JSONArray undergroundModelsArray = rootJsonObject.getJSONArray("underground_model_names");
+        for (int i = 0; i < undergroundModelsArray.length(); ++i)
+        {
+            undergroundModelNames.add(undergroundModelsArray.getString(i));
+        }
+
+        return undergroundModelNames;
     }
 }
