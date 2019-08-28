@@ -9,6 +9,7 @@ import com.retroleveleditor.util.DisposeDialogHandler;
 import com.retroleveleditor.util.NpcAttributes;
 import com.retroleveleditor.util.PokemonInfo;
 import com.retroleveleditor.util.SelectAllFocusListener;
+import org.json.JSONObject;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -18,7 +19,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
 import java.nio.ByteOrder;
+import java.nio.file.Files;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +32,7 @@ public class SetNpcAttributesActionListener implements ActionListener
     private static final int MAX_NUMBER_OF_SIDE_DIALOGS_ALLOWED = 4;
 
     private final String[] pokemonNames;
+    private final String[] trainerNames;
 
     private MainFrame mainFrame;
     private List<JPanel> sideDialogs;
@@ -42,6 +46,7 @@ public class SetNpcAttributesActionListener implements ActionListener
         this.pokemonRosterEntryPanels = new ArrayList<>();
         this.trainerDataPanel = null;
         this.pokemonNames = extractPokemonNames();
+        this.trainerNames = extractTrainerNames();
     }
 
     @Override
@@ -95,7 +100,7 @@ public class SetNpcAttributesActionListener implements ActionListener
 
         // Main Dialog Panel
         JLabel mainDialogLabel = new JLabel("Main Dialog", SwingConstants.CENTER);
-        JTextArea mainDialogTextArea = new JTextArea(5, 30);
+        JTextArea mainDialogTextArea = new JTextArea(3, 30);
         mainDialogTextArea.setLineWrap(true);
         JScrollPane mainDialogTextScrollPane = new JScrollPane(mainDialogTextArea);
 
@@ -118,7 +123,7 @@ public class SetNpcAttributesActionListener implements ActionListener
                 if (sideDialogs.size() < MAX_NUMBER_OF_SIDE_DIALOGS_ALLOWED)
                 {
                     JLabel sideDialogLabel = new JLabel("Side Dialog " + (sideDialogs.size() + 1), SwingConstants.CENTER);
-                    JTextArea sideDialogTextArea = new JTextArea(5, 30);
+                    JTextArea sideDialogTextArea = new JTextArea(3, 30);
                     sideDialogTextArea.setLineWrap(true);
                     JScrollPane sideDialogTextScrollPane = new JScrollPane(sideDialogTextArea);
 
@@ -132,7 +137,7 @@ public class SetNpcAttributesActionListener implements ActionListener
 
                     jDialog.revalidate();
                     jDialog.repaint();
-                    jDialog.pack();
+
                 }
             }
         });
@@ -150,7 +155,7 @@ public class SetNpcAttributesActionListener implements ActionListener
 
                     jDialog.revalidate();
                     jDialog.repaint();
-                    jDialog.pack();
+
                 }
             }
         });
@@ -187,6 +192,15 @@ public class SetNpcAttributesActionListener implements ActionListener
                         JCheckBox isGymLeaderCheckbox = new JCheckBox("isGymLeader");
                         isGymLeaderCheckbox.setHorizontalAlignment(SwingConstants.CENTER);
 
+                        JPanel trainerNamePanel = new JPanel(new BorderLayout());
+                        trainerNamePanel.add(new JLabel("Trainer Name", SwingConstants.CENTER), BorderLayout.NORTH);
+                        trainerNamePanel.add(new JComboBox<String>(trainerNames), BorderLayout.SOUTH);
+                        trainerNamePanel.setBorder(PANEL_BORDER);
+
+                        JPanel checkboxAndTrainerNamePanel = new JPanel(new BorderLayout());
+                        checkboxAndTrainerNamePanel.add(isGymLeaderCheckbox, BorderLayout.NORTH);
+                        checkboxAndTrainerNamePanel.add(trainerNamePanel, BorderLayout.SOUTH);
+
                         JPanel pokemonRosterButtonsAndEntriesPanel = new JPanel(new BorderLayout());
                         JPanel pokemonRosterButtons = new JPanel(new BorderLayout());
                         JButton addPokemonButton = new JButton("Add Pokemon");
@@ -205,7 +219,7 @@ public class SetNpcAttributesActionListener implements ActionListener
 
                         pokemonRosterButtonsAndEntriesPanel.add(allPokemonEntryPanels, BorderLayout.SOUTH);
 
-                        checkBoxAndPokemonRosterPanel.add(isGymLeaderCheckbox, BorderLayout.NORTH);
+                        checkBoxAndPokemonRosterPanel.add(checkboxAndTrainerNamePanel, BorderLayout.NORTH);
                         checkBoxAndPokemonRosterPanel.add(pokemonRosterButtonsAndEntriesPanel, BorderLayout.SOUTH);
                         checkBoxAndPokemonRosterPanel.setBorder(PANEL_BORDER);
 
@@ -237,7 +251,7 @@ public class SetNpcAttributesActionListener implements ActionListener
 
                                     jDialog.revalidate();
                                     jDialog.repaint();
-                                    jDialog.pack();
+
                                 }
                             }
                         });
@@ -254,7 +268,7 @@ public class SetNpcAttributesActionListener implements ActionListener
 
                                     jDialog.revalidate();
                                     jDialog.repaint();
-                                    jDialog.pack();
+
                                 }
                             }
                         });
@@ -272,7 +286,7 @@ public class SetNpcAttributesActionListener implements ActionListener
 
                 jDialog.revalidate();
                 jDialog.repaint();
-                jDialog.pack();
+
             }
         });
 
@@ -292,6 +306,114 @@ public class SetNpcAttributesActionListener implements ActionListener
             @Override
             public void actionPerformed(ActionEvent e)
             {
+                NpcAttributes.MovementType npcMovementType = NpcAttributes.MovementType.valueOf((String)movementTypesComboBox.getSelectedItem());
+                int npcDirection = directionComboBox.getSelectedIndex() - 1;
+                String npcMainDialog = mainDialogTextArea.getText();
+                String npcTrainerName = "";
+                npcMainDialog = npcMainDialog.replace("\t", "");
+
+                List<String> npcSideDialogs = new ArrayList<>();
+                for (JPanel sideDialogPanel: sideDialogs)
+                {
+                    for (Component component: sideDialogPanel.getComponents())
+                    {
+                        if (component instanceof JScrollPane)
+                        {
+                            JScrollPane sideDialogScrollPane = (JScrollPane)component;
+                            JTextArea textArea = (JTextArea)sideDialogScrollPane.getViewport().getView();
+
+                            if (textArea.getText().length() > 0)
+                            {
+                                npcSideDialogs.add(textArea.getText().replace("\t",""));
+                            }
+                        }
+                    }
+                }
+
+                boolean npcIsTrainer = isTrainerCheckBox.isSelected();
+                List<PokemonInfo> npcPokemonRosterInfo = new ArrayList<>();
+                boolean npcIsGymLeader = false;
+
+                if (npcIsTrainer)
+                {
+                    for (Component component: trainerDataPanel.getComponents())
+                    {
+                        if (component instanceof JPanel)
+                        {
+                            for (Component innerComponent : ((JPanel)component).getComponents())
+                            {
+                                if (innerComponent instanceof JPanel)
+                                {
+                                    for (Component checkBoxAndNameComponentEntry: ((JPanel)innerComponent).getComponents())
+                                    {
+                                        if (checkBoxAndNameComponentEntry instanceof JCheckBox)
+                                        {
+                                            npcIsGymLeader = ((JCheckBox)checkBoxAndNameComponentEntry).isSelected();
+                                        }
+                                        else if (checkBoxAndNameComponentEntry instanceof JPanel)
+                                        {
+                                            for (Component nameComponentsEntry: ((JPanel)checkBoxAndNameComponentEntry).getComponents())
+                                            {
+                                                if (nameComponentsEntry instanceof JComboBox)
+                                                {
+                                                    npcTrainerName = (String)(((JComboBox<String>)nameComponentsEntry).getSelectedItem());
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+
+                    for (JPanel panel: pokemonRosterEntryPanels)
+                    {
+                        String pokemonName = "";
+                        int pokemonLevel   = 1;
+
+                        for (Component component : panel.getComponents())
+                        {
+                            if (component instanceof JComboBox)
+                            {
+                                 pokemonName = (String)(((JComboBox<String>)component).getSelectedItem());
+                            }
+                            else if (component instanceof JFormattedTextField)
+                            {
+                                pokemonLevel = (int)(((JFormattedTextField)component).getValue());
+                            }
+                        }
+
+                        npcPokemonRosterInfo.add(new PokemonInfo(pokemonName, pokemonLevel));
+                    }
+                }
+
+                Component[] components = mainFrame.getMainPanel().getLevelEditorTilemap().getComponents();
+                for (Component component: components)
+                {
+                    if (component instanceof TilePanel)
+                    {
+                        TilePanel tile = (TilePanel) component;
+                        if (tile.isMouseHoveringOverTile())
+                        {
+                            NpcAttributes npcAttributes = new NpcAttributes
+                            (
+                                npcMainDialog,
+                                npcTrainerName,
+                                npcSideDialogs,
+                                npcPokemonRosterInfo,
+                                npcMovementType,
+                                npcDirection,
+                                npcIsTrainer,
+                                npcIsGymLeader
+                            );
+
+                            CommandManager.executeCommand(new SetTileNpcAttributesCommand(tile, npcAttributes));
+
+                            break;
+                        }
+                    }
+                }
 
                 jDialog.dispose();
                 mainFrame.getRootPane().revalidate();
@@ -313,41 +435,17 @@ public class SetNpcAttributesActionListener implements ActionListener
         npcAttributesMasterPanel.add(npcAttributesPanel, BorderLayout.NORTH);
         npcAttributesMasterPanel.add(npcAttributesButtonsPanel, BorderLayout.SOUTH);
 
-        jDialog.setContentPane(npcAttributesMasterPanel);
+        JScrollPane masterNpcAttributesScrollablePanel = new JScrollPane(npcAttributesMasterPanel);
+        masterNpcAttributesScrollablePanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        masterNpcAttributesScrollablePanel.setPreferredSize(new Dimension(400, 600));
+        masterNpcAttributesScrollablePanel.setMaximumSize(new Dimension(400, 600));
+
+        jDialog.setContentPane(masterNpcAttributesScrollablePanel);
         jDialog.getRootPane().setDefaultButton(createButton);
         jDialog.pack();
         jDialog.setResizable(true);
         jDialog.setLocationRelativeTo(mainFrame);
         jDialog.setVisible(true);
-
-        Component[] components = mainFrame.getMainPanel().getLevelEditorTilemap().getComponents();
-        for (Component component: components)
-        {
-            if (component instanceof TilePanel)
-            {
-                TilePanel tile = (TilePanel) component;
-                if (tile.isMouseHoveringOverTile())
-                {
-                    /*
-                    List<String> sideDialogs = new ArrayList<>();
-                    sideDialogs.add("adasdakalksd");
-                    sideDialogs.add("gbxbxcvxcvzxc");
-                    sideDialogs.add("afzxkjlkjlke");
-
-                    List<PokemonInfo> pokemonInfo = new ArrayList<>();
-                    pokemonInfo.add(new PokemonInfo("CHARIZARD", 5));
-                    pokemonInfo.add(new PokemonInfo("MEWTWO", 100));
-
-                    NpcAttributes npcAttributes = new NpcAttributes
-                    (
-                            "Main Dialog", sideDialogs, pokemonInfo, NpcAttributes.MovemenType.DYNAMIC, 0, false, false
-                    );
-
-                    CommandManager.executeCommand(new SetTileNpcAttributesCommand(tile, npcAttributes));
-                                    */
-                }
-            }
-        }
     }
 
     String[] extractPokemonNames()
@@ -365,4 +463,26 @@ public class SetNpcAttributesActionListener implements ActionListener
         return pokemonNames;
     }
 
+    String[] extractTrainerNames()
+    {
+        String fileContents = null;
+        try
+        {
+            fileContents = new String(Files.readAllBytes(new File(mainFrame.getMainPanel().getGameDataDirectoryPath() + "trainer_types.json").toPath()));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        JSONObject rootJsonObject = new JSONObject(fileContents);
+
+        String[] trainerNames = new String[rootJsonObject.keySet().size()];
+        int trainerNameIndex = 0;
+        for (String trainerName: rootJsonObject.keySet())
+        {
+            trainerNames[trainerNameIndex++] = trainerName;
+        }
+
+        return trainerNames;
+    }
 }
