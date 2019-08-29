@@ -61,7 +61,7 @@ public class SaveActionListener implements ActionListener
         }
         else
         {
-            JFileChooser fc = new JFileChooser(resourceDirectoryChooserOriginPath);
+            JFileChooser fc = new JFileChooser(mainPanel.getGameLevelsDirectoryPath());
             FileNameExtensionFilter fileFilter = new FileNameExtensionFilter("JSON (*.json)", "json");
             fc.setFileFilter(fileFilter);
 
@@ -97,6 +97,24 @@ public class SaveActionListener implements ActionListener
 
     private void saveLevelToFile(final File file)
     {
+        if (((LevelEditorTilemapPanel)mainPanel.getLevelEditorTilemap()).getLevelMusicName() == null)
+        {
+            int selOption = JOptionPane.showConfirmDialog (null, "Select music for level?", "Music Selection", JOptionPane.YES_NO_OPTION);
+            if (selOption == JOptionPane.YES_OPTION)
+            {
+                JFileChooser fc = new JFileChooser(mainPanel.getGameMusicDirectoryPath());
+                FileNameExtensionFilter fileFilter = new FileNameExtensionFilter("OGG (*.ogg)", "ogg");
+                fc.setFileFilter(fileFilter);
+
+                int choice = fc.showSaveDialog(mainPanel);
+                if (choice == JFileChooser.APPROVE_OPTION)
+                {
+                    String musicName = fc.getSelectedFile().getName().split("\\.")[0];
+                    ((LevelEditorTilemapPanel)mainPanel.getLevelEditorTilemap()).setLevelMusicName(musicName);
+                }
+            }
+        }
+
         Pair<Integer> exportedImageSize = exportOptimizedLevelGroundLayer(file);
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(file)))
         {
@@ -122,7 +140,16 @@ public class SaveActionListener implements ActionListener
             fileContentsBuilder.append("    {\n");
             fileContentsBuilder.append("        \"name\": \"" + file.getName().split("\\.")[0] + "\",\n");
             fileContentsBuilder.append("        \"dimensions\": { \"cols\": " + levelTilemap.getTileCols() + ", \"rows\": " + levelTilemap.getTileRows() + "},\n");
-            fileContentsBuilder.append("        \"color\": \"" + ((LevelEditorTilemapPanel)levelTilemap).getLevelColor().getName() + "\"\n");
+            fileContentsBuilder.append("        \"color\": \"" + ((LevelEditorTilemapPanel)levelTilemap).getLevelColor().getName() + "\"");
+            if (((LevelEditorTilemapPanel)levelTilemap).getLevelMusicName() == null)
+            {
+                fileContentsBuilder.append("\n");
+            }
+            else
+            {
+                fileContentsBuilder.append(",\n");
+                fileContentsBuilder.append("        \"music\": \"" + ((LevelEditorTilemapPanel)levelTilemap).getLevelMusicName() + "\"\n");
+            }
             fileContentsBuilder.append("    },\n");
             fileContentsBuilder.append("    \"level_ground_layer_editor\":\n");
             fileContentsBuilder.append("    [\n");

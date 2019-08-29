@@ -36,7 +36,7 @@ public class OpenActionListener implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        JFileChooser fc = new JFileChooser(resourceDirectoryChooserOriginPath);
+        JFileChooser fc = new JFileChooser(mainFrame.getMainPanel().getGameLevelsDirectoryPath());
         FileNameExtensionFilter fileFilter = new FileNameExtensionFilter("JSON (*.json)", "json");
         fc.setFileFilter(fileFilter);
 
@@ -69,6 +69,11 @@ public class OpenActionListener implements ActionListener
                     ((LevelEditorTilemapPanel)mainPanel.getLevelEditorTilemap()).setLevelColor(color);
                     break;
                 }
+            }
+
+            if (levelHeader.has("music"))
+            {
+                ((LevelEditorTilemapPanel)mainPanel.getLevelEditorTilemap()).setLevelMusicName(levelHeader.getString("music"));
             }
 
             JSONArray groundLayerArray = rootJsonObject.getJSONArray("level_ground_layer_editor");

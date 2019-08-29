@@ -8,10 +8,10 @@ import java.io.IOException;
 
 public class LevelEditorTilemapPanel extends BaseTilemapPanel
 {
-    private Colors levelColor;
-
-    // Statically load tile selection image
     private static Image DATA_IMAGE = null;
+
+    private Colors levelColor;
+    private String levelMusicName = null;
 
     static
     {
@@ -29,6 +29,7 @@ public class LevelEditorTilemapPanel extends BaseTilemapPanel
     {
         super(tilemapCols, tilemapRows, tileSize, false, false);
         levelColor = Colors.PALLET_COLOR;
+        levelMusicName = null;
     }
 
     @Override
@@ -99,4 +100,8 @@ public class LevelEditorTilemapPanel extends BaseTilemapPanel
 
     public Colors getLevelColor() { return this.levelColor; }
     public void setLevelColor(final Colors levelColor) { this.levelColor = levelColor; }
+
+    public String getLevelMusicName() { return this.levelMusicName; }
+    public void setLevelMusicName(final String musicName) { this.levelMusicName = musicName; }
+
 }

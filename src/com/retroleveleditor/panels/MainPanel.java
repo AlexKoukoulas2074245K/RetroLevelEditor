@@ -17,10 +17,12 @@ import java.util.Map;
 public class MainPanel extends JPanel
 {
     public static final String ENVIRONMENTS_ATLAS_RELATIVE_PATH = "/atlases/environments.png";
-    public static final String CHARACTERS_ATLAS_RELATIVE_PATH = "/atlases/characters.png";
-    public static final String TEXTURES_RELATIVE_DIRECTORY = "/textures/";
-    public static final String MODELS_RELATIVE_DIRECTORY = "/models/";
-    public static final String GAME_DATA_RELATIVE_DIRECTORY = "/gamedata/";
+    public static final String CHARACTERS_ATLAS_RELATIVE_PATH   = "/atlases/characters.png";
+    public static final String TEXTURES_RELATIVE_DIRECTORY      = "/textures/";
+    public static final String MODELS_RELATIVE_DIRECTORY        = "/models/";
+    public static final String GAME_DATA_RELATIVE_DIRECTORY     = "/gamedata/";
+    public static final String LEVELS_RELATIVE_DIRECTORY        = "/levels/";
+    public static final String MUSIC_RELATIVE_DIRECTORY         = "/music/";
 
     private static final int SCROLL_UNIT = 8;
     private static final int H_COMPONENT_GAP = 10;
@@ -156,7 +158,11 @@ public class MainPanel extends JPanel
 
     public String getGameDataDirectoryPath() { return this.resourceRootDirectory + GAME_DATA_RELATIVE_DIRECTORY; }
 
+    public String getGameLevelsDirectoryPath() { return this.resourceRootDirectory + LEVELS_RELATIVE_DIRECTORY; }
+
     public String getGameTexturesDirectoryPath() { return this.resourceRootDirectory + TEXTURES_RELATIVE_DIRECTORY; }
+
+    public String getGameMusicDirectoryPath() { return this.resourceRootDirectory + MUSIC_RELATIVE_DIRECTORY; }
 
     public void setCurrentWorkingFile(final File newWorkingFile)
     {
