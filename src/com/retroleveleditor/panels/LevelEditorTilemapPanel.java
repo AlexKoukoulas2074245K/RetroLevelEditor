@@ -81,6 +81,22 @@ public class LevelEditorTilemapPanel extends BaseTilemapPanel
                     {
                         g2.setColor(new Color(200, 200, 200, 150));
                     }
+                    else if (tile.getTileTraits() == TilePanel.TileTraits.SEA_TILE_EDGE)
+                    {
+                        g2.setColor(new Color(0, 200, 255, 150));
+                    }
+                    else if (tile.getTileTraits() == TilePanel.TileTraits.FLOW_TRIGGER)
+                    {
+                        g2.setColor(new Color(236, 245, 66, 150));
+                    }
+                    else if (tile.getTileTraits() == TilePanel.TileTraits.CUTTABLE_TREE)
+                    {
+                        g2.setColor(new Color(0, 255, 0, 150));
+                    }
+                    else if (tile.getTileTraits() == TilePanel.TileTraits.PUSHABLE_ROCK)
+                    {
+                        g2.setColor(new Color(105, 67, 14, 150));
+                    }
                     g2.fillRect(tile.getX() - 1, tile.getY() - 1, tile.getWidth(), tile.getHeight());
                     g2.setColor(new Color(255, 255, 255, 255));
                 }

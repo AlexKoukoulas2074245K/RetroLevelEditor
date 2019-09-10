@@ -82,6 +82,10 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
         getTileAtCoords(0, 6).setTileTraits(TilePanel.TileTraits.JUMPING_LEDGE_BOT);
         getTileAtCoords(0, 7).setTileTraits(TilePanel.TileTraits.JUMPING_LEDGE_LEFT);
         getTileAtCoords(0, 8).setTileTraits(TilePanel.TileTraits.JUMPING_LEDGE_RIGHT);
+        getTileAtCoords(0, 9).setTileTraits(TilePanel.TileTraits.SEA_TILE_EDGE);
+        getTileAtCoords(0, 10).setTileTraits(TilePanel.TileTraits.FLOW_TRIGGER);
+        getTileAtCoords(0, 11).setTileTraits(TilePanel.TileTraits.CUTTABLE_TREE);
+        getTileAtCoords(0, 12).setTileTraits(TilePanel.TileTraits.PUSHABLE_ROCK);
     }
 
     @Override
