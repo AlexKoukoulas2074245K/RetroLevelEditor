@@ -191,6 +191,8 @@ public class MainPanel extends JPanel
         File[] allModelFiles = new File(resourceRootDirectory + MODELS_RELATIVE_DIRECTORY).listFiles();
         File[] allTextureFiles = new File(resourceRootDirectory + TEXTURES_RELATIVE_DIRECTORY).listFiles();
 
+        boolean isOnWindows = System.getProperty("os.name").indexOf("Win") >= 0;
+
         for (File f: allModelFiles)
         {
             if (f.getName().startsWith("."))
@@ -201,7 +203,17 @@ public class MainPanel extends JPanel
             String modelFileName = f.getName().split("\\.")[0];
             for (File tf: allTextureFiles)
             {
-                String[] textureFileSplitBySeparator = tf.getName().split(File.separator);
+                String[] textureFileSplitBySeparator = null;
+
+                if (isOnWindows)
+                {
+                    textureFileSplitBySeparator = tf.getName().split("\\\\");
+                }
+                else
+                {
+                    textureFileSplitBySeparator = tf.getName().split(File.separator);
+                }
+
                 String[] textureFileNameSplitByDot = textureFileSplitBySeparator[textureFileSplitBySeparator.length - 1].split("\\.");
 
                 if (textureFileNameSplitByDot[0].equals(modelFileName))
