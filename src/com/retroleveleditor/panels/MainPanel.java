@@ -201,7 +201,10 @@ public class MainPanel extends JPanel
             String modelFileName = f.getName().split("\\.")[0];
             for (File tf: allTextureFiles)
             {
-                if (tf.getName().startsWith(modelFileName))
+                String[] textureFileSplitBySeparator = tf.getName().split(File.separator);
+                String[] textureFileNameSplitByDot = textureFileSplitBySeparator[textureFileSplitBySeparator.length - 1].split("\\.");
+
+                if (textureFileNameSplitByDot[0].equals(modelFileName))
                 {
                     result.put(f, tf);
                 }
