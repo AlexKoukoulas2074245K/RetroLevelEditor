@@ -210,6 +210,8 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
         {
             boolean isCharacterAtlas = this.atlasPath.endsWith(MainPanel.CHARACTERS_ATLAS_RELATIVE_PATH);
 
+            List<Pair<Integer>> southFacingCharacterCoords = extractSouthFacingCharacterCoords();
+
             BufferedImage atlasImage = ImageIO.read(new File(this.atlasPath));
             if (isCharacterAtlas) CHARACTER_ATLAS_IMAGE = atlasImage;
             else ENVIRONMENT_ATLAS_IMAGE = atlasImage;
@@ -229,15 +231,28 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
                                     ATLAS_TILE_SIZE
                             );
 
+                    boolean skippedEntry = false;
+
                     if (isCharacterAtlas)
                     {
-                        tile.setCharTileImage(new TileImage(tileImage, "", x, y));
+                        if (southFacingCharacterCoords.contains(new Pair<>(x, y)))
+                        {
+                            tile.setCharTileImage(new TileImage(tileImage, "", x, y));
+                        }
+                        else
+                        {
+                            skippedEntry = true;
+                        }
                     }
                     else
                     {
                         tile.setDefaultTileImage(new TileImage(tileImage, "", x, y));
                     }
 
+                    if (skippedEntry)
+                    {
+                        continue;
+                    }
 
                     if (++colIndex >= this.tileCols)
                     {
@@ -295,5 +310,27 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
                 e.printStackTrace();
             }
         }
+    }
+
+    private List<Pair<Integer>> extractSouthFacingCharacterCoords()
+    {
+        List<Pair<Integer>> result = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/npcs_atlas_coords.dat"))))
+        {
+            String line;
+            while ((line = br.readLine()) != null)
+            {
+                String[] lineComponents = line.split(",");
+                result.add(new Pair<>(Integer.parseInt(lineComponents[0]), Integer.parseInt(lineComponents[1])));
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        return result;
+
     }
 }

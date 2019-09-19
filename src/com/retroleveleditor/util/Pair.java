@@ -9,4 +9,16 @@ public class Pair<T>
         this.x = x;
         this.y = y;
     }
+
+    public boolean equals(Object other)
+    {
+        if (other instanceof Pair<?>)
+        {
+            if ( ((Pair<?>)other).x.equals(this.x) && ((Pair<?>)other).y.equals(this.y))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }
