@@ -1,6 +1,8 @@
 package com.retroleveleditor.action_listeners;
 
 import com.retroleveleditor.panels.*;
+import com.retroleveleditor.util.Colors;
+import com.retroleveleditor.util.DisposeDialogHandler;
 import com.retroleveleditor.util.Pair;
 import com.retroleveleditor.util.PokemonInfo;
 import org.json.JSONArray;
@@ -8,6 +10,7 @@ import org.json.JSONObject;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -19,13 +22,21 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
 public class SaveActionListener implements ActionListener
 {
+    class ParentLocationWrapper
+    {
+        String parentLocation;
+    }
+
     public static String resourceDirectoryChooserOriginPath = ".";
     private static final String LEVEL_FILE_EXTENSION = ".json";
+    private static final String TOWN_MAP_LOCATIONS_FILE_NAME = "town_map_locations.json";
+    private static final String UNDERGROUND_MODELS_FILE_NAME = "underground_model_names.json";
     private static final String OPTIMIZED_GROUND_LAYER_TEXTURE_NAME = "_groundLayer.png";
     private static Image TRANSPARENT_TILE_IMAGE = null;
     static
@@ -111,6 +122,18 @@ public class SaveActionListener implements ActionListener
                 {
                     String musicName = fc.getSelectedFile().getName().split("\\.")[0];
                     ((LevelEditorTilemapPanel)mainPanel.getLevelEditorTilemap()).setLevelMusicName(musicName);
+                }
+            }
+        }
+
+        if (file.getName().startsWith("in_"))
+        {
+            if (doesLocationExistInTownMapLocationsFile(file) == false)
+            {
+                int selOption = JOptionPane.showConfirmDialog (null, "Select owner level location?", "Owner Level Selection", JOptionPane.YES_NO_OPTION);
+                if (selOption == JOptionPane.YES_OPTION)
+                {
+                    selectOwnerLevelLocation(file);
                 }
             }
         }
@@ -519,7 +542,7 @@ public class SaveActionListener implements ActionListener
         String fileContents = null;
         try
         {
-            fileContents = new String(Files.readAllBytes(new File(mainPanel.getGameDataDirectoryPath() + "underground_model_names.json").toPath()));
+            fileContents = new String(Files.readAllBytes(new File(mainPanel.getGameDataDirectoryPath() + UNDERGROUND_MODELS_FILE_NAME).toPath()));
         }
         catch (IOException e)
         {
@@ -549,4 +572,144 @@ public class SaveActionListener implements ActionListener
         return false;
     }
 
+    boolean doesLocationExistInTownMapLocationsFile(final File file)
+    {
+        String levelName = file.getName().split("\\.")[0];
+        String fileContents = null;
+        try
+        {
+            fileContents = new String(Files.readAllBytes(new File(mainPanel.getGameDataDirectoryPath() + TOWN_MAP_LOCATIONS_FILE_NAME).toPath()));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        JSONObject rootJsonObject = new JSONObject(fileContents);
+
+        JSONArray indoorLocationsToOwnerLocationsArray = rootJsonObject.getJSONArray("indoor_locations_to_owner_locations");
+        for (int i = 0; i < indoorLocationsToOwnerLocationsArray.length(); ++i)
+        {
+            JSONObject indoorLocationToOwnerLocationJsonObject = indoorLocationsToOwnerLocationsArray.getJSONObject(i);
+            if (indoorLocationToOwnerLocationJsonObject.getString("indoor_location_name").equals(levelName))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    void selectOwnerLevelLocation(final File file)
+    {
+        // Gather parent locations available
+        String levelName = file.getName().split("\\.")[0];
+        String fileContents = null;
+        try
+        {
+            fileContents = new String(Files.readAllBytes(new File(mainPanel.getGameDataDirectoryPath() + TOWN_MAP_LOCATIONS_FILE_NAME).toPath()));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        JSONObject rootJsonObject      = new JSONObject(fileContents);
+        JSONArray parentLocationsArray = rootJsonObject.getJSONArray("location_coords");
+        List<String> parentLocations   = new ArrayList<>();
+
+        for (int i = 0; i < parentLocationsArray.length(); ++i)
+        {
+            JSONObject parentLocationJsonObject = parentLocationsArray.getJSONObject(i);
+            parentLocations.add(parentLocationJsonObject.getString("location_name"));
+        }
+
+        JFrame frame = (JFrame)SwingUtilities.getWindowAncestor(mainPanel);
+        JDialog jDialog = new JDialog(frame , "Set Level Owner Location", Dialog.ModalityType.APPLICATION_MODAL);
+
+        JComboBox<String> parentLocationsComboBox = new JComboBox<String>(parentLocations.toArray(new String[0]));
+        parentLocationsComboBox.setSelectedIndex(0);
+
+        ParentLocationWrapper parentLocationWrapper = new ParentLocationWrapper();
+
+        JPanel parentLocationPanel = new JPanel();
+        parentLocationPanel.add(parentLocationsComboBox);
+
+        parentLocationsComboBox.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent arg)
+            {
+                parentLocationWrapper.parentLocation = parentLocations.get(parentLocationsComboBox.getSelectedIndex());
+            }
+        });
+
+        JButton setColorButton = new JButton("Select");
+        setColorButton.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                addIndoorLocationToOwnerLocation(levelName, parentLocationWrapper.parentLocation);
+                jDialog.dispose();
+            }
+        });
+
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.addActionListener(new DisposeDialogHandler(jDialog));
+
+        JPanel actionButtonsPanel = new JPanel();
+        actionButtonsPanel.add(setColorButton);
+        actionButtonsPanel.add(cancelButton);
+        actionButtonsPanel.setBorder(new EmptyBorder(15, 0, 10, 0));
+
+        JPanel setParentLocationPanel = new JPanel(new BorderLayout());
+        setParentLocationPanel.add(parentLocationPanel, BorderLayout.NORTH);
+        setParentLocationPanel.add(actionButtonsPanel, BorderLayout.SOUTH);
+
+        jDialog.setContentPane(setParentLocationPanel);
+        jDialog.getRootPane().setDefaultButton(setColorButton);
+        jDialog.pack();
+        jDialog.setResizable(false);
+        jDialog.setLocationRelativeTo(frame);
+        jDialog.setVisible(true);
+        jDialog.getContentPane().setLayout(null);
+    }
+
+    private void addIndoorLocationToOwnerLocation(final String indoorLocationName, final String ownerLocationName)
+    {
+        String fileContents = null;
+        try
+        {
+            fileContents = new String(Files.readAllBytes(new File(mainPanel.getGameDataDirectoryPath() + TOWN_MAP_LOCATIONS_FILE_NAME).toPath()));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        JSONObject rootJsonObject = new JSONObject(fileContents);
+
+        JSONArray indoorLocationsToOwnerLocationsArray = rootJsonObject.getJSONArray("indoor_locations_to_owner_locations");
+        JSONObject newEntry = new JSONObject();
+        newEntry.put("indoor_location_name", indoorLocationName);
+        newEntry.put("owner_location_name", ownerLocationName);
+        indoorLocationsToOwnerLocationsArray.put(newEntry);
+
+
+        JSONArray locationCoordsArray = rootJsonObject.getJSONArray("location_coords");
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(new File(mainPanel.getGameDataDirectoryPath() + TOWN_MAP_LOCATIONS_FILE_NAME))))
+        {
+            bw.write("{\n");
+            bw.write("\"indoor_locations_to_owner_locations\": "); bw.write(indoorLocationsToOwnerLocationsArray.toString());
+            bw.write(",\n");
+            bw.write("\"location_coords\": "); bw.write(locationCoordsArray.toString());
+            bw.write("\n}");
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
 }
