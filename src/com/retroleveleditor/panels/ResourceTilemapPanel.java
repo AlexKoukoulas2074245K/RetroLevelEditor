@@ -16,7 +16,7 @@ public class ResourceTilemapPanel extends BaseTilemapPanel
     public static BufferedImage CHARACTER_ATLAS_IMAGE = null;
 
     // Statically load tile selection image
-    private static Image SELECTION_IMAGE = null;
+    public static Image SELECTION_IMAGE = null;
     private static Image FILLER_SELECTION_IMAGE = null;
     private static Image MODEL_SELECTION_IMAGE = null;
 

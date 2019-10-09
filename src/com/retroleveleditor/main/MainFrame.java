@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.security.Key;
 
 public class MainFrame extends JFrame
@@ -15,22 +16,34 @@ public class MainFrame extends JFrame
     public static final int MENU_MODIFIER_KEY = System.getProperty("os.name").indexOf("Win") >= 0 ? ActionEvent.CTRL_MASK : ActionEvent.META_MASK;
 
     private MainPanel mainPanel;
+    private String commandLineLevelName;
 
-    public MainFrame()
+    public MainFrame(String[] args)
     {
         super("Retro Level Editor");
 
         try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); }
         catch (Exception e) { e.printStackTrace(); }
 
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         resetContentPane(32, 32, 48);
         pack();
         setMinimumSize(getSize());
         setLocationRelativeTo(null);
         setVisible(true);
         setResizable(true);
-        addWindowListener(new ProgramExitingWindowAdapter());
+
+        if (args.length > 0)
+        {
+            commandLineLevelName = args[0];
+            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            OpenActionListener.loadLevelFromFile(this, new File(mainPanel.getGameLevelsDirectoryPath() + commandLineLevelName + ".json"));
+        }
+        else
+        {
+            setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            addWindowListener(new ProgramExitingWindowAdapter());
+            requestFocus();
+        }
     }
 
     public void resetContentPane(final int cols, final int rows, final int tileSize)

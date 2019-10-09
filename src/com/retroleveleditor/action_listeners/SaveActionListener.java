@@ -37,6 +37,7 @@ public class SaveActionListener implements ActionListener
     private static final String LEVEL_FILE_EXTENSION = ".json";
     private static final String TOWN_MAP_LOCATIONS_FILE_NAME = "town_map_locations.json";
     private static final String UNDERGROUND_MODELS_FILE_NAME = "underground_model_names.json";
+    private static final String WARP_CONNECTIONS_FILE_NAME = "warp_connections.json";
     private static final String OPTIMIZED_GROUND_LAYER_TEXTURE_NAME = "_groundLayer.png";
     private static Image TRANSPARENT_TILE_IMAGE = null;
     static
@@ -55,12 +56,14 @@ public class SaveActionListener implements ActionListener
     private final MainPanel mainPanel;
     private final boolean shouldAlwaysSaveToDifferentLocation;
     private final List<String> undergroundModelNames;
+    private Process process;
 
     public SaveActionListener(final MainPanel mainPanel, final boolean shouldAlwaysSaveToDifferentLocation)
     {
         this.mainPanel = mainPanel;
         this.shouldAlwaysSaveToDifferentLocation = shouldAlwaysSaveToDifferentLocation;
         this.undergroundModelNames = extractUndergroundModelNames();
+        this.process = null;
     }
 
     @Override
@@ -108,6 +111,8 @@ public class SaveActionListener implements ActionListener
 
     private void saveLevelToFile(final File file)
     {
+        String levelName = file.getName().split("\\.")[0];
+
         if (((LevelEditorTilemapPanel)mainPanel.getLevelEditorTilemap()).getLevelMusicName() == null)
         {
             int selOption = JOptionPane.showConfirmDialog (null, "Select music for level?", "Music Selection", JOptionPane.YES_NO_OPTION);
@@ -135,6 +140,15 @@ public class SaveActionListener implements ActionListener
                 {
                     selectOwnerLevelLocation(file);
                 }
+            }
+        }
+
+        if (doesLevelHaveWarpTiles() && isThereAtLeastOneWarpNotRegistered(levelName))
+        {
+            int selOption = JOptionPane.showConfirmDialog (null, "Link unregistered warp connections?", "Link warp connections", JOptionPane.YES_NO_OPTION);
+            if (selOption == JOptionPane.YES_OPTION)
+            {
+                startManualWarpLinking(levelName);
             }
         }
 
@@ -711,5 +725,154 @@ public class SaveActionListener implements ActionListener
         {
             e.printStackTrace();
         }
+    }
+
+    private boolean doesLevelHaveWarpTiles()
+    {
+        Component[] components = mainPanel.getLevelEditorTilemap().getComponents();
+
+        for (Component component: components)
+        {
+            if (component instanceof TilePanel)
+            {
+                TilePanel tile = (TilePanel)component;
+                if (tile.getTileTraits() == TilePanel.TileTraits.PRESS_WARP ||
+                    tile.getTileTraits() == TilePanel.TileTraits.NO_ANIM_WARP ||
+                    tile.getTileTraits() == TilePanel.TileTraits.WARP)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isThereAtLeastOneWarpNotRegistered(final String currentLevelName)
+    {
+        return getUnregisteredWarpTiles(currentLevelName).size() > 0;
+    }
+
+    private List<TilePanel> getUnregisteredWarpTiles(final String currentLevelName)
+    {
+        List<TilePanel> unregisteredWarpTiles = new ArrayList<>();
+
+        String fileContents = null;
+        try
+        {
+            fileContents = new String(Files.readAllBytes(new File(mainPanel.getGameDataDirectoryPath() + WARP_CONNECTIONS_FILE_NAME).toPath()));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        JSONObject rootJsonObject  = new JSONObject(fileContents);
+        JSONArray connectionsArray = rootJsonObject.getJSONArray("connections");
+
+        Component[] components = mainPanel.getLevelEditorTilemap().getComponents();
+
+        for (Component component: components)
+        {
+            if (component instanceof TilePanel)
+            {
+                TilePanel tile = (TilePanel)component;
+                if (tile.getTileTraits() == TilePanel.TileTraits.PRESS_WARP ||
+                        tile.getTileTraits() == TilePanel.TileTraits.NO_ANIM_WARP ||
+                        tile.getTileTraits() == TilePanel.TileTraits.WARP)
+                {
+
+                    if (isWarpTileInFromEntryInConnectionArray(tile, currentLevelName, connectionsArray) == false)
+                    {
+                        unregisteredWarpTiles.add(tile);
+                    }
+                }
+            }
+        }
+
+        return unregisteredWarpTiles;
+    }
+
+    private boolean isWarpTileInFromEntryInConnectionArray(final TilePanel tile, final String currentLevelName, final JSONArray connectionsArray)
+    {
+        for (int i = 0; i < connectionsArray.length(); ++i)
+        {
+            JSONObject connectionObject = connectionsArray.getJSONObject(i);
+            JSONObject fromObject = connectionObject.getJSONObject("from");
+
+            if (fromObject.getInt("level_col") == tile.getGameOverworldCol() &&
+                fromObject.getInt("level_row") == tile.getGameOverworldRow(mainPanel.getLevelEditorTilemap().getTileRows()) &&
+                fromObject.getString("level_name").equals(currentLevelName))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void startManualWarpLinking(final String currentLevelName)
+    {
+        List<TilePanel> unregisteredTiles = getUnregisteredWarpTiles(currentLevelName);
+
+        for (TilePanel tilePanel: unregisteredTiles)
+        {
+            selectWarpLinkTarget(tilePanel, currentLevelName);
+        }
+    }
+
+    private void selectWarpLinkTarget(final TilePanel tilePanel, final String currentLevelName)
+    {
+        JFrame frame = (JFrame)SwingUtilities.getWindowAncestor(mainPanel);
+        JDialog jDialog = new JDialog(frame , "Set Warp Link Target for tile: " + tilePanel.getGameOverworldCol() + "," + tilePanel.getGameOverworldRow(mainPanel.getLevelEditorTilemap().getTileRows()), Dialog.ModalityType.APPLICATION_MODAL);
+
+        JPanel referenceAreaPanel = new WarpReferenceImagePanel(mainPanel, tilePanel);
+
+        JButton linkButton = new JButton("Link");
+        linkButton.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                //addIndoorLocationToOwnerLocation(levelName, parentLocationWrapper.parentLocation);
+                jDialog.dispose();
+            }
+        });
+
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.addActionListener(new DisposeDialogHandler(jDialog));
+
+        JPanel actionButtonsPanel = new JPanel();
+        actionButtonsPanel.add(linkButton);
+        actionButtonsPanel.add(cancelButton);
+        actionButtonsPanel.setBorder(new EmptyBorder(15, 0, 10, 0));
+
+        JPanel setParentLocationPanel = new JPanel(new BorderLayout());
+        setParentLocationPanel.add(referenceAreaPanel, BorderLayout.NORTH);
+        setParentLocationPanel.add(actionButtonsPanel, BorderLayout.SOUTH);
+
+        jDialog.setContentPane(setParentLocationPanel);
+        jDialog.getRootPane().setDefaultButton(linkButton);
+        jDialog.pack();
+        jDialog.setResizable(false);
+        jDialog.setLocationRelativeTo(frame);
+        jDialog.setVisible(true);
+        jDialog.getContentPane().setLayout(null);
+
+        /*
+            try
+            {
+                if (process != null)
+                {
+                    process.destroy();
+                }
+
+                process = Runtime.getRuntime().exec("java -jar " + mainPanel.getResourceRootDirectory() + "/../RetroLevelEditor.jar " + "pallet_town");
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+            */
     }
 }

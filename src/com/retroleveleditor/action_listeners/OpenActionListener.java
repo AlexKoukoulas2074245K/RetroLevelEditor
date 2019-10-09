@@ -43,11 +43,11 @@ public class OpenActionListener implements ActionListener
         int choice = fc.showOpenDialog(mainFrame);
         if (choice == JFileChooser.APPROVE_OPTION)
         {
-            loadLevelFromFile(fc.getSelectedFile());
+            loadLevelFromFile(mainFrame, fc.getSelectedFile());
         }
     }
 
-    private void loadLevelFromFile(final File file)
+    public static void loadLevelFromFile(final MainFrame mainFrame, final File file)
     {
         try
         {
