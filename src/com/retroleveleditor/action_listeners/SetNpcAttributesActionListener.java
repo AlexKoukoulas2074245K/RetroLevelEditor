@@ -24,6 +24,8 @@ import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class SetNpcAttributesActionListener implements ActionListener
@@ -45,8 +47,15 @@ public class SetNpcAttributesActionListener implements ActionListener
         this.sideDialogs = new ArrayList<>();
         this.pokemonRosterEntryPanels = new ArrayList<>();
         this.trainerDataPanel = null;
-        this.pokemonNames = extractPokemonNames();
-        this.trainerNames = extractTrainerNames();
+
+        List<String> pokemonNamesSorted = Arrays.asList(extractPokemonNames());
+        Collections.sort(pokemonNamesSorted);
+
+        List<String> trainerNamesSorted = Arrays.asList(extractTrainerNames());
+        Collections.sort(trainerNamesSorted);
+
+        this.pokemonNames = pokemonNamesSorted.toArray(new String[0]);
+        this.trainerNames = trainerNamesSorted.toArray(new String[0]);
     }
 
     @Override

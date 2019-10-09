@@ -12,18 +12,19 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.text.NumberFormat;
+import java.util.*;
 import java.util.List;
 
 public class SaveActionListener implements ActionListener
@@ -32,6 +33,13 @@ public class SaveActionListener implements ActionListener
     {
         String parentLocation;
     }
+
+    class WarpTargetLevelWrapper
+    {
+        String levelName;
+        Process process;
+    }
+
 
     public static String resourceDirectoryChooserOriginPath = ".";
     private static final String LEVEL_FILE_EXTENSION = ".json";
@@ -56,14 +64,14 @@ public class SaveActionListener implements ActionListener
     private final MainPanel mainPanel;
     private final boolean shouldAlwaysSaveToDifferentLocation;
     private final List<String> undergroundModelNames;
-    private Process process;
+    private final WarpTargetLevelWrapper selectedLevelData;
 
     public SaveActionListener(final MainPanel mainPanel, final boolean shouldAlwaysSaveToDifferentLocation)
     {
         this.mainPanel = mainPanel;
         this.shouldAlwaysSaveToDifferentLocation = shouldAlwaysSaveToDifferentLocation;
         this.undergroundModelNames = extractUndergroundModelNames();
-        this.process = null;
+        this.selectedLevelData = new WarpTargetLevelWrapper();
     }
 
     @Override
@@ -638,6 +646,8 @@ public class SaveActionListener implements ActionListener
             parentLocations.add(parentLocationJsonObject.getString("location_name"));
         }
 
+        Collections.sort(parentLocations);
+
         JFrame frame = (JFrame)SwingUtilities.getWindowAncestor(mainPanel);
         JDialog jDialog = new JDialog(frame , "Set Level Owner Location", Dialog.ModalityType.APPLICATION_MODAL);
 
@@ -824,9 +834,80 @@ public class SaveActionListener implements ActionListener
     private void selectWarpLinkTarget(final TilePanel tilePanel, final String currentLevelName)
     {
         JFrame frame = (JFrame)SwingUtilities.getWindowAncestor(mainPanel);
-        JDialog jDialog = new JDialog(frame , "Set Warp Link Target for tile: " + tilePanel.getGameOverworldCol() + "," + tilePanel.getGameOverworldRow(mainPanel.getLevelEditorTilemap().getTileRows()), Dialog.ModalityType.APPLICATION_MODAL);
+        JDialog jDialog = new JDialog(frame , "Set Warp Target for: " + tilePanel.getGameOverworldCol() + "," + tilePanel.getGameOverworldRow(mainPanel.getLevelEditorTilemap().getTileRows()), Dialog.ModalityType.APPLICATION_MODAL);
+        jDialog.getRootPane().registerKeyboardAction(new DisposeDialogHandler(jDialog), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
 
         JPanel referenceAreaPanel = new WarpReferenceImagePanel(mainPanel, tilePanel);
+
+        NumberFormatter dimensionsFormatter = new NumberFormatter(NumberFormat.getInstance());
+        dimensionsFormatter.setValueClass(Integer.class);
+        dimensionsFormatter.setMinimum(1);
+        dimensionsFormatter.setCommitsOnValidEdit(false);
+
+        LabelledInputPanel levelColsPanel = new LabelledInputPanel("col: ", dimensionsFormatter, 3, 0);
+        LabelledInputPanel levelRowsPanel = new LabelledInputPanel("row: ", dimensionsFormatter, 3, 0);
+
+        JPanel targetCoordsPanel = new JPanel();
+        targetCoordsPanel.setLayout(new BoxLayout(targetCoordsPanel, BoxLayout.X_AXIS));
+        targetCoordsPanel.add(levelColsPanel);
+        targetCoordsPanel.add(levelRowsPanel);
+
+        List<String> availableLevels = new ArrayList<>();
+        File levelDirectory = new File(mainPanel.getGameLevelsDirectoryPath());
+        for (File f: levelDirectory.listFiles())
+        {
+            if (f.getName().startsWith(".") == false)
+            {
+                availableLevels.add(f.getName());
+            }
+        }
+
+        Collections.sort(availableLevels);
+
+        JComboBox<String> availableLevelsComboBox = new JComboBox<String>(availableLevels.toArray(new String[0]));
+        availableLevelsComboBox.setSelectedIndex(0);
+
+        selectedLevelData.levelName = "";
+        selectedLevelData.process   = null;
+
+        availableLevelsComboBox.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent arg)
+            {
+                selectedLevelData.levelName = availableLevels.get(availableLevelsComboBox.getSelectedIndex());
+
+                try
+                {
+                    if (selectedLevelData.process != null)
+                    {
+                        selectedLevelData.process.destroy();
+                    }
+
+                    selectedLevelData.process = Runtime.getRuntime().exec("java -jar " + mainPanel.getResourceRootDirectory() + "/../RetroLevelEditor.jar " + selectedLevelData.levelName.split("\\.")[0]);
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        JLabel selectLevelLabel = new JLabel("Select Level");
+        selectLevelLabel.setHorizontalAlignment(JLabel.CENTER);
+
+        JPanel levelSelectionPanel = new JPanel(new BorderLayout());
+        levelSelectionPanel.add(selectLevelLabel, BorderLayout.NORTH);
+        levelSelectionPanel.add(availableLevelsComboBox, BorderLayout.SOUTH);
+
+
+        JPanel targetSpecPanel = new JPanel(new BorderLayout());
+        targetSpecPanel.add(levelSelectionPanel, BorderLayout.NORTH);
+        targetSpecPanel.add(targetCoordsPanel, BorderLayout.SOUTH);
+        targetSpecPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        JPanel topAreaPanel = new JPanel(new BorderLayout());
+        topAreaPanel.add(referenceAreaPanel, BorderLayout.NORTH);
+        topAreaPanel.add(targetSpecPanel, BorderLayout.SOUTH);
 
         JButton linkButton = new JButton("Link");
         linkButton.addActionListener(new ActionListener()
@@ -834,7 +915,46 @@ public class SaveActionListener implements ActionListener
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                //addIndoorLocationToOwnerLocation(levelName, parentLocationWrapper.parentLocation);
+                String fileContents = null;
+                try
+                {
+                    fileContents = new String(Files.readAllBytes(new File(mainPanel.getGameDataDirectoryPath() + WARP_CONNECTIONS_FILE_NAME).toPath()));
+                }
+                catch (IOException ee)
+                {
+                    ee.printStackTrace();
+                }
+
+                JSONObject rootJsonObject = new JSONObject(fileContents);
+
+                JSONObject newFromEntry = new JSONObject();
+                newFromEntry.put("level_name", currentLevelName);
+                newFromEntry.put("level_col", tilePanel.getGameOverworldCol());
+                newFromEntry.put("level_row", tilePanel.getGameOverworldRow(mainPanel.getLevelEditorTilemap().getTileRows()));
+
+                JSONObject newToEntry = new JSONObject();
+                newToEntry.put("level_name", selectedLevelData.levelName.split("\\.")[0]);
+                newToEntry.put("level_col", Integer.parseInt(levelColsPanel.getTextField().getText()));
+                newToEntry.put("level_row", Integer.parseInt(levelRowsPanel.getTextField().getText()));
+
+                JSONObject newConnectionEntry = new JSONObject();
+                newConnectionEntry.put("from", newFromEntry);
+                newConnectionEntry.put("to", newToEntry);
+
+                JSONArray connectionsArray = rootJsonObject.getJSONArray("connections");
+                connectionsArray.put(newConnectionEntry);
+
+                try (BufferedWriter bw = new BufferedWriter(new FileWriter(new File(mainPanel.getGameDataDirectoryPath() + WARP_CONNECTIONS_FILE_NAME))))
+                {
+                    bw.write("{\n");
+                    bw.write("\"connections\": "); bw.write(connectionsArray.toString());
+                    bw.write("\n}");
+                }
+                catch (IOException ee)
+                {
+                    ee.printStackTrace();
+                }
+
                 jDialog.dispose();
             }
         });
@@ -848,7 +968,7 @@ public class SaveActionListener implements ActionListener
         actionButtonsPanel.setBorder(new EmptyBorder(15, 0, 10, 0));
 
         JPanel setParentLocationPanel = new JPanel(new BorderLayout());
-        setParentLocationPanel.add(referenceAreaPanel, BorderLayout.NORTH);
+        setParentLocationPanel.add(topAreaPanel, BorderLayout.NORTH);
         setParentLocationPanel.add(actionButtonsPanel, BorderLayout.SOUTH);
 
         jDialog.setContentPane(setParentLocationPanel);
@@ -859,20 +979,5 @@ public class SaveActionListener implements ActionListener
         jDialog.setVisible(true);
         jDialog.getContentPane().setLayout(null);
 
-        /*
-            try
-            {
-                if (process != null)
-                {
-                    process.destroy();
-                }
-
-                process = Runtime.getRuntime().exec("java -jar " + mainPanel.getResourceRootDirectory() + "/../RetroLevelEditor.jar " + "pallet_town");
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-            */
     }
 }

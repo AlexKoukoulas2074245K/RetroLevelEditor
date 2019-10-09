@@ -7,8 +7,8 @@ import java.awt.image.BufferedImage;
 
 public class WarpReferenceImagePanel extends JPanel
 {
-    private static final int REFERENCE_IMAGE_COLS      = 5;
-    private static final int REFERENCE_IMAGE_ROWS      = 5;
+    private static final int REFERENCE_IMAGE_COLS      = 9;
+    private static final int REFERENCE_IMAGE_ROWS      = 9;
     private static final int REFERENCE_IMAGE_TILE_SIZE = 48;
 
     private final MainPanel mainPanel;
@@ -20,8 +20,8 @@ public class WarpReferenceImagePanel extends JPanel
         this.mainPanel = mainPanel;
         this.tilePanel = originTile;
 
-        int mainPanelWidth  = mainPanel.getWidth();
-        int mainPanelHeight = mainPanel.getHeight();
+        int mainPanelWidth  = mainPanel.getLevelEditorTilemap().getWidth();
+        int mainPanelHeight = mainPanel.getLevelEditorTilemap().getHeight();
         this.generatedReferenceImage = new BufferedImage(mainPanelWidth, mainPanelHeight, BufferedImage.TYPE_INT_ARGB);
 
         setPreferredSize(new Dimension(REFERENCE_IMAGE_COLS * REFERENCE_IMAGE_TILE_SIZE, REFERENCE_IMAGE_ROWS * REFERENCE_IMAGE_TILE_SIZE));
