@@ -974,8 +974,27 @@ public class SaveActionListener implements ActionListener
                 try (BufferedWriter bw = new BufferedWriter(new FileWriter(new File(mainPanel.getGameDataDirectoryPath() + WARP_CONNECTIONS_FILE_NAME))))
                 {
                     bw.write("{\n");
-                    bw.write("\"connections\": "); bw.write(connectionsArray.toString());
-                    bw.write("\n}");
+                    bw.write("\t\"connections\":\n");
+                    bw.write("\t[\n");
+
+                    StringBuilder connectionsStringBuilder = new StringBuilder();
+                    for (int i = 0; i < connectionsArray.length(); ++i)
+                    {
+                        JSONObject entry = connectionsArray.getJSONObject(i);
+                        JSONObject fromObject = entry.getJSONObject("from");
+                        JSONObject toObject   = entry.getJSONObject("to");
+                        connectionsStringBuilder.append("\t\t{ \"from\": { \"level_name\": \"" + fromObject.getString("level_name") + "\", \"level_col\": " + fromObject.getInt("level_col") + ", \"level_row\": " + fromObject.getInt("level_row") + " }");
+                        connectionsStringBuilder.append(", \"to\": { \"level_name\": \"" + toObject.getString("level_name") + "\", \"level_col\": " + toObject.getInt("level_col") + ", \"level_row\": " + toObject.getInt("level_row") + " } },\n");
+                    }
+
+                    if (connectionsStringBuilder.charAt(connectionsStringBuilder.length() - 2) == ',')
+                    {
+                        connectionsStringBuilder.deleteCharAt(connectionsStringBuilder.length() - 2);
+                    }
+                    bw.write(connectionsStringBuilder.toString());
+
+                    bw.write("\t]\n");
+                    bw.write("}");
                 }
                 catch (IOException ee)
                 {
