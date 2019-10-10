@@ -1,8 +1,8 @@
 package com.retroleveleditor.action_listeners;
 
 import com.retroleveleditor.panels.*;
-import com.retroleveleditor.util.Colors;
 import com.retroleveleditor.util.DisposeDialogHandler;
+import com.retroleveleditor.util.NpcAttributes;
 import com.retroleveleditor.util.Pair;
 import com.retroleveleditor.util.PokemonInfo;
 import org.json.JSONArray;
@@ -40,12 +40,26 @@ public class SaveActionListener implements ActionListener
         Process process;
     }
 
+    class UnregisteredTileWithFlowData
+    {
+        final TilePanel tile;
+        final int levelIndex;
+
+        public UnregisteredTileWithFlowData(final TilePanel tile, final int levelIndex)
+        {
+            this.tile = tile;
+            this.levelIndex = levelIndex;
+        }
+    }
+
 
     public static String resourceDirectoryChooserOriginPath = ".";
     private static final String LEVEL_FILE_EXTENSION = ".json";
     private static final String TOWN_MAP_LOCATIONS_FILE_NAME = "town_map_locations.json";
     private static final String UNDERGROUND_MODELS_FILE_NAME = "underground_model_names.json";
     private static final String WARP_CONNECTIONS_FILE_NAME = "warp_connections.json";
+    private static final String OVERWORLD_FLOW_STATE_MAP_FILE_NAME = "overworld_flow_state_map.json";
+    private static final String EXPOSED_FLOW_STATES_FILE_NAME = "exposed_named_flow_states.json";
     private static final String OPTIMIZED_GROUND_LAYER_TEXTURE_NAME = "_groundLayer.png";
     private static Image TRANSPARENT_TILE_IMAGE = null;
     static
@@ -153,10 +167,19 @@ public class SaveActionListener implements ActionListener
 
         if (doesLevelHaveWarpTiles() && isThereAtLeastOneWarpNotRegistered(levelName))
         {
-            int selOption = JOptionPane.showConfirmDialog (null, "Link unregistered warp connections?", "Link warp connections", JOptionPane.YES_NO_OPTION);
+            int selOption = JOptionPane.showConfirmDialog (null, "Link unregistered warp connections?", "Link Warp Connections", JOptionPane.YES_NO_OPTION);
             if (selOption == JOptionPane.YES_OPTION)
             {
                 startManualWarpLinking(levelName);
+            }
+        }
+
+        if (isThereAtLeastOneTileWithFlowNotRgistered(levelName))
+        {
+            int selOption = JOptionPane.showConfirmDialog (null, "Specify flow states for unregistered tiles?", "Specify Flow States", JOptionPane.YES_NO_OPTION);
+            if (selOption == JOptionPane.YES_OPTION)
+            {
+                startFlowStateSpecification(levelName);
             }
         }
 
@@ -837,7 +860,7 @@ public class SaveActionListener implements ActionListener
         JDialog jDialog = new JDialog(frame , "Set Warp Target for: " + tilePanel.getGameOverworldCol() + "," + tilePanel.getGameOverworldRow(mainPanel.getLevelEditorTilemap().getTileRows()), Dialog.ModalityType.APPLICATION_MODAL);
         jDialog.getRootPane().registerKeyboardAction(new DisposeDialogHandler(jDialog), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
 
-        JPanel referenceAreaPanel = new WarpReferenceImagePanel(mainPanel, tilePanel);
+        JPanel referenceAreaPanel = new TileReferenceImagePanel(mainPanel, tilePanel);
 
         NumberFormatter dimensionsFormatter = new NumberFormatter(NumberFormat.getInstance());
         dimensionsFormatter.setValueClass(Integer.class);
@@ -875,20 +898,24 @@ public class SaveActionListener implements ActionListener
             @Override
             public void actionPerformed(ActionEvent arg)
             {
+                String previousLevelName = selectedLevelData.levelName;
                 selectedLevelData.levelName = availableLevels.get(availableLevelsComboBox.getSelectedIndex());
 
-                try
+                if (previousLevelName.equals(selectedLevelData.levelName) == false)
                 {
-                    if (selectedLevelData.process != null)
+                    try
                     {
-                        selectedLevelData.process.destroy();
-                    }
+                        if (selectedLevelData.process != null)
+                        {
+                            selectedLevelData.process.destroy();
+                        }
 
-                    selectedLevelData.process = Runtime.getRuntime().exec("java -jar " + mainPanel.getResourceRootDirectory() + "/../RetroLevelEditor.jar " + selectedLevelData.levelName.split("\\.")[0]);
-                }
-                catch (IOException e)
-                {
-                    e.printStackTrace();
+                        selectedLevelData.process = Runtime.getRuntime().exec("java -jar " + mainPanel.getResourceRootDirectory() + "/../RetroLevelEditor.jar " + selectedLevelData.levelName.split("\\.")[0]);
+                    }
+                    catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -979,5 +1006,279 @@ public class SaveActionListener implements ActionListener
         jDialog.setVisible(true);
         jDialog.getContentPane().setLayout(null);
 
+    }
+
+    boolean isThereAtLeastOneTileWithFlowNotRgistered(final String currentLevelName)
+    {
+        return getUnregisteredTilesWithFlows(currentLevelName).size() > 0;
+    }
+
+    private List<UnregisteredTileWithFlowData> getUnregisteredTilesWithFlows(final String currentLevelName)
+    {
+        List<UnregisteredTileWithFlowData> unregisteredTilesWithFlow = new ArrayList<>();
+
+        String fileContents = null;
+        try
+        {
+            fileContents = new String(Files.readAllBytes(new File(mainPanel.getGameDataDirectoryPath() + OVERWORLD_FLOW_STATE_MAP_FILE_NAME).toPath()));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        JSONObject rootJsonObject  = new JSONObject(fileContents);
+        JSONArray npcFlowStatesArray = rootJsonObject.getJSONArray("npc_flow_states");
+        JSONArray triggerFlowStatesArray = rootJsonObject.getJSONArray("trigger_flow_states");
+
+        Component[] components = mainPanel.getLevelEditorTilemap().getComponents();
+        int levelIndexCounter = 0;
+        for (Component component: components)
+        {
+            if (component instanceof TilePanel)
+            {
+                TilePanel tile = (TilePanel) component;
+                if (tile.getNpcAttributes() != null)
+                {
+                    if (doesNpcHaveAnyFlowTriggeringInDialogs(tile.getNpcAttributes()) && isNpcTileRegistered(tile, levelIndexCounter, currentLevelName, npcFlowStatesArray) == false)
+                    {
+                        unregisteredTilesWithFlow.add(new UnregisteredTileWithFlowData(tile, levelIndexCounter));
+                    }
+
+                    levelIndexCounter++;
+                }
+                else if (tile.getTileTraits() == TilePanel.TileTraits.FLOW_TRIGGER)
+                {
+                    if (isTriggerTileRegistered(tile, currentLevelName, triggerFlowStatesArray) == false)
+                    {
+                        unregisteredTilesWithFlow.add(new UnregisteredTileWithFlowData(tile, -1));
+                    }
+                }
+            }
+        }
+
+        return unregisteredTilesWithFlow;
+    }
+
+    boolean doesNpcHaveAnyFlowTriggeringInDialogs(final NpcAttributes npcAttributes)
+    {
+        for (final String sideDialog: npcAttributes.sideDialogs)
+        {
+            if (sideDialog.indexOf("+FLOW") != -1)
+            {
+                return true;
+            }
+        }
+
+        if (npcAttributes.mainDialog.indexOf("+FLOW") != -1)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    boolean isNpcTileRegistered(final TilePanel tile, final int levelIndex, final String levelName, JSONArray npcFlowStatesArray)
+    {
+        for (int i = 0; i < npcFlowStatesArray.length(); ++i)
+        {
+            JSONObject npcFlowStateEntryObject = npcFlowStatesArray.getJSONObject(i);
+
+            if (npcFlowStateEntryObject.getString("level_name").equals(levelName) &&
+                npcFlowStateEntryObject.getInt("npc_level_index") == levelIndex)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    boolean isTriggerTileRegistered(final TilePanel tile, final String levelName, JSONArray triggerFlowStatesArray)
+    {
+        for (int i = 0; i < triggerFlowStatesArray.length(); ++i)
+        {
+            JSONObject triggerFlowStateEntryObject = triggerFlowStatesArray.getJSONObject(i);
+            if (triggerFlowStateEntryObject.getString("level_name").equals(levelName) &&
+                triggerFlowStateEntryObject.getInt("level_col") == tile.getGameOverworldCol() &&
+                triggerFlowStateEntryObject.getInt("level_row") == tile.getGameOverworldRow(mainPanel.getLevelEditorTilemap().getTileRows()))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void startFlowStateSpecification(final String currentLevelName)
+    {
+        List<UnregisteredTileWithFlowData> unregisteredTiles = getUnregisteredTilesWithFlows(currentLevelName);
+
+        for (UnregisteredTileWithFlowData unregisteredTileWithFlowData: unregisteredTiles)
+        {
+            selectTargetFlowState(unregisteredTileWithFlowData.tile, unregisteredTileWithFlowData.levelIndex,currentLevelName);
+        }
+    }
+
+    private void selectTargetFlowState(final TilePanel tilePanel, final int levelIndex, final String currentLevelName)
+    {
+        JFrame frame = (JFrame)SwingUtilities.getWindowAncestor(mainPanel);
+        JDialog jDialog = new JDialog(frame , "Select Flow State for: " + tilePanel.getGameOverworldCol() + "," + tilePanel.getGameOverworldRow(mainPanel.getLevelEditorTilemap().getTileRows()), Dialog.ModalityType.APPLICATION_MODAL);
+        jDialog.getRootPane().registerKeyboardAction(new DisposeDialogHandler(jDialog), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
+
+        JPanel referenceAreaPanel = new TileReferenceImagePanel(mainPanel, tilePanel);
+
+        List<String> availableFlowStates = getAvailableFlowStates();
+        Collections.sort(availableFlowStates);
+
+        JComboBox<String> availableFlowStatesComboBox = new JComboBox<String>(availableFlowStates.toArray(new String[0]));
+        availableFlowStatesComboBox.setSelectedIndex(0);
+
+        JPanel flowStatesComboPanel = new JPanel();
+        flowStatesComboPanel.add(availableFlowStatesComboBox);
+
+        JPanel topAreaPanel = new JPanel(new BorderLayout());
+        topAreaPanel.add(referenceAreaPanel, BorderLayout.NORTH);
+        topAreaPanel.add(flowStatesComboPanel, BorderLayout.SOUTH);
+
+        JButton setFlowStateButton = new JButton("Set Flow State");
+
+        setFlowStateButton.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                String fileContents = null;
+                try
+                {
+                    fileContents = new String(Files.readAllBytes(new File(mainPanel.getGameDataDirectoryPath() + OVERWORLD_FLOW_STATE_MAP_FILE_NAME).toPath()));
+                }
+                catch (IOException ee)
+                {
+                    ee.printStackTrace();
+                }
+
+                JSONObject rootJsonObject = new JSONObject(fileContents);
+                JSONArray npcFlowStatesArray = rootJsonObject.getJSONArray("npc_flow_states");
+                JSONArray triggerFlowStatesArray = rootJsonObject.getJSONArray("trigger_flow_states");
+
+                boolean isTriggerTile = tilePanel.getTileTraits() == TilePanel.TileTraits.FLOW_TRIGGER;
+
+
+                JSONObject newEntry = new JSONObject();
+                newEntry.put("level_name", currentLevelName);
+                newEntry.put("flow_state_name", availableFlowStates.get(availableFlowStatesComboBox.getSelectedIndex()));
+
+                if (isTriggerTile)
+                {
+                    newEntry.put("level_col", tilePanel.getGameOverworldCol());
+                    newEntry.put("level_row", tilePanel.getGameOverworldRow(mainPanel.getLevelEditorTilemap().getTileRows()));
+
+                    triggerFlowStatesArray.put(newEntry);
+                }
+                else
+                {
+                    newEntry.put("npc_level_index", levelIndex);
+
+                    npcFlowStatesArray.put(newEntry);
+                }
+
+                try (BufferedWriter bw = new BufferedWriter(new FileWriter(new File(mainPanel.getGameDataDirectoryPath() + OVERWORLD_FLOW_STATE_MAP_FILE_NAME))))
+                {
+                    bw.write("{\n");
+                    bw.write("\t\"npc_flow_states\":\n");
+                    bw.write("\t[\n");
+
+
+                    StringBuilder npcFlowStateBuilder = new StringBuilder();
+                    for (int i = 0; i < npcFlowStatesArray.length(); ++i)
+                    {
+                        JSONObject entry = npcFlowStatesArray.getJSONObject(i);
+
+                        npcFlowStateBuilder.append("\t\t{\"level_name\": \"" + entry.getString("level_name") + "\", \"npc_level_index\": " + entry.getInt("npc_level_index") + ", \"flow_state_name\": \"" + entry.getString("flow_state_name") + "\"},\n");
+
+                    }
+
+                    if (npcFlowStateBuilder.charAt(npcFlowStateBuilder.length() - 2) == ',')
+                    {
+                        npcFlowStateBuilder.deleteCharAt(npcFlowStateBuilder.length() - 2);
+                    }
+                    bw.write(npcFlowStateBuilder.toString());
+
+                    bw.write("\t],\n");
+                    bw.write("\n");
+                    bw.write("\t\"trigger_flow_states\":\n");
+                    bw.write("\t[\n");
+
+                    StringBuilder triggerFlowStateBuilder = new StringBuilder();
+                    for (int i = 0; i < triggerFlowStatesArray.length(); ++i)
+                    {
+                        JSONObject entry = triggerFlowStatesArray.getJSONObject(i);
+
+                        triggerFlowStateBuilder.append("\t\t{\"level_name\": \"" + entry.getString("level_name") + "\", \"level_col\": " + entry.getInt("level_col") + ", \"level_row\": " + entry.getInt("level_row") + ", \"flow_state_name\": \"" + entry.getString("flow_state_name") + "\"},\n");
+                    }
+
+                    if (triggerFlowStateBuilder.charAt(triggerFlowStateBuilder.length() - 2) == ',')
+                    {
+                        triggerFlowStateBuilder.deleteCharAt(triggerFlowStateBuilder.length() - 2);
+                    }
+                    bw.write(triggerFlowStateBuilder.toString());
+
+                    bw.write("\t]\n");
+                    bw.write("}");
+                }
+                catch (IOException ee)
+                {
+                    ee.printStackTrace();
+                }
+
+                jDialog.dispose();
+            }
+        });
+
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.addActionListener(new DisposeDialogHandler(jDialog));
+
+        JPanel actionButtonsPanel = new JPanel();
+        actionButtonsPanel.add(setFlowStateButton);
+        actionButtonsPanel.add(cancelButton);
+        actionButtonsPanel.setBorder(new EmptyBorder(15, 0, 10, 0));
+
+        JPanel setFlowStatePanel = new JPanel(new BorderLayout());
+        setFlowStatePanel.add(topAreaPanel, BorderLayout.NORTH);
+        setFlowStatePanel.add(actionButtonsPanel, BorderLayout.SOUTH);
+
+        jDialog.setContentPane(setFlowStatePanel);
+        jDialog.getRootPane().setDefaultButton(setFlowStateButton);
+        jDialog.pack();
+        jDialog.setResizable(false);
+        jDialog.setLocationRelativeTo(frame);
+        jDialog.setVisible(true);
+        jDialog.getContentPane().setLayout(null);
+    }
+
+    private List<String> getAvailableFlowStates()
+    {
+        List<String> availableFlowStates = new ArrayList<>();
+
+        String fileContents = null;
+        try
+        {
+            fileContents = new String(Files.readAllBytes(new File(mainPanel.getGameDataDirectoryPath() + EXPOSED_FLOW_STATES_FILE_NAME).toPath()));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        JSONObject rootJsonObject  = new JSONObject(fileContents);
+        JSONArray availableFlowStatesJsonArray = rootJsonObject.getJSONArray("named_states");
+
+        for (int i = 0; i < availableFlowStatesJsonArray.length(); ++i)
+        {
+            availableFlowStates.add(availableFlowStatesJsonArray.getString(i));
+        }
+
+        return availableFlowStates;
     }
 }

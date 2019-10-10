@@ -5,7 +5,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class WarpReferenceImagePanel extends JPanel
+public class TileReferenceImagePanel extends JPanel
 {
     private static final int REFERENCE_IMAGE_COLS      = 9;
     private static final int REFERENCE_IMAGE_ROWS      = 9;
@@ -15,7 +15,7 @@ public class WarpReferenceImagePanel extends JPanel
     private final TilePanel tilePanel;
     private BufferedImage generatedReferenceImage;
 
-    public WarpReferenceImagePanel(final MainPanel mainPanel, final TilePanel originTile)
+    public TileReferenceImagePanel(final MainPanel mainPanel, final TilePanel originTile)
     {
         this.mainPanel = mainPanel;
         this.tilePanel = originTile;
