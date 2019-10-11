@@ -753,6 +753,48 @@ public class SaveActionListener implements ActionListener
             bw.write(",\n");
             bw.write("\"location_coords\": "); bw.write(locationCoordsArray.toString());
             bw.write("\n}");
+
+            bw.write("{\n");
+            bw.write("\t\"indoor_locations_to_owner_locations\":\n");
+            bw.write("\t[\n");
+
+
+            StringBuilder indoorLocationsToOwnersSringBuilder = new StringBuilder();
+            for (int i = 0; i < indoorLocationsToOwnerLocationsArray.length(); ++i)
+            {
+                JSONObject entry = indoorLocationsToOwnerLocationsArray.getJSONObject(i);
+
+                indoorLocationsToOwnersSringBuilder.append("\t\t{\"level_name\": \"" + entry.getString("level_name") + "\", \"npc_level_index\": " + entry.getInt("npc_level_index") + ", \"flow_state_name\": \"" + entry.getString("flow_state_name") + "\"},\n");
+
+            }
+
+            if (indoorLocationsToOwnersSringBuilder.charAt(indoorLocationsToOwnersSringBuilder.length() - 2) == ',')
+            {
+                indoorLocationsToOwnersSringBuilder.deleteCharAt(indoorLocationsToOwnersSringBuilder.length() - 2);
+            }
+            bw.write(indoorLocationsToOwnersSringBuilder.toString());
+
+            bw.write("\t],\n");
+            bw.write("\n");
+            bw.write("\t\"trigger_flow_states\":\n");
+            bw.write("\t[\n");
+
+            StringBuilder triggerFlowStateBuilder = new StringBuilder();
+            for (int i = 0; i < triggerFlowStatesArray.length(); ++i)
+            {
+                JSONObject entry = triggerFlowStatesArray.getJSONObject(i);
+
+                triggerFlowStateBuilder.append("\t\t{\"level_name\": \"" + entry.getString("level_name") + "\", \"level_col\": " + entry.getInt("level_col") + ", \"level_row\": " + entry.getInt("level_row") + ", \"flow_state_name\": \"" + entry.getString("flow_state_name") + "\"},\n");
+            }
+
+            if (triggerFlowStateBuilder.charAt(triggerFlowStateBuilder.length() - 2) == ',')
+            {
+                triggerFlowStateBuilder.deleteCharAt(triggerFlowStateBuilder.length() - 2);
+            }
+            bw.write(triggerFlowStateBuilder.toString());
+
+            bw.write("\t]\n");
+            bw.write("}");
         }
         catch (IOException e)
         {
