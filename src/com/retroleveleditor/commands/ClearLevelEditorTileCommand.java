@@ -28,6 +28,7 @@ public class ClearLevelEditorTileCommand implements ICommand
         this.tile.setCharTileImage(null);
         this.tile.setTileTraits(TilePanel.TileTraits.NONE);
         this.tile.setNpcAttributes(null);
+        this.tile.setToolTipText(null);
     }
 
     @Override
@@ -37,6 +38,11 @@ public class ClearLevelEditorTileCommand implements ICommand
         this.tile.setCharTileImage(previousCharImage);
         this.tile.setTileTraits(previousTileTraits);
         this.tile.setNpcAttributes(npcAttributes);
+
+        if (this.tile.getNpcAttributes() != null)
+        {
+            this.tile.setToolTipText(this.tile.getNpcAttributes().toString());
+        }
     }
 
     @Override

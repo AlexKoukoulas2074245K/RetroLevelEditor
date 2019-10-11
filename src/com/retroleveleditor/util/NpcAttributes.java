@@ -39,4 +39,64 @@ public class NpcAttributes
         this.isTrainer     = isTrainer;
         this.isGymLeader   = isGymLeader;
     }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder pokemonStringBuilder = new StringBuilder();
+        int charCounter = 0;
+
+        pokemonStringBuilder.append("[");
+        boolean commaToggle = false;
+        for (PokemonInfo pokemon: pokemonRoster)
+        {
+            if (commaToggle == false)
+            {
+                commaToggle = true;
+            }
+            else
+            {
+                pokemonStringBuilder.append(", ");
+            }
+
+            pokemonStringBuilder.append("L" + pokemon.pokemonLevel + " " + pokemon.pokemonName);
+        }
+        pokemonStringBuilder.append("]");
+
+        StringBuilder mainDialogStringBuilder = new StringBuilder();
+        charCounter = 0;
+        for (int i = 0; i < mainDialog.length(); ++i)
+        {
+            mainDialogStringBuilder.append(mainDialog.charAt(i));
+
+            if (++charCounter == 100)
+            {
+                charCounter = 0;
+                mainDialogStringBuilder.append("<br>");
+            }
+        }
+
+        StringBuilder sideDialogsStringBuilder = new StringBuilder();
+        sideDialogsStringBuilder.append(sideDialogs.toString());
+        charCounter = 0;
+        for (int i = 0; i < sideDialogsStringBuilder.length(); ++i)
+        {
+            if (++charCounter == 100)
+            {
+                charCounter = 0;
+                sideDialogsStringBuilder.insert(i, "<br>");
+            }
+        }
+
+        return "<html>trainerName: " + trainerName + "<br>" +
+               "movementType: " + movementType.toString() + "<br>" +
+               "direction: " + direction + "\n" +
+               "isTrainer: " + (isTrainer ? "true<br>" : "false<br>") +
+               "isGymLeader: " + (isGymLeader ? "true<br>" : "false<br>") +
+                "pokemon: " + pokemonStringBuilder.toString() + "<br>" +
+                "mainDialog: " + mainDialogStringBuilder.toString() + "<br>" +
+               "sideDialogs: " + sideDialogsStringBuilder.toString() + "<br>" +
+               "</html>";
+
+    }
 }

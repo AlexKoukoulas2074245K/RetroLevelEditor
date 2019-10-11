@@ -20,12 +20,22 @@ public class SetTileNpcAttributesCommand implements ICommand
     public void execute()
     {
         this.tile.setNpcAttributes(this.newNpcAttributes);
+
+        if (this.tile.getNpcAttributes() != null)
+        {
+            this.tile.setToolTipText(this.tile.getNpcAttributes().toString());
+        }
     }
 
     @Override
     public void undo()
     {
         this.tile.setNpcAttributes(this.previousNpcAttributes);
+
+        if (this.tile.getNpcAttributes() != null)
+        {
+            this.tile.setToolTipText(this.tile.getNpcAttributes().toString());
+        }
     }
 
     @Override

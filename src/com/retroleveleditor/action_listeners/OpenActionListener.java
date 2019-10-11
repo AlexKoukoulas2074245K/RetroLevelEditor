@@ -150,6 +150,7 @@ public class OpenActionListener implements ActionListener
                 }
 
                 tile.setNpcAttributes(new NpcAttributes(mainDialog, trainerName, sideDialogs, pokemonRoster, movemenType, direction, isTrainer, isGymLeader));
+                tile.setToolTipText(tile.getNpcAttributes().toString());
             }
 
             mainFrame.getRootPane().revalidate();

@@ -25,6 +25,7 @@ public class MainFrame extends JFrame
         try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); }
         catch (Exception e) { e.printStackTrace(); }
 
+        ToolTipManager.sharedInstance().setDismissDelay(60000);
         resetContentPane(32, 32, 48);
         pack();
         setMinimumSize(getSize());
