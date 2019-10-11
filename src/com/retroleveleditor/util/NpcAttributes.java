@@ -90,7 +90,7 @@ public class NpcAttributes
 
         return "<html>trainerName: " + trainerName + "<br>" +
                "movementType: " + movementType.toString() + "<br>" +
-               "direction: " + direction + "\n" +
+               "direction: " + direction + "<br>" +
                "isTrainer: " + (isTrainer ? "true<br>" : "false<br>") +
                "isGymLeader: " + (isGymLeader ? "true<br>" : "false<br>") +
                 "pokemon: " + pokemonStringBuilder.toString() + "<br>" +
