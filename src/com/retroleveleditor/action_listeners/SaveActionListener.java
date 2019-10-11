@@ -748,24 +748,24 @@ public class SaveActionListener implements ActionListener
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(new File(mainPanel.getGameDataDirectoryPath() + TOWN_MAP_LOCATIONS_FILE_NAME))))
         {
+            /*
             bw.write("{\n");
             bw.write("\"indoor_locations_to_owner_locations\": "); bw.write(indoorLocationsToOwnerLocationsArray.toString());
             bw.write(",\n");
             bw.write("\"location_coords\": "); bw.write(locationCoordsArray.toString());
             bw.write("\n}");
+            */
 
             bw.write("{\n");
             bw.write("\t\"indoor_locations_to_owner_locations\":\n");
             bw.write("\t[\n");
-
 
             StringBuilder indoorLocationsToOwnersSringBuilder = new StringBuilder();
             for (int i = 0; i < indoorLocationsToOwnerLocationsArray.length(); ++i)
             {
                 JSONObject entry = indoorLocationsToOwnerLocationsArray.getJSONObject(i);
 
-                indoorLocationsToOwnersSringBuilder.append("\t\t{\"level_name\": \"" + entry.getString("level_name") + "\", \"npc_level_index\": " + entry.getInt("npc_level_index") + ", \"flow_state_name\": \"" + entry.getString("flow_state_name") + "\"},\n");
-
+                indoorLocationsToOwnersSringBuilder.append("\t\t{\"indoor_location_name\": \"" + entry.getString("indoor_location_name") + "\", \"owner_location_name\": \"" + entry.getString("owner_location_name") + "\"},\n");
             }
 
             if (indoorLocationsToOwnersSringBuilder.charAt(indoorLocationsToOwnersSringBuilder.length() - 2) == ',')
@@ -776,22 +776,22 @@ public class SaveActionListener implements ActionListener
 
             bw.write("\t],\n");
             bw.write("\n");
-            bw.write("\t\"trigger_flow_states\":\n");
+            bw.write("\t\"location_coords\":\n");
             bw.write("\t[\n");
 
-            StringBuilder triggerFlowStateBuilder = new StringBuilder();
-            for (int i = 0; i < triggerFlowStatesArray.length(); ++i)
+            StringBuilder locationCoordsStringBuilder = new StringBuilder();
+            for (int i = 0; i < locationCoordsArray.length(); ++i)
             {
-                JSONObject entry = triggerFlowStatesArray.getJSONObject(i);
+                JSONObject entry = locationCoordsArray.getJSONObject(i);
 
-                triggerFlowStateBuilder.append("\t\t{\"level_name\": \"" + entry.getString("level_name") + "\", \"level_col\": " + entry.getInt("level_col") + ", \"level_row\": " + entry.getInt("level_row") + ", \"flow_state_name\": \"" + entry.getString("flow_state_name") + "\"},\n");
+                locationCoordsStringBuilder.append("\t\t{\"location_name\": \"" + entry.getString("location_name") + "\", \"map_position_x\": " + entry.getInt("map_position_x") + ", \"map_position_y\": " + entry.getInt("map_position_y") + "},\n");
             }
 
-            if (triggerFlowStateBuilder.charAt(triggerFlowStateBuilder.length() - 2) == ',')
+            if (locationCoordsStringBuilder.charAt(locationCoordsStringBuilder.length() - 2) == ',')
             {
-                triggerFlowStateBuilder.deleteCharAt(triggerFlowStateBuilder.length() - 2);
+                locationCoordsStringBuilder.deleteCharAt(locationCoordsStringBuilder.length() - 2);
             }
-            bw.write(triggerFlowStateBuilder.toString());
+            bw.write(locationCoordsStringBuilder.toString());
 
             bw.write("\t]\n");
             bw.write("}");
