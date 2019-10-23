@@ -135,21 +135,18 @@ public class SaveActionListener implements ActionListener
     {
         String levelName = file.getName().split("\\.")[0];
 
-        if (((LevelEditorTilemapPanel)mainPanel.getLevelEditorTilemap()).getLevelMusicName() == null)
+        int musicSelOption = JOptionPane.showConfirmDialog (null, "Select music for level?", "Music Selection", JOptionPane.YES_NO_OPTION);
+        if (musicSelOption == JOptionPane.YES_OPTION)
         {
-            int selOption = JOptionPane.showConfirmDialog (null, "Select music for level?", "Music Selection", JOptionPane.YES_NO_OPTION);
-            if (selOption == JOptionPane.YES_OPTION)
-            {
-                JFileChooser fc = new JFileChooser(mainPanel.getGameMusicDirectoryPath());
-                FileNameExtensionFilter fileFilter = new FileNameExtensionFilter("OGG (*.ogg)", "ogg");
-                fc.setFileFilter(fileFilter);
+            JFileChooser fc = new JFileChooser(mainPanel.getGameMusicDirectoryPath());
+            FileNameExtensionFilter fileFilter = new FileNameExtensionFilter("OGG (*.ogg)", "ogg");
+            fc.setFileFilter(fileFilter);
 
-                int choice = fc.showSaveDialog(mainPanel);
-                if (choice == JFileChooser.APPROVE_OPTION)
-                {
-                    String musicName = fc.getSelectedFile().getName().split("\\.")[0];
-                    ((LevelEditorTilemapPanel)mainPanel.getLevelEditorTilemap()).setLevelMusicName(musicName);
-                }
+            int choice = fc.showSaveDialog(mainPanel);
+            if (choice == JFileChooser.APPROVE_OPTION)
+            {
+                String musicName = fc.getSelectedFile().getName().split("\\.")[0];
+                ((LevelEditorTilemapPanel)mainPanel.getLevelEditorTilemap()).setLevelMusicName(musicName);
             }
         }
 
